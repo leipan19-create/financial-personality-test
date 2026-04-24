@@ -1,0 +1,5308 @@
+<!DOCTYPE html>
+
+
+
+<html lang="zh-CN">
+
+
+
+<head>
+
+
+
+<meta charset="UTF-8">
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<title>财商人格测试 — 你的财商人格是什么？</title>
+
+
+
+<style>
+
+
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+
+
+
+
+
+
+  :root {
+
+
+
+    --bg: #1a1a2e;
+
+
+
+    --bg2: #16213e;
+
+
+
+    --bg3: #0f3460;
+
+
+
+    --purple: #7c3aed;
+
+
+
+    --purple-light: #9d62f5;
+
+
+
+    --purple-dark: #5b21b6;
+
+
+
+    --purple-glow: rgba(124, 58, 237, 0.35);
+
+
+
+    --text: #f0f0f8;
+
+
+
+    --text-muted: #a0a0c0;
+
+
+
+    --text-dim: #6060a0;
+
+
+
+    --card: rgba(255,255,255,0.05);
+
+
+
+    --card-border: rgba(255,255,255,0.08);
+
+
+
+    --radius: 16px;
+
+
+
+    --radius-sm: 10px;
+
+
+
+    /* type colours */
+
+
+
+    --blue: #3b82f6;
+
+
+
+    --green: #10b981;
+
+
+
+    --violet: #8b5cf6;
+
+
+
+  }
+
+
+
+
+
+
+
+  html { font-size: 16px; }
+
+
+
+
+
+
+
+  body {
+
+
+
+    background: var(--bg);
+
+
+
+    color: var(--text);
+
+
+
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+
+
+
+    min-height: 100vh;
+
+
+
+    display: flex;
+
+
+
+    align-items: center;
+
+
+
+    justify-content: center;
+
+
+
+    padding: 20px;
+
+
+
+    background-image: radial-gradient(ellipse at 20% 10%, rgba(124,58,237,0.15) 0%, transparent 60%),
+
+
+
+                      radial-gradient(ellipse at 80% 90%, rgba(59,130,246,0.08) 0%, transparent 60%);
+
+
+
+  }
+
+
+
+
+
+
+
+  #app {
+
+
+
+    width: 100%;
+
+
+
+    max-width: 680px;
+
+
+
+  }
+
+
+
+
+
+
+
+  /* ── Screens ── */
+
+
+
+  .screen { display: none; animation: fadeIn 0.4s ease; }
+
+
+
+  .screen.active { display: block; }
+
+
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+
+
+
+
+
+
+  /* ── Card ── */
+
+
+
+  .card {
+
+
+
+    background: var(--card);
+
+
+
+    border: 1px solid var(--card-border);
+
+
+
+    border-radius: var(--radius);
+
+
+
+    padding: 36px 32px;
+
+
+
+    backdrop-filter: blur(12px);
+
+
+
+  }
+
+
+
+  @media (max-width: 480px) { .card { padding: 24px 18px; } }
+
+
+
+
+
+
+
+  /* ── Welcome ── */
+
+
+
+  .welcome-badge {
+
+
+
+    display: inline-block;
+
+
+
+    background: var(--purple-glow);
+
+
+
+    border: 1px solid rgba(124,58,237,0.4);
+
+
+
+    color: var(--purple-light);
+
+
+
+    font-size: 12px;
+
+
+
+    font-weight: 600;
+
+
+
+    letter-spacing: 0.1em;
+
+
+
+    text-transform: uppercase;
+
+
+
+    padding: 4px 12px;
+
+
+
+    border-radius: 20px;
+
+
+
+    margin-bottom: 24px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .welcome-title {
+
+
+
+    font-size: clamp(28px, 6vw, 42px);
+
+
+
+    font-weight: 800;
+
+
+
+    line-height: 1.2;
+
+
+
+    margin-bottom: 16px;
+
+
+
+    background: linear-gradient(135deg, #fff 0%, var(--purple-light) 100%);
+
+
+
+    -webkit-background-clip: text;
+
+
+
+    -webkit-text-fill-color: transparent;
+
+
+
+    background-clip: text;
+
+
+
+  }
+
+
+
+
+
+
+
+  .welcome-desc {
+
+
+
+    color: var(--text-muted);
+
+
+
+    font-size: 15px;
+
+
+
+    line-height: 1.7;
+
+
+
+    margin-bottom: 32px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .welcome-meta {
+
+
+
+    display: flex;
+
+
+
+    gap: 20px;
+
+
+
+    margin-bottom: 36px;
+
+
+
+    flex-wrap: wrap;
+
+
+
+  }
+
+
+
+
+
+
+
+  .meta-item {
+
+
+
+    display: flex;
+
+
+
+    align-items: center;
+
+
+
+    gap: 8px;
+
+
+
+    color: var(--text-muted);
+
+
+
+    font-size: 13px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .meta-dot {
+
+
+
+    width: 6px; height: 6px;
+
+
+
+    background: var(--purple);
+
+
+
+    border-radius: 50%;
+
+
+
+    flex-shrink: 0;
+
+
+
+  }
+
+
+
+
+
+
+
+  .btn-primary {
+
+
+
+    display: inline-flex;
+
+
+
+    align-items: center;
+
+
+
+    gap: 8px;
+
+
+
+    background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%);
+
+
+
+    color: #fff;
+
+
+
+    border: none;
+
+
+
+    border-radius: 12px;
+
+
+
+    padding: 14px 32px;
+
+
+
+    font-size: 16px;
+
+
+
+    font-weight: 700;
+
+
+
+    cursor: pointer;
+
+
+
+    transition: transform 0.15s, box-shadow 0.15s;
+
+
+
+    box-shadow: 0 4px 20px var(--purple-glow);
+
+
+
+    text-decoration: none;
+
+
+
+  }
+
+
+
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px var(--purple-glow); }
+
+
+
+  .btn-primary:active { transform: none; }
+
+
+
+
+
+
+
+  .btn-secondary {
+
+
+
+    display: inline-flex;
+
+
+
+    align-items: center;
+
+
+
+    gap: 6px;
+
+
+
+    background: transparent;
+
+
+
+    color: var(--text-muted);
+
+
+
+    border: 1px solid var(--card-border);
+
+
+
+    border-radius: 10px;
+
+
+
+    padding: 10px 20px;
+
+
+
+    font-size: 14px;
+
+
+
+    font-weight: 600;
+
+
+
+    cursor: pointer;
+
+
+
+    transition: background 0.15s, color 0.15s;
+
+
+
+    text-decoration: none;
+
+
+
+  }
+
+
+
+  .btn-secondary:hover { background: var(--card); color: var(--text); }
+
+
+
+
+
+
+
+  .animals-preview {
+
+
+
+    display: flex;
+
+
+
+    gap: 10px;
+
+
+
+    margin-top: 28px;
+
+
+
+    flex-wrap: wrap;
+
+
+
+  }
+
+
+
+
+
+
+
+  .animal-chip {
+
+
+
+    background: rgba(255,255,255,0.04);
+
+
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+
+
+    border-radius: 20px;
+
+
+
+    padding: 6px 14px;
+
+
+
+    font-size: 13px;
+
+
+
+    color: var(--text-muted);
+
+
+
+  }
+
+
+
+
+
+
+
+  /* ── Progress ── */
+
+
+
+  .progress-header {
+
+
+
+    margin-bottom: 28px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .progress-top {
+
+
+
+    display: flex;
+
+
+
+    justify-content: space-between;
+
+
+
+    align-items: center;
+
+
+
+    margin-bottom: 10px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .progress-label {
+
+
+
+    font-size: 13px;
+
+
+
+    color: var(--text-muted);
+
+
+
+    font-weight: 600;
+
+
+
+  }
+
+
+
+
+
+
+
+  .progress-fraction {
+
+
+
+    font-size: 13px;
+
+
+
+    color: var(--text-dim);
+
+
+
+  }
+
+
+
+
+
+
+
+  .progress-bar-wrap {
+
+
+
+    height: 5px;
+
+
+
+    background: rgba(255,255,255,0.08);
+
+
+
+    border-radius: 10px;
+
+
+
+    overflow: hidden;
+
+
+
+  }
+
+
+
+
+
+
+
+  .progress-bar-fill {
+
+
+
+    height: 100%;
+
+
+
+    background: linear-gradient(90deg, var(--purple) 0%, var(--purple-light) 100%);
+
+
+
+    border-radius: 10px;
+
+
+
+    transition: width 0.4s ease;
+
+
+
+  }
+
+
+
+
+
+
+
+  /* ── Question ── */
+
+
+
+  .question-num {
+
+
+
+    font-size: 11px;
+
+
+
+    font-weight: 700;
+
+
+
+    color: var(--purple-light);
+
+
+
+    text-transform: uppercase;
+
+
+
+    letter-spacing: 0.1em;
+
+
+
+    margin-bottom: 12px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .question-text {
+
+
+
+    font-size: clamp(16px, 3.5vw, 20px);
+
+
+
+    font-weight: 700;
+
+
+
+    line-height: 1.5;
+
+
+
+    margin-bottom: 28px;
+
+
+
+    color: var(--text);
+
+
+
+  }
+
+
+
+
+
+
+
+  .options-list {
+
+
+
+    display: flex;
+
+
+
+    flex-direction: column;
+
+
+
+    gap: 10px;
+
+
+
+    margin-bottom: 28px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .option-btn {
+
+
+
+    display: flex;
+
+
+
+    align-items: flex-start;
+
+
+
+    gap: 14px;
+
+
+
+    background: rgba(255,255,255,0.04);
+
+
+
+    border: 1.5px solid rgba(255,255,255,0.09);
+
+
+
+    border-radius: var(--radius-sm);
+
+
+
+    padding: 14px 16px;
+
+
+
+    text-align: left;
+
+
+
+    cursor: pointer;
+
+
+
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+
+
+
+    width: 100%;
+
+
+
+  }
+
+
+
+
+
+
+
+  .option-btn:hover {
+
+
+
+    background: rgba(124,58,237,0.12);
+
+
+
+    border-color: rgba(124,58,237,0.45);
+
+
+
+    transform: translateX(2px);
+
+
+
+  }
+
+
+
+
+
+
+
+  .option-btn.selected {
+
+
+
+    background: rgba(124,58,237,0.2);
+
+
+
+    border-color: var(--purple);
+
+
+
+  }
+
+
+
+
+
+
+
+  .option-letter {
+
+
+
+    flex-shrink: 0;
+
+
+
+    width: 26px;
+
+
+
+    height: 26px;
+
+
+
+    border-radius: 8px;
+
+
+
+    background: rgba(124,58,237,0.2);
+
+
+
+    border: 1px solid rgba(124,58,237,0.35);
+
+
+
+    color: var(--purple-light);
+
+
+
+    font-size: 12px;
+
+
+
+    font-weight: 800;
+
+
+
+    display: flex;
+
+
+
+    align-items: center;
+
+
+
+    justify-content: center;
+
+
+
+    flex-shrink: 0;
+
+
+
+  }
+
+
+
+
+
+
+
+  .option-btn.selected .option-letter {
+
+
+
+    background: var(--purple);
+
+
+
+    border-color: var(--purple);
+
+
+
+    color: #fff;
+
+
+
+  }
+
+
+
+
+
+
+
+  .option-text {
+
+
+
+    color: var(--text);
+
+
+
+    font-size: 14px;
+
+
+
+    line-height: 1.55;
+
+
+
+    padding-top: 3px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .question-nav {
+
+
+
+    display: flex;
+
+
+
+    align-items: center;
+
+
+
+    justify-content: space-between;
+
+
+
+  }
+
+
+
+
+
+
+
+  /* ── Result ── */
+
+
+
+  .result-type-badge {
+
+
+
+    display: inline-block;
+
+
+
+    font-size: 12px;
+
+
+
+    font-weight: 700;
+
+
+
+    letter-spacing: 0.1em;
+
+
+
+    text-transform: uppercase;
+
+
+
+    padding: 4px 14px;
+
+
+
+    border-radius: 20px;
+
+
+
+    margin-bottom: 20px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .result-animal {
+
+
+
+    font-size: clamp(52px, 12vw, 80px);
+
+
+
+    line-height: 1;
+
+
+
+    margin-bottom: 8px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .result-name {
+
+
+
+    font-size: clamp(24px, 5.5vw, 38px);
+
+
+
+    font-weight: 900;
+
+
+
+    line-height: 1.15;
+
+
+
+    margin-bottom: 6px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .result-tagline {
+
+
+
+    font-size: 14px;
+
+
+
+    color: var(--text-muted);
+
+
+
+    margin-bottom: 24px;
+
+
+
+    font-style: italic;
+
+
+
+    line-height: 1.5;
+
+
+
+  }
+
+
+
+
+
+
+
+  .match-row {
+
+
+
+    display: flex;
+
+
+
+    align-items: center;
+
+
+
+    gap: 12px;
+
+
+
+    background: rgba(255,255,255,0.04);
+
+
+
+    border: 1px solid var(--card-border);
+
+
+
+    border-radius: 12px;
+
+
+
+    padding: 14px 18px;
+
+
+
+    margin-bottom: 24px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .match-label {
+
+
+
+    font-size: 13px;
+
+
+
+    color: var(--text-muted);
+
+
+
+    flex-shrink: 0;
+
+
+
+    font-weight: 600;
+
+
+
+  }
+
+
+
+
+
+
+
+  .match-bar-wrap {
+
+
+
+    flex: 1;
+
+
+
+    height: 8px;
+
+
+
+    background: rgba(255,255,255,0.08);
+
+
+
+    border-radius: 10px;
+
+
+
+    overflow: hidden;
+
+
+
+  }
+
+
+
+
+
+
+
+  .match-bar-fill {
+
+
+
+    height: 100%;
+
+
+
+    border-radius: 10px;
+
+
+
+    transition: width 1s ease;
+
+
+
+  }
+
+
+
+
+
+
+
+  .match-pct {
+
+
+
+    font-size: 18px;
+
+
+
+    font-weight: 800;
+
+
+
+    flex-shrink: 0;
+
+
+
+    min-width: 48px;
+
+
+
+    text-align: right;
+
+
+
+  }
+
+
+
+
+
+
+
+  .result-summary {
+
+
+
+    background: rgba(255,255,255,0.04);
+
+
+
+    border: 1px solid var(--card-border);
+
+
+
+    border-radius: 12px;
+
+
+
+    padding: 18px 20px;
+
+
+
+    font-size: 15px;
+
+
+
+    line-height: 1.7;
+
+
+
+    color: var(--text);
+
+
+
+    margin-bottom: 24px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .section-title {
+
+
+
+    font-size: 12px;
+
+
+
+    font-weight: 700;
+
+
+
+    letter-spacing: 0.1em;
+
+
+
+    text-transform: uppercase;
+
+
+
+    color: var(--text-dim);
+
+
+
+    margin-bottom: 14px;
+
+
+
+    padding-bottom: 8px;
+
+
+
+    border-bottom: 1px solid var(--card-border);
+
+
+
+  }
+
+
+
+
+
+
+
+  .powers-list, .blindspots-list {
+
+
+
+    display: flex;
+
+
+
+    flex-direction: column;
+
+
+
+    gap: 10px;
+
+
+
+    margin-bottom: 24px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .power-item {
+
+
+
+    display: flex;
+
+
+
+    gap: 12px;
+
+
+
+    background: rgba(16,185,129,0.06);
+
+
+
+    border: 1px solid rgba(16,185,129,0.15);
+
+
+
+    border-radius: 12px;
+
+
+
+    padding: 14px 16px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .power-icon {
+
+
+
+    font-size: 18px;
+
+
+
+    flex-shrink: 0;
+
+
+
+    line-height: 1;
+
+
+
+    padding-top: 2px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .power-content strong {
+
+
+
+    display: block;
+
+
+
+    font-size: 14px;
+
+
+
+    font-weight: 700;
+
+
+
+    color: #6ee7b7;
+
+
+
+    margin-bottom: 4px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .power-content p {
+
+
+
+    font-size: 13px;
+
+
+
+    color: var(--text-muted);
+
+
+
+    line-height: 1.55;
+
+
+
+  }
+
+
+
+
+
+
+
+  .blind-item {
+
+
+
+    display: flex;
+
+
+
+    gap: 12px;
+
+
+
+    background: rgba(245,158,11,0.06);
+
+
+
+    border: 1px solid rgba(245,158,11,0.18);
+
+
+
+    border-radius: 12px;
+
+
+
+    padding: 14px 16px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .blind-icon {
+
+
+
+    font-size: 18px;
+
+
+
+    flex-shrink: 0;
+
+
+
+    line-height: 1;
+
+
+
+    padding-top: 2px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .blind-content strong {
+
+
+
+    display: block;
+
+
+
+    font-size: 14px;
+
+
+
+    font-weight: 700;
+
+
+
+    color: #fcd34d;
+
+
+
+    margin-bottom: 4px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .blind-content p {
+
+
+
+    font-size: 13px;
+
+
+
+    color: var(--text-muted);
+
+
+
+    line-height: 1.55;
+
+
+
+  }
+
+
+
+
+
+
+
+  .quote-card {
+
+
+
+    background: linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(59,130,246,0.1) 100%);
+
+
+
+    border: 1px solid rgba(124,58,237,0.3);
+
+
+
+    border-radius: 16px;
+
+
+
+    padding: 24px 22px;
+
+
+
+    margin-bottom: 24px;
+
+
+
+    text-align: center;
+
+
+
+  }
+
+
+
+
+
+
+
+  .quote-text {
+
+
+
+    font-size: 15px;
+
+
+
+    font-weight: 600;
+
+
+
+    line-height: 1.7;
+
+
+
+    color: var(--text);
+
+
+
+    margin-bottom: 10px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .quote-tags {
+
+
+
+    font-size: 12px;
+
+
+
+    color: var(--text-dim);
+
+
+
+  }
+
+
+
+
+
+
+
+  .cta-card {
+
+
+
+    background: rgba(124,58,237,0.08);
+
+
+
+    border: 1px solid rgba(124,58,237,0.25);
+
+
+
+    border-radius: 16px;
+
+
+
+    padding: 22px 20px;
+
+
+
+    margin-bottom: 24px;
+
+
+
+    text-align: center;
+
+
+
+  }
+
+
+
+
+
+
+
+  .cta-title {
+
+
+
+    font-size: 16px;
+
+
+
+    font-weight: 800;
+
+
+
+    margin-bottom: 8px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .cta-desc {
+
+
+
+    font-size: 13px;
+
+
+
+    color: var(--text-muted);
+
+
+
+    line-height: 1.6;
+
+
+
+    margin-bottom: 16px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .cta-link {
+
+
+
+    display: inline-flex;
+
+
+
+    align-items: center;
+
+
+
+    gap: 8px;
+
+
+
+    background: var(--purple);
+
+
+
+    color: #fff;
+
+
+
+    text-decoration: none;
+
+
+
+    border-radius: 10px;
+
+
+
+    padding: 12px 24px;
+
+
+
+    font-size: 14px;
+
+
+
+    font-weight: 700;
+
+
+
+    transition: background 0.15s, transform 0.1s;
+
+
+
+  }
+
+
+
+  .cta-link:hover { background: var(--purple-light); transform: translateY(-1px); }
+
+
+
+
+
+
+
+  .result-actions {
+
+
+
+    display: flex;
+
+
+
+    gap: 10px;
+
+
+
+    flex-wrap: wrap;
+
+
+
+  }
+
+
+
+
+
+
+
+  /* ── Divider ── */
+
+
+
+  .divider {
+
+
+
+    height: 1px;
+
+
+
+    background: var(--card-border);
+
+
+
+    margin: 24px 0;
+
+
+
+  }
+
+
+
+
+
+
+
+  /* ── Score chips ── */
+
+
+
+  .score-row {
+
+
+
+    display: flex;
+
+
+
+    gap: 8px;
+
+
+
+    flex-wrap: wrap;
+
+
+
+    margin-bottom: 20px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .score-chip {
+
+
+
+    background: rgba(255,255,255,0.06);
+
+
+
+    border: 1px solid rgba(255,255,255,0.1);
+
+
+
+    border-radius: 20px;
+
+
+
+    padding: 5px 14px;
+
+
+
+    font-size: 12px;
+
+
+
+    color: var(--text-muted);
+
+
+
+    font-weight: 600;
+
+
+
+  }
+
+
+
+
+
+
+
+  .score-chip span {
+
+
+
+    color: var(--purple-light);
+
+
+
+  }
+
+
+
+
+
+
+
+  /* type-specific accent colours */
+
+
+
+  .accent-blue .result-name, .accent-blue .match-pct { color: #93c5fd; }
+
+
+
+  .accent-blue .match-bar-fill { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+
+
+
+  .accent-blue .result-type-badge { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+
+
+
+
+
+
+
+  .accent-green .result-name, .accent-green .match-pct { color: #6ee7b7; }
+
+
+
+  .accent-green .match-bar-fill { background: linear-gradient(90deg, #10b981, #34d399); }
+
+
+
+  .accent-green .result-type-badge { background: rgba(16,185,129,0.12); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
+
+
+
+
+
+
+
+  .accent-purple .result-name, .accent-purple .match-pct { color: var(--purple-light); }
+
+
+
+  .accent-purple .match-bar-fill { background: linear-gradient(90deg, var(--purple), var(--purple-light)); }
+
+
+
+  .accent-purple .result-type-badge { background: var(--purple-glow); color: var(--purple-light); border: 1px solid rgba(124,58,237,0.4); }
+
+
+
+</style>
+
+
+
+</head>
+
+
+
+<body>
+
+
+
+<div id="app">
+
+
+
+
+
+
+
+  <!-- ══════════════════ WELCOME ══════════════════ -->
+
+
+
+  <div id="screen-welcome" class="screen active">
+
+
+
+    <div class="card">
+
+
+
+      <div class="welcome-badge">财商人格测试</div>
+
+
+
+      <h1 class="welcome-title">你的财商人格<br>是什么？</h1>
+
+
+
+      <p class="welcome-desc">
+
+
+
+        每个人对金钱都有不同的直觉和行动方式。<br>
+
+
+
+        30道情景题，3分钟，告诉你你的财商人格类型——以及你最大的财务盲区。
+
+
+
+      </p>
+
+
+
+      <div class="welcome-meta">
+
+
+
+        <div class="meta-item"><div class="meta-dot"></div>30道题</div>
+
+
+
+        <div class="meta-item"><div class="meta-dot"></div>约3-4分钟</div>
+
+
+
+        <div class="meta-item"><div class="meta-dot"></div>9种人格类型</div>
+
+
+
+        <div class="meta-item"><div class="meta-dot"></div>免费 · 纯前端</div>
+
+
+
+      </div>
+
+
+
+      <button class="btn-primary" onclick="startTest()">开始测试 →</button>
+
+
+
+      <div class="animals-preview">
+
+
+
+        <div class="animal-chip">🦁 金库警卫</div>
+
+
+
+        <div class="animal-chip">🐢 保险箱</div>
+
+
+
+        <div class="animal-chip">🐹 钱罐子仓鼠</div>
+
+
+
+        <div class="animal-chip">🐰 投资者兔子</div>
+
+
+
+        <div class="animal-chip">🦊 聪明狐狸</div>
+
+
+
+        <div class="animal-chip">🦅 创业鹰</div>
+
+
+
+        <div class="animal-chip">🦉 自由思想家</div>
+
+
+
+        <div class="animal-chip">🦆 生活艺术家</div>
+
+
+
+        <div class="animal-chip">🦁 潇洒浪子</div>
+
+
+
+      </div>
+
+
+
+    </div>
+
+
+
+  </div>
+
+
+
+
+
+
+
+  <!-- ══════════════════ QUIZ ══════════════════ -->
+
+
+
+  <div id="screen-quiz" class="screen">
+
+
+
+    <div class="card">
+
+
+
+      <div class="progress-header">
+
+
+
+        <div class="progress-top">
+
+
+
+          <span class="progress-label" id="progress-label">第 1 题 / 共 30 题</span>
+
+
+
+          <span class="progress-fraction" id="progress-pct">0%</span>
+
+
+
+        </div>
+
+
+
+        <div class="progress-bar-wrap">
+
+
+
+          <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+
+
+
+        </div>
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="question-num" id="q-num">QUESTION 01</div>
+
+
+
+      <div class="question-text" id="q-text">题目加载中…</div>
+
+
+
+
+
+
+
+      <div class="options-list" id="options-list"></div>
+
+
+
+
+
+
+
+      <div class="question-nav">
+
+
+
+        <button class="btn-secondary" id="btn-prev" onclick="prevQuestion()" style="visibility:hidden">← 上一题</button>
+
+
+
+        <span></span>
+
+
+
+      </div>
+
+
+
+    </div>
+
+
+
+  </div>
+
+
+
+
+
+
+
+  <!-- ══════════════════ RESULT ══════════════════ -->
+
+
+
+  <div id="screen-result" class="screen">
+
+
+
+    <div class="card" id="result-card">
+
+
+
+      <!-- dynamically filled -->
+
+
+
+    </div>
+
+
+
+  </div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+
+
+
+/* ═══════════════════════════════════════════════
+
+
+
+   DATA: 30 questions
+
+
+
+   Each option carries dimension scores:
+
+
+
+   { a1, a2, a3, b1, b2, b3 }
+
+
+
+═══════════════════════════════════════════════ */
+
+
+
+const questions = [
+
+
+
+  /* ── Q1-15: 财富观维度 ── */
+
+
+
+  {
+
+
+
+    text: "你刚收到一笔15万元的年终奖，最想做的第一件事是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"先存进基金，看看有什么风险投资机会", score: { a2: 1 } },
+
+
+
+      { label: "B\", text: \"转入高收益货币基金，锁定风险下限", score: { a1: 1 } },
+
+
+
+      { label: "C\", text: \"用一部分去完成一个想做很久的事（旅游/进修/跳槽准备）", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"分散投资：股票+基金+理财，广撒网", score: { a2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "在选择理财产品时，你最看重的因素是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"过往收益率和排名", score: { a2: 1 } },
+
+
+
+      { label: "B\", text: \"产品是否安全、本金有无风险", score: { a1: 1 } },
+
+
+
+      { label: "C\", text: \"是否能帮我提前实现某个人生计划", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"操作是否简单、省时间", score: { a3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你的朋友在小红书上晒出月赚10万的副业机会，邀请你加入。你的第一反应是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"太诱人了，先参加试试，边做边了解风险", score: { a2: 1, b3: 1 } },
+
+
+
+      { label: "B\", text: \"先问清楚机制、查一下是否有坑、确认无风险再考虑", score: { a1: 1, b1: 1 } },
+
+
+
+      { label: "C\", text: \"谢谢，我目前的收入够用，优先保证生活质量", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"感兴趣，会理性分析对比，如果逻辑成立就试试", score: { a2: 1, b2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你发现银行APP不再提供\"保本理财\"，取而代之是更高风险的产品。你会：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"立刻转到其他银行，找能承诺保本的产品", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"评估新产品，如果预期收益能补偿风险就接受", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"再等等看，观察市场动向再做决定", score: { a1: 1, b1: 1 } },
+
+
+
+      { label: "D\", text: \"不关心产品名字，只看实际风险和收益的性价比", score: { a2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "假设你存够了6个月的日常支出作为应急金。对你来说这笔钱：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"还不够安心，最好存12个月", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"6个月刚好，剩下的钱用来投资增长", score: { a2: 1 } },
+
+
+
+      { label: "C\", text: \"这个概念有点保守，我更相信自己随时能赚钱", score: { a3: 1, b3: 1 } },
+
+
+
+      { label: "D\", text: \"根据工作稳定性来定，我会灵活调整", score: { b2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "关于\"复利\"这个概念，你的理解最接近：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"听起来厉害，但不信这种\"天上掉馅饼\"的事", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"只要时间足够长，小钱也能变大钱，我会定投基金", score: { a2: 1 } },
+
+
+
+      { label: "C\", text: \"概念听得懂，但我更关心钱能换来什么体验", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"我没深入研究过理论，只跟着大趋势走", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你能接受的投资年波动范围（有赚有赔的年份）是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"只能涨，不能跌，0%波动", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"年收益在15%-25%之间，允许小波动", score: { a2: 1 } },
+
+
+
+      { label: "C\", text: \"只要长期趋势是上升的，短期波动无所谓", score: { a2: 1, b3: 1 } },
+
+
+
+      { label: "D\", text: \"赚多赚少都不重要，只要不影响生活", score: { a3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你看到一个公众号分享了\"如何从0到1000万\"的长期案例。你的感受是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"骗人的，这种东西都是幸存者偏差", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"特别有启发，我想制定类似的长期增长计划", score: { a2: 1 } },
+
+
+
+      { label: "C\", text: \"有趣，但我没有赚1000万的执念", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"很羡慕，马上想试试他的方法", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "在你的财务计划中，\"投资回报率\"这个指标的重要程度：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"不重要，稳定不亏最重要", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"非常重要，每笔钱都要精确计算ROI", score: { a2: 1 } },
+
+
+
+      { label: "C\", text: \"重要但不是第一位，时间和自由度更重要", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"我很少主动计算，看心情投资", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "有5年时间，\"稳健年化5%\"和\"激进年化15%（但可能亏30%）\"之间选一个作为主要投资方向：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"选稳健，这辈子就要这样安稳下去", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"选激进，相信自己能抄底逃顶，增长才是王道", score: { a2: 1 } },
+
+
+
+      { label: "C\", text: \"各占一半，安稳和体验都要", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"看当时市场情况临时决定", score: { b2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你觉得赚钱的最终目的是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"有足够的积蓄，不怕突然失业", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"通过投资让钱为我工作，实现财务独立", score: { a2: 1 } },
+
+
+
+      { label: "C\", text: \"用钱换取时间自由和生活选择权", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"赚钱的过程本身很有趣", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你看到一个同龄人辞职环游世界一年，没有固定收入。你的第一想法是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"疯了，这样没有安全感", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"勇气可嘉，但应该提前存够钱+制定回归计划", score: { a2: 1 } },
+
+
+
+      { label: "C\", text: \"太羡慕了，我也想这样活", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"立刻考虑自己是否也能做到", score: { a3: 1, b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "月薪30K很稳定 vs 月薪25K但只需工作3天，其他条件类似，你选：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"选30K，多出的5K可以存起来保障未来", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"选30K，用来投资让收益更高", score: { a2: 1 } },
+
+
+
+      { label: "C\", text: \"选25K，用多出来的2天做自己喜欢的事", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"两个都试试，根据感受再定", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你对\"提前退休\"这个话题的态度：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"不现实，人要工作到65岁才有保障", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"可行，需要提前做好财务计划和投资", score: { a2: 1 } },
+
+
+
+      { label: "C\", text: \"是我的终极目标，我在为此努力", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"无所谓提前还是延后，顺其自然", score: { b2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "周末可以做兼职赚500块，或参加一个有趣的艺术工坊也要500块，你倾向于：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"赚钱，积累比体验重要", score: { a1: 1 } },
+
+
+
+      { label: "B\", text: \"两者都考虑，看这周的心情和预算", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"体验，钱够用就行，但好的体验很珍贵", score: { a3: 1 } },
+
+
+
+      { label: "D\", text: \"赚钱，但边赚边想着下次怎么既赚钱又体验", score: { a2: 1, b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  /* ── Q16-30: 行动风格维度 ── */
+
+
+
+  {
+
+
+
+    text: "面对一个\"听起来不错但你不完全了解\"的投资机会，你通常会：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"先深入研究、查阅资料、问内行人，确保理解后再决定", score: { b1: 1 } },
+
+
+
+      { label: "B\", text: \"问几个关键问题，如果逻辑通顺就试试", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"感觉不错就上，错了再说", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"咨询理财顾问或信任的朋友的意见", score: { b2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "当一个理财产品说\"近3年平均收益20%\"，你的反应是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"先查历史数据、看是否可持续、了解背后逻辑", score: { b1: 1 } },
+
+
+
+      { label: "B\", text: \"还不错，和其他产品对比一下", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"买了再说，反正能赚钱就行", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"太高了，可能有猫腻（先保持怀疑）", score: { b1: 1, a1: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你有个\"3年内存够30万\"的财务计划，执行到第2年发现需要调整。你会：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"继续按原计划执行，大幅调整会很麻烦", score: { b1: 1 } },
+
+
+
+      { label: "B\", text: \"评估新情况，如果理由充分就调整", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"立刻调整，反正计划总是在变", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"非常谨慎，先收集更多数据再决定是否调整", score: { b1: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "在学习理财知识时，你的方式是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"看很多书、听课程，做足功课后再实践", score: { b1: 1 } },
+
+
+
+      { label: "B\", text: \"边学边实践，在实践中完善知识", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"实践第一，有问题再回头补知识", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"我比较懒，主要听朋友推荐", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你发现自己对某个理财工具不完全理解（比如期权、港股等），你会：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"暂时不碰，等完全理解了再参与", score: { b1: 1 } },
+
+
+
+      { label: "B\", text: \"先用小额体验，边操作边学习", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"问朋友或上网快速学一下就试试", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"彻底研究透了再说，可能很久都不参与", score: { b1: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你对\"理财计划\"的看法：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"要做好，但要定期复盘和调整", score: { b2: 1 } },
+
+
+
+      { label: "B\", text: \"一旦定下来就要坚决执行，不能随意改变", score: { b1: 1 } },
+
+
+
+      { label: "C\", text: \"计划赶不上变化，没必要太详细", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"我没有正式的计划，就随性处理", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "股市大跌时，你的选择通常是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"等等看，观察趋势后再决定是否行动", score: { b2: 1 } },
+
+
+
+      { label: "B\", text: \"立刻全部止损，保护本金最重要", score: { b1: 1, a1: 1 } },
+
+
+
+      { label: "C\", text: \"大跌是抄底的机会，立刻买买买", score: { b3: 1, a2: 1 } },
+
+
+
+      { label: "D\", text: \"根据我的风险承受力和资金状况灵活处理", score: { b2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "在\"快速赚钱\"和\"稳健积累\"之间，你的倾向是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"必须稳健，风险太大受不了", score: { b1: 1, a1: 1 } },
+
+
+
+      { label: "B\", text: \"两者结合，大部分稳健，小部分冒险试错", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"快速才是王道，谁等啊", score: { b3: 1, a2: 1 } },
+
+
+
+      { label: "D\", text: \"完全看情绪和机会", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "当你发现一笔消费与预算不符（比如这个月多花了2000块），你会：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"认真分析原因，调整下个月的预算", score: { b2: 1 } },
+
+
+
+      { label: "B\", text: \"怪自己没控制好，严格按计划执行", score: { b1: 1 } },
+
+
+
+      { label: "C\", text: \"没关系，下个月补回来就行", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"我一般不太关注这种细节", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "对于\"定投\"这个投资方式，你的理解是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"很好的方法，我会坚持定投", score: { b1: 1, a2: 1 } },
+
+
+
+      { label: "B\", text: \"很好，但我会根据市场情况灵活调整定投时机和金额", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"太慢了，还不如等机会一把梭", score: { b3: 1, a2: 1 } },
+
+
+
+      { label: "D\", text: \"太复杂，我不想这么费心", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "面对一个\"看起来有潜力但需要时间验证\"的想法，你会：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"先研究清楚再说", score: { b1: 1 } },
+
+
+
+      { label: "B\", text: \"权衡利弊，看是否值得试", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"直接试，失败了再调整策略", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"找成功案例参考一下", score: { b2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你最满意的一个财务决定通常来自于：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"经过深思熟虑和充分准备", score: { b1: 1 } },
+
+
+
+      { label: "B\", text: \"深思熟虑但也留了调整空间", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"灵感一闪、立刻行动，然后发现成功了", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"听了别人的建议", score: { b2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "当你陷入\"该不该做这件事\"的纠结中时，你通常：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"继续研究和思考，直到确信再行动", score: { b1: 1 } },
+
+
+
+      { label: "B\", text: \"给自己一个决策时间线，到期就决定", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"不纠结，直接试，试过才知道对不对", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"问朋友或顾问的意见", score: { b2: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "在学习新技能（比如学会炒股、学理财课）时，你的学习方式是：",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"系统地学，从基础到进阶", score: { b1: 1 } },
+
+
+
+      { label: "B\", text: \"学一部分，实践一部分，循环迭代", score: { b2: 1 } },
+
+
+
+      { label: "C\", text: \"直接实战，有问题再查资料，从错误中学", score: { b3: 1 } },
+
+
+
+      { label: "D\", text: \"有空的时候看看，学不学随意", score: { b3: 1 } }
+
+
+
+    ]
+
+
+
+  },
+
+
+
+  {
+
+
+
+    text: "你有2万块闲钱，三个选择：①货币基金年化3%（最安全）②定投指数基金长期年化8%（中等）③新出现的理财产品年化12%（高风险、不完全了解）",
+
+
+
+    options: [
+
+
+
+      { label: "A\", text: \"选①，睡得踏实", score: { b1: 1, a1: 1 } },
+
+
+
+      { label: "B\", text: \"选②，安全和增长的平衡", score: { b2: 1, a2: 1 } },
+
+
+
+      { label: "C\", text: \"选③，先试试，反正只是闲钱", score: { b3: 1, a2: 1 } },
+
+
+
+      { label: "D\", text: \"根据我当时的心情和其他因素灵活选择", score: { b2: 1 } }
+
+
+
+    ]
+
+
+
+  }
+
+
+
+];
+
+
+
+
+
+
+
+/* ═══════════════════════════════════════════════
+
+
+
+   PERSONALITY TYPES
+
+
+
+═══════════════════════════════════════════════ */
+
+
+
+const personalities = {
+
+
+
+  A1B1: {
+
+
+
+    id: "A1B1\", name: \"金库警卫\", emoji: \"🦁\", accent: \"blue",
+
+
+
+    camp: "安全型\", campColor: \"blue",
+
+
+
+    tagline: "我的账户里有一分钱，就睡得踏实一分",
+
+
+
+    summary: "钱到我手里，我就有办法让它好好躺着。你不是在赚钱，你是在打造一个不出问题的财务堡垒。",
+
+
+
+    powers: [
+
+
+
+      { title: "风险嗅觉灵敏\", desc: \"别人看到\"年化20%\"会两眼放光，你第一个反应是\"这里面肯定有坑\"。你能本能地发现金融陷阱，小到理财软件的灰色文案，大到P2P崩盘，你总能提前一步离开。" },
+
+
+
+      { title: "账户管理大师\", desc: \"你的账户分类比会计还精细：活期、定期、应急金、目标金……每笔钱都有归宿，别人月底迷茫\"钱去哪了\"，你对账精确到元。" },
+
+
+
+      { title: "长期财务稳定性\", desc: \"十年不出事 > 五年暴富，这是你的信条。当经济危机来临，别人紧张，你早已做好充足准备。" }
+
+
+
+    ],
+
+
+
+    blindspots: [
+
+
+
+      { title: "过度保守导致机会成本巨大\", desc: \"你在乎\"不赔\"，却没算过\"少赚\"的成本。100万存银行10年约105万，100万定投基金10年可能200万+。问题不在于让你去赌，而在于认清\"什么风险其实不是风险\"。" },
+
+
+
+      { title: "信息分析陷阱\", desc: \"你容易陷入\"信息黑洞\"：总想再多研究一点。等你研究完，好机会已经过了。\"足够好\"有时就够好，完美的决策方案是不存在的。" }
+
+
+
+    ],
+
+
+
+    quote: "「不赔钱的投资不是最好的投资，是最保险的后悔。」",
+
+
+
+    quoteTags: "#财商人格 #金库警卫 #我要学会冒险"
+
+
+
+  },
+
+
+
+  A1B2: {
+
+
+
+    id: "A1B2\", name: \"保险箱\", emoji: \"🐢\", accent: \"blue",
+
+
+
+    camp: "安全型\", campColor: \"blue",
+
+
+
+    tagline: "稳中求进是我的风格，不激进也不保守，刚刚好",
+
+
+
+    summary: "你就像一个设计得很好的保险箱：没人能快速打开，但只要打开就能放进去珍贵的东西。既守得住，也舍得放。",
+
+
+
+    powers: [
+
+
+
+      { title: "动态平衡大师\", desc: \"50%稳健+30%增长+20%体验，你的资产配置比标准差不多。别人在\"全守\"和\"全投\"之间摇摆不定，你早就找到了自己的节奏。" },
+
+
+
+      { title: "定期复盘能力\", desc: \"你不是一成不变，而是\"按需调整\"。每年会看一遍财务状况，及时做微调，不是大手术。既不落伍，也不折腾。" },
+
+
+
+      { title: "信任建立能力\", desc: \"朋友问理财建议时最愿意相信你，因为你不装、不忽悠。你给的意见是\"有根据+有保留+有调整\"的，显得特别靠谱。" }
+
+
+
+    ],
+
+
+
+    blindspots: [
+
+
+
+      { title: "执行力不足导致计划流产\", desc: \"你计划得好，但有时执行有点\"随意\"。定投计划坚持3个月就停了；理财目标设了好几次都没达成。缺少那\"临门一脚\"的狠劲。" },
+
+
+
+      { title: "风险认知模糊\", desc: \"你知道要\"平衡\"，但对每个产品的具体风险理解还不够透彻。可能会因为信息不对称而错误配置，觉得安全其实有风险。" }
+
+
+
+    ],
+
+
+
+    quote: "「不追求完美，只追求刚刚好。这样的人生，从来不会大起大落。」",
+
+
+
+    quoteTags: "#财商人格 #保险箱 #稳健理财师"
+
+
+
+  },
+
+
+
+  A1B3: {
+
+
+
+    id: "A1B3\", name: \"钱罐子仓鼠\", emoji: \"🐹\", accent: \"blue",
+
+
+
+    camp: "安全型\", campColor: \"blue",
+
+
+
+    tagline: "先赚再存，执行力强的存钱达人",
+
+
+
+    summary: "你是个\"执行力很强的存钱达人\"。副业、兼职、省钱技巧，你样样都会。唯一的问题是：存完之后不知道怎么办。",
+
+
+
+    powers: [
+
+
+
+      { title: "副业开发能力\", desc: \"你敢试新东西，能快速进入一个新领域赚钱。别人还在讨论\"要不要做副业\"，你已经赚了几个月的钱了。这种行动力在30岁之前是最珍贵的资产。" },
+
+
+
+      { title: "自律存钱能力\", desc: \"设定目标就能完成，这是大多数人学不来的。月入5000存2000，月入50000存20000，比例始终如一。" },
+
+
+
+      { title: "风险规避能力\", desc: \"你天生不会被高风险产品迷住。看再多的\"暴富故事\"也能保持清醒，这叫\"心理防线强\"，99%的人没有。" }
+
+
+
+    ],
+
+
+
+    blindspots: [
+
+
+
+      { title: "存钱没有配置，等于浪费\", desc: \"你存了30万，放在活期账户里，年利息只有300块。同样30万，用对方法，年利息可能3000块。你的行动力很强，但方向有点歪：存得很快，但没想好怎么用。" },
+
+
+
+      { title: "\"保障心理\"导致机会成本大\", desc: \"存钱给你安全感，但过度保障反而是浪费青春。这笔钱可能用来投资自己、创业、学习，反而增值更快。你缺的不是钱，是对\"钱往哪里去\"的思考。" }
+
+
+
+    ],
+
+
+
+    quote: "「一个人能存钱，真不算本领。关键是存的钱，能不能为自己工作。」",
+
+
+
+    quoteTags: "#财商人格 #钱罐子仓鼠 #该存钱升级了"
+
+
+
+  },
+
+
+
+  A2B1: {
+
+
+
+    id: "A2B1\", name: \"投资者兔子\", emoji: \"🐰\", accent: \"green",
+
+
+
+    camp: "增长型\", campColor: \"green",
+
+
+
+    tagline: "充分调研才下手，复利的拥护者",
+
+
+
+    summary: "你就像一个\"小型投资委员会\"。每一笔投资都要过你的\"审核会\"，标准比许多专业投资者还严。",
+
+
+
+    powers: [
+
+
+
+      { title: "深度分析能力\", desc: \"别人看财报是\"走马观花\"，你能看出故事的细节。你能问出\"为什么\"，而不只是知道\"是什么\"。这种钻研精神，让你在投资中规避掉很多菜鸡陷阱。" },
+
+
+
+      { title: "理论知识扎实\", desc: \"你能背诵标准普尔资产配置表、说出巴菲特的投资理念。这些知识在关键时刻能帮你保持冷静。别人慌张时，你知道正确的做法是什么。" },
+
+
+
+      { title: "长期持有定力\", desc: \"对一个好的投资品种，你能忍住\"中途拉闸\"的冲动。5年的定投计划，你能坚持执行。这种定力，正是大多数投资者缺少的。" }
+
+
+
+    ],
+
+
+
+    blindspots: [
+
+
+
+      { title: "分析瘫痪：过度研究导致错失机会\", desc: \"你太想完美理解每个产品，反而错过了最佳买点。投资不是考试，不需要100分才行动，60分就够了。\"完美的决策\"往往只存在于回顾中，不存在于现在。" },
+
+
+
+      { title: "眼高手低：知道得多做的少\", desc: \"你对理论的理解 > 实际操作的执行。有些东西你理论上都懂，但就是没有真金白银去试。这叫\"知识诅咒\"，容易在关键时刻掉链子。" }
+
+
+
+    ],
+
+
+
+    quote: "「投资就像查看食材清单。别人看菜名就下单，我要看生产地、营养标签、保质期。」",
+
+
+
+    quoteTags: "#财商人格 #投资者兔子 #理性投资者"
+
+
+
+  },
+
+
+
+  A2B2: {
+
+
+
+    id: "A2B2\", name: \"聪明狐狸\", emoji: \"🦊\", accent: \"green",
+
+
+
+    camp: "增长型\", campColor: \"green",
+
+
+
+    tagline: "眼睛一转就有办法，左右逢源是我的生活哲学",
+
+
+
+    summary: "你是\"财商圈的八面玲珑\"。别人问理财意见时，最愿意听你的。因为你既不会给\"太保守\"的建议，也不会鼓动别人冒险。",
+
+
+
+    powers: [
+
+
+
+      { title: "灵活配置能力\", desc: \"你能根据市场环境快速调整策略（加仓/减仓/换品种）。别人还在犹豫\"要不要行动\"，你已经根据新信息调整完毕。这种\"适应性\"，在变化的市场中是黄金特质。" },
+
+
+
+      { title: "信息敏感度高\", desc: \"财经新闻、政策变化，你总是第一时间反应。你能把碎片信息拼成完整的市场图景，总是比别人快一步。" },
+
+
+
+      { title: "决策平衡能力\", desc: \"你能在\"冒险\"和\"稳健\"之间快速切换，找到最优点。朋友圈的\"聪慧代表\"，别人信任你的判断，这种权衡能力天生就有。" }
+
+
+
+    ],
+
+
+
+    blindspots: [
+
+
+
+      { title: "灵活过度导致目标模糊\", desc: \"你什么都有一点、什么都不够深入。资产配置会因为市场变化频繁调整，反而错过了长期增长。有时候\"坚持\"比\"灵活\"更值钱。" },
+
+
+
+      { title: "短期思维陷阱\", desc: \"你容易被\"3个月涨20%\"的产品吸引，忽视了长期的复利力量。频繁调整的交易成本，可能吃掉你的收益。需要学会\"定住\"，而不是\"定时调整\"。" }
+
+
+
+    ],
+
+
+
+    quote: "「灵活不是随意，是在坚持中的微调。就像开车，方向盘轻轻转，才能长期稳健到达。」",
+
+
+
+    quoteTags: "#财商人格 #聪明狐狸 #左右逢源的理财高手"
+
+
+
+  },
+
+
+
+  A2B3: {
+
+
+
+    id: "A2B3\", name: \"创业鹰\", emoji: \"🦅\", accent: \"green",
+
+
+
+    camp: "增长型\", campColor: \"green",
+
+
+
+    tagline: "看中机会，说干就干，我的财富来自于敢赌和快速执行",
+
+
+
+    summary: "你眼光敏锐，行动迅速。别人还在论证可行性，你已经在执行了。",
+
+
+
+    powers: [
+
+
+
+      { title: "机会捕捉能力\", desc: \"你能从纷杂的信息中闻到\"钱的味道\"。小到一个新的副业方向，大到一个创业风口，你总能捕捉。这是天才投资者的标配。" },
+
+
+
+      { title: "快速决策能力\", desc: \"别人需要3个月论证，你需要3天决定。这种决策速度，在机遇稍纵即逝的时代是核心竞争力。你的财务自由，来自于这种\"快\"。" },
+
+
+
+      { title: "学习创新能力\", desc: \"做错了就改，不会被失败压倒。每一次试错都是学习，积累经验比理论知识更快。这种心态，让你在每一轮浪潮中都有机会。" }
+
+
+
+    ],
+
+
+
+    blindspots: [
+
+
+
+      { title: "风险管理缺失\", desc: \"你的大胆有时变成莽撞。一次错的决定，可能吃掉你一年的收益。需要在\"快速行动\"中加入\"风险框架\"。" },
+
+
+
+      { title: "缺乏反思系统\", desc: \"你做得快，但反思得不够深。为什么成功？为什么失败？规律是什么？可能没想透。这样下去，成功是重复，失败也可能重复。" }
+
+
+
+    ],
+
+
+
+    quote: "「机会就像起风，不是所有人都能飞。只有那些敢掠过风浪的鹰，才能看得最远。」",
+
+
+
+    quoteTags: "#财商人格 #创业鹰 #快手投资者"
+
+
+
+  },
+
+
+
+  A3B1: {
+
+
+
+    id: "A3B1\", name: \"自由思想家\", emoji: \"🦉\", accent: \"purple",
+
+
+
+    camp: "自由型\", campColor: \"purple",
+
+
+
+    tagline: "我用钱换时间，最好的投资是给自己自由",
+
+
+
+    summary: "你有着最\"不财经\"的财商。你不追求钱最多，只追求有足够的钱，让自己足够自由。",
+
+
+
+    powers: [
+
+
+
+      { title: "需求理性化能力\", desc: \"你对钱的需求清晰：不是无限贪婪，而是\"够用就好\"。这种清晰，让你不会被社会裹挟去盲目消费。这是最稀缺的理财智慧。" },
+
+
+
+      { title: "人生规划能力\", desc: \"你能精确计算\"要活30年无忧需要多少钱\"，然后反推投资策略，执行得稳健而高效。这种长期眼光，胜过99%的人。" },
+
+
+
+      { title: "自我约束能力\", desc: \"你为了自由而愿意现在吃苦，这需要极强的自律。这种定力，最终会把你带到梦想的生活。别人还在\"工作→消费→工作\"的循环里，你已经在筹划自由。" }
+
+
+
+    ],
+
+
+
+    blindspots: [
+
+
+
+      { title: "过度节制导致生活质量下降\", desc: \"为了那个\"自由梦\"，你可能过度压缩当下的生活。有时候，适度的花钱让生活更好，不一定是浪费。自由的目的是生活得好，不是生活得苦。" },
+
+
+
+      { title: "计划过于理想化\", desc: \"你的计划看起来完美，但现实会有变量：身体状况变化、家庭变故，原计划不得不调整。需要给人生留一些\"弹性\"空间。" }
+
+
+
+    ],
+
+
+
+    quote: "「别人在为钱而活，我在为自由而活。而自由，是需要用现在的理性来换取的。」",
+
+
+
+    quoteTags: "#财商人格 #自由思想家 #财务自由规划师"
+
+
+
+  },
+
+
+
+  A3B2: {
+
+
+
+    id: "A3B2\", name: \"生活艺术家\", emoji: \"🦆\", accent: \"purple",
+
+
+
+    camp: "自由型\", campColor: \"purple",
+
+
+
+    tagline: "钱够用就好，真正的财富是生活本身",
+
+
+
+    summary: "你是最会\"活\"的人。既能赚钱，也敢花钱，还能保证账户里永远有余粮。这种平衡感，是财商的最高境界。",
+
+
+
+    powers: [
+
+
+
+      { title: "生活质感优化能力\", desc: \"你知道钱该花在哪里才能最提升幸福感。一杯好咖啡、一次说走就走的旅行，你都舍得花。但你不会为了\"显摆\"而透支，这叫\"精明的花钱\"。" },
+
+
+
+      { title: "量入为出的真本领\", desc: \"你收入X，可能实际支出0.7X，自然积累0.3X。这个比例既不痛苦，也不浪费。大多数人做不到这种\"恰到好处\"。" },
+
+
+
+      { title: "工作生活平衡\", desc: \"你不会被赚钱绑架，也不会因为\"存钱\"放弃生活质量。这种平衡，让你40岁时既有存款，也没有遗憾。这叫\"人生的最优解\"。" }
+
+
+
+    ],
+
+
+
+    blindspots: [
+
+
+
+      { title: "没有长期财富增长计划\", desc: \"你现在过得很舒服，但没想过10年后。可能会因为\"及时行乐\"而忽略了长期的风险。需要在享受中加入一点\"对未来的投资\"。" },
+
+
+
+      { title: "对变化的应对不足\", desc: \"突然失业、家人生病，你的\"足够生活\"可能不够。需要有一个应急方案，不是为了焦虑，是为了安心。" }
+
+
+
+    ],
+
+
+
+    quote: "「钱不是用来拼的，是用来生活的。而一个懂生活的人，比任何人都富有。」",
+
+
+
+    quoteTags: "#财商人格 #生活艺术家 #懂生活的人最富有"
+
+
+
+  },
+
+
+
+  A3B3: {
+
+
+
+    id: "A3B3\", name: \"潇洒浪子\", emoji: \"🦁\", accent: \"purple",
+
+
+
+    camp: "自由型\", campColor: \"purple",
+
+
+
+    tagline: "我命由我不由天，岁月静好就是最大的财富",
+
+
+
+    summary: "你不要什么\"财务自由\"，你只要\"灵魂自由\"。敢辞职、敢创业、敢说不，这就是你的财商。",
+
+
+
+    powers: [
+
+
+
+      { title: "魄力决策能力\", desc: \"别人纠结要不要辞职，你早就递了辞呈。别人怕创业失败，你已经在失败中学到了第二次创业的经验。这种勇气，是财务自由之前的真自由。" },
+
+
+
+      { title: "快速学习能力\", desc: \"你用最\"痛\"的方式学习：在实战中摸爬滚打。这比任何课程都管用，因为每一个教训都是真金白银换的。这种能力，让你在任何环境都能存活。" },
+
+
+
+      { title: "不被物质绑架\", desc: \"别人为了买房还贷30年，你敢说\"我不一定要房\"。这不是消极，而是真正的理性。你的人生选择权，比大多数人多得多。" }
+
+
+
+    ],
+
+
+
+    blindspots: [
+
+
+
+      { title: "财务不稳定带来的隐性压力\", desc: \"你活得潇洒，但账户里的数字可能很紧张。\"自由\"的代价是：任何意外都可能摧毁你的计划。需要在\"潇洒\"中加入一点\"风险缓冲\"。" },
+
+
+
+      { title: "没有长期规划导致未来焦虑\", desc: \"现在你35岁，60岁怎么办？\"到时候再说\"的心态，可能在50岁时后悔。即使不追求财富最大化，也需要一个\"养老底线\"。" }
+
+
+
+    ],
+
+
+
+    quote: "「有人用30年还房贷，我用30年去冒险。谁的人生更值钱，问问我们的灵魂就知道。（但也别忘了给自己留条后路。）」",
+
+
+
+    quoteTags: "#财商人格 #潇洒浪子 #人生由我定义"
+
+
+
+  }
+
+
+
+};
+
+
+
+
+
+
+
+/* ═══════════════════════════════════════════════
+
+
+
+   STATE
+
+
+
+═══════════════════════════════════════════════ */
+
+
+
+let currentQ = 0;
+
+
+
+let answers = new Array(questions.length).fill(null); // index of chosen option
+
+
+
+
+
+
+
+/* ═══════════════════════════════════════════════
+
+
+
+   SCREEN HELPERS
+
+
+
+═══════════════════════════════════════════════ */
+
+
+
+function showScreen(id) {
+
+
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+
+
+  document.getElementById(id).classList.add('active');
+
+
+
+}
+
+
+
+
+
+
+
+/* ═══════════════════════════════════════════════
+
+
+
+   QUIZ LOGIC
+
+
+
+═══════════════════════════════════════════════ */
+
+
+
+function startTest() {
+
+
+
+  currentQ = 0;
+
+
+
+  answers = new Array(questions.length).fill(null);
+
+
+
+  showScreen('screen-quiz');
+
+
+
+  renderQuestion();
+
+
+
+}
+
+
+
+
+
+
+
+function renderQuestion() {
+
+
+
+  const q = questions[currentQ];
+
+
+
+  const total = questions.length;
+
+
+
+
+
+
+
+  // progress
+
+
+
+  const pct = Math.round((currentQ / total) * 100);
+
+
+
+  document.getElementById('progress-label').textContent = `第 ${currentQ + 1} 题 / 共 ${total} 题`;
+
+
+
+  document.getElementById('progress-pct').textContent = pct + '%';
+
+
+
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+
+
+
+
+
+
+  // question
+
+
+
+  document.getElementById('q-num').textContent = 'QUESTION ' + String(currentQ + 1).padStart(2, '0');
+
+
+
+  document.getElementById('q-text').textContent = q.text;
+
+
+
+
+
+
+
+  // options
+
+
+
+  const list = document.getElementById('options-list');
+
+
+
+  list.innerHTML = '';
+
+
+
+  q.options.forEach((opt, i) => {
+
+
+
+    const btn = document.createElement('button');
+
+
+
+    btn.className = 'option-btn' + (answers[currentQ] === i ? ' selected' : '');
+
+
+
+    btn.innerHTML = `<span class=\"option-letter\">${opt.label}</span><span class=\"option-text\">${opt.text}</span>`;
+
+
+
+    btn.addEventListener('click', () => selectOption(i));
+
+
+
+    list.appendChild(btn);
+
+
+
+  });
+
+
+
+
+
+
+
+  // prev button
+
+
+
+  const prevBtn = document.getElementById('btn-prev');
+
+
+
+  prevBtn.style.visibility = currentQ > 0 ? 'visible' : 'hidden';
+
+
+
+}
+
+
+
+
+
+
+
+function selectOption(optionIndex) {
+
+
+
+  answers[currentQ] = optionIndex;
+
+
+
+  // highlight
+
+
+
+  const btns = document.querySelectorAll('.option-btn');
+
+
+
+  btns.forEach((b, i) => b.classList.toggle('selected', i === optionIndex));
+
+
+
+
+
+
+
+  // auto-advance after short delay
+
+
+
+  setTimeout(() => {
+
+
+
+    if (currentQ < questions.length - 1) {
+
+
+
+      currentQ++;
+
+
+
+      renderQuestion();
+
+
+
+    } else {
+
+
+
+      showResult();
+
+
+
+    }
+
+
+
+  }, 280);
+
+
+
+}
+
+
+
+
+
+
+
+function prevQuestion() {
+
+
+
+  if (currentQ > 0) {
+
+
+
+    currentQ--;
+
+
+
+    renderQuestion();
+
+
+
+  }
+
+
+
+}
+
+
+
+
+
+
+
+/* ═══════════════════════════════════════════════
+
+
+
+   SCORING
+
+
+
+═══════════════════════════════════════════════ */
+
+
+
+function calcScores() {
+
+
+
+  const totals = { a1: 0, a2: 0, a3: 0, b1: 0, b2: 0, b3: 0 };
+
+
+
+  answers.forEach((optIdx, qIdx) => {
+
+
+
+    if (optIdx === null) return;
+
+
+
+    const scoreMap = questions[qIdx].options[optIdx].score;
+
+
+
+    Object.entries(scoreMap).forEach(([k, v]) => { totals[k] += v; });
+
+
+
+  });
+
+
+
+  return totals;
+
+
+
+}
+
+
+
+
+
+
+
+function determineType(scores) {
+
+
+
+  // A dimension
+
+
+
+  let aMax = Math.max(scores.a1, scores.a2, scores.a3);
+
+
+
+  let aCandidates = [];
+
+
+
+  if (scores.a1 === aMax) aCandidates.push('A1');
+
+
+
+  if (scores.a2 === aMax) aCandidates.push('A2');
+
+
+
+  if (scores.a3 === aMax) aCandidates.push('A3');
+
+
+
+  // tie-break: prefer A2
+
+
+
+  let aType = aCandidates.includes('A2') ? 'A2' : aCandidates[0];
+
+
+
+
+
+
+
+  // B dimension
+
+
+
+  let bMax = Math.max(scores.b1, scores.b2, scores.b3);
+
+
+
+  let bCandidates = [];
+
+
+
+  if (scores.b1 === bMax) bCandidates.push('B1');
+
+
+
+  if (scores.b2 === bMax) bCandidates.push('B2');
+
+
+
+  if (scores.b3 === bMax) bCandidates.push('B3');
+
+
+
+  // tie-break: prefer B2
+
+
+
+  let bType = bCandidates.includes('B2') ? 'B2' : bCandidates[0];
+
+
+
+
+
+
+
+  return aType + bType;
+
+
+
+}
+
+
+
+
+
+
+
+function calcMatchPct(scores, typeId) {
+
+
+
+  // Maximum possible score per dimension is roughly 5 (5 questions × 1 point each in primary block)
+
+
+
+  // We calculate: (primary A score + primary B score) / (5 + 5) × 100
+
+
+
+  const aKey = typeId.substring(0, 2).toLowerCase();
+
+
+
+  const bKey = typeId.substring(2, 4).toLowerCase();
+
+
+
+  const aScore = scores[aKey];
+
+
+
+  const bScore = scores[bKey];
+
+
+
+  // find max A and B to show relative match
+
+
+
+  const aMax = Math.max(scores.a1, scores.a2, scores.a3);
+
+
+
+  const bMax = Math.max(scores.b1, scores.b2, scores.b3);
+
+
+
+  // total possible: we cap at 5 per dimension
+
+
+
+  const maxPossible = 10;
+
+
+
+  const achieved = aScore + bScore;
+
+
+
+  let pct = Math.round((achieved / maxPossible) * 100);
+
+
+
+  // floor at 50, feel more satisfying
+
+
+
+  pct = Math.max(50, Math.min(99, pct));
+
+
+
+  return pct;
+
+
+
+}
+
+
+
+
+
+
+
+/* ═══════════════════════════════════════════════
+
+
+
+   RESULT PAGE
+
+
+
+═══════════════════════════════════════════════ */
+
+
+
+function showResult() {
+
+
+
+  const scores = calcScores();
+
+
+
+  const typeId = determineType(scores);
+
+
+
+  const p = personalities[typeId];
+
+
+
+  const matchPct = calcMatchPct(scores, typeId);
+
+
+
+
+
+
+
+  // accent colour for bar
+
+
+
+  const barColors = {
+
+
+
+    blue: 'linear-gradient(90deg, #3b82f6, #60a5fa)',
+
+
+
+    green: 'linear-gradient(90deg, #10b981, #34d399)',
+
+
+
+    purple: 'linear-gradient(90deg, #7c3aed, #9d62f5)'
+
+
+
+  };
+
+
+
+
+
+
+
+  const scoreLabels = {
+
+
+
+    a1: '安全型', a2: '增长型', a3: '自由型',
+
+
+
+    b1: '谨慎型', b2: '平衡型', b3: '冲劲型'
+
+
+
+  };
+
+
+
+
+
+
+
+  const scoreChips = Object.entries(scores)
+
+
+
+    .map(([k, v]) => `<div class=\"score-chip\">${scoreLabels[k]} <span>${v}分</span></div>`)
+
+
+
+    .join('');
+
+
+
+
+
+
+
+  const powersHtml = p.powers.map(pw => `
+
+
+
+    <div class=\"power-item\">
+
+
+
+      <div class=\"power-icon\">⚡</div>
+
+
+
+      <div class=\"power-content\">
+
+
+
+        <strong>${pw.title}</strong>
+
+
+
+        <p>${pw.desc}</p>
+
+
+
+      </div>
+
+
+
+    </div>
+
+
+
+  `).join('');
+
+
+
+
+
+
+
+  const blindsHtml = p.blindspots.map(bl => `
+
+
+
+    <div class=\"blind-item\">
+
+
+
+      <div class=\"blind-icon\">⚠️</div>
+
+
+
+      <div class=\"blind-content\">
+
+
+
+        <strong>${bl.title}</strong>
+
+
+
+        <p>${bl.desc}</p>
+
+
+
+      </div>
+
+
+
+    </div>
+
+
+
+  `).join('');
+
+
+
+
+
+
+
+  const html = `
+
+
+
+    <div class="result-type-badge accent-${p.accent}\" style=\"margin-bottom:16px">
+
+
+
+      ${p.camp}人格
+
+
+
+    </div>
+
+
+
+    <div class=\"result-animal\">${p.emoji}</div>
+
+
+
+    <div class=\"result-name accent-${p.accent}\">${p.name}</div>
+
+
+
+    <div class=\"result-tagline\">${p.tagline}</div>
+
+
+
+
+
+
+
+    <div class=\"match-row\">
+
+
+
+      <span class=\"match-label\">匹配度</span>
+
+
+
+      <div class=\"match-bar-wrap\">
+
+
+
+        <div class="match-bar-fill\" id=\"match-fill\" style=\"width:0%; background:${barColors[p.accent]}"></div>
+
+
+
+      </div>
+
+
+
+      <span class="match-pct accent-${p.accent}\" id=\"match-pct-text">0%</span>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class=\"result-summary\">${p.summary}</div>
+
+
+
+
+
+
+
+    <div class=\"score-row\">${scoreChips}</div>
+
+
+
+
+
+
+
+    <div class=\"divider\"></div>
+
+
+
+
+
+
+
+    <div class=\"section-title\">💪 你的财商超能力</div>
+
+
+
+    <div class=\"powers-list\">${powersHtml}</div>
+
+
+
+
+
+
+
+    <div class=\"divider\"></div>
+
+
+
+
+
+
+
+    <div class=\"section-title\">⚠️ 你的财商盲区</div>
+
+
+
+    <div class=\"blindspots-list\">${blindsHtml}</div>
+
+
+
+
+
+
+
+    <div class=\"divider\"></div>
+
+
+
+
+
+
+
+    <div class=\"quote-card\">
+
+
+
+      <div class=\"quote-text\">${p.quote}</div>
+
+
+
+      <div class=\"quote-tags\">${p.quoteTags}</div>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class=\"cta-card\">
+
+
+
+      <div class=\"cta-title\">✨ 想聊聊你的财商盲区？</div>
+
+
+
+      <div class=\"cta-desc\">测试结果是起点，真正的改变需要对话。<br>根据你的具体情况，制定符合你人格的财务策略。</div>
+
+
+
+      <a class="cta-link\" href=\"https://www.goofish.com/personal?userId=772728565\" target=\"_blank\" rel=\"noopener">
+
+
+
+        找Pan聊聊你的财商盲区 →
+
+
+
+      </a>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class=\"result-actions\">
+
+
+
+      <button class="btn-primary\" onclick=\"startTest()">重新测试</button>
+
+
+
+      <button class="btn-secondary\" onclick=\"scrollToTop()">回到顶部 ↑</button>
+
+
+
+    </div>
+
+
+
+  `;
+
+
+
+
+
+
+
+  document.getElementById('result-card').className = 'card accent-' + p.accent;
+
+
+
+  document.getElementById('result-card').innerHTML = html;
+
+
+
+  showScreen('screen-result');
+
+
+
+
+
+
+
+  // animate match bar
+
+
+
+  setTimeout(() => {
+
+
+
+    const fill = document.getElementById('match-fill');
+
+
+
+    const pctText = document.getElementById('match-pct-text');
+
+
+
+    if (fill) fill.style.width = matchPct + '%';
+
+
+
+    // count up number
+
+
+
+    let n = 0;
+
+
+
+    const interval = setInterval(() => {
+
+
+
+      n = Math.min(n + 2, matchPct);
+
+
+
+      if (pctText) pctText.textContent = n + '%';
+
+
+
+      if (n >= matchPct) clearInterval(interval);
+
+
+
+    }, 20);
+
+
+
+  }, 100);
+
+
+
+
+
+
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+
+
+}
+
+
+
+
+
+
+
+function scrollToTop() {
+
+
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+
+
+}
+
+
+
+
+});
+</script>
+
+
+
+</body>
+
+
+
+</html>
+
+
+
