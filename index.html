@@ -89,6 +89,81 @@ body {
 }
 .back-btn:hover { border-color: var(--accent2); color: var(--text); }
 
+/* ── LANDING PAGE ── */
+.lp-section { padding: 48px 0 32px; }
+.lp-section-title {
+  font-size: 20px; font-weight: 800; text-align: center;
+  margin-bottom: 8px; letter-spacing: -0.3px;
+}
+.lp-section-sub {
+  font-size: 14px; color: var(--text2); text-align: center; margin-bottom: 32px; line-height: 1.6;
+}
+.lp-divider {
+  border: none; border-top: 1px solid var(--border); margin: 0 0 0 0;
+}
+
+/* ── HERO ENHANCEMENTS ── */
+#screen-welcome { text-align: center; padding-top: 0; }
+.lp-hero {
+  padding: 64px 24px 48px;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,92,191,0.22) 0%, transparent 70%);
+}
+.lp-hero .welcome-emoji { font-size: 80px; margin-bottom: 20px; }
+.lp-hero .welcome-title { font-size: 32px; font-weight: 900; letter-spacing: -0.8px; margin-bottom: 12px; }
+.lp-hero .welcome-sub {
+  font-size: 16px; color: var(--text2); margin-bottom: 28px; line-height: 1.7;
+}
+.lp-hero .welcome-tags { margin-bottom: 36px; }
+.lp-hero .btn-primary { font-size: 18px; padding: 15px 48px; }
+
+/* ── DIMENSION SECTION ── */
+.dim-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin-bottom: 0;
+}
+@media (max-width: 520px) { .dim-grid { grid-template-columns: 1fr; } }
+.dim-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 22px 18px;
+}
+.dim-card-header {
+  font-size: 13px; font-weight: 700; color: var(--accent2);
+  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px;
+}
+.dim-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 12px;
+}
+.dim-item:last-child { margin-bottom: 0; }
+.dim-item-emoji { font-size: 20px; flex-shrink: 0; line-height: 1.4; }
+.dim-item-body {}
+.dim-item-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.dim-item-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* ── PERSONALITY CARDS ── */
+.persona-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+@media (max-width: 480px) { .persona-grid { grid-template-columns: repeat(2, 1fr); } }
+.persona-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+  padding: 18px 12px; text-align: center;
+  transition: border-color .2s, transform .2s;
+}
+.persona-card:hover { border-color: var(--accent2); transform: translateY(-3px); }
+.persona-card-emoji { font-size: 32px; margin-bottom: 8px; }
+.persona-card-name { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+.persona-card-tag { font-size: 11px; color: var(--text2); line-height: 1.5; }
+
+/* ── BOTTOM CTA ── */
+.lp-cta {
+  background: linear-gradient(135deg, rgba(124,92,191,0.18), rgba(15,52,96,0.5));
+  border: 1px solid var(--border); border-radius: 20px;
+  padding: 40px 24px; text-align: center; margin: 32px 0 40px;
+}
+.lp-cta-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+.lp-cta-sub { font-size: 14px; color: var(--text2); margin-bottom: 28px; line-height: 1.6; }
+
 /* ── RESULT ── */
 #screen-result { padding-top: 32px; }
 .result-hero {
@@ -138,18 +213,145 @@ body {
 </head>
 <body>
 
-<!-- WELCOME -->
+<!-- WELCOME / LANDING PAGE -->
 <div id="screen-welcome" class="screen active">
-  <div class="welcome-emoji">💰</div>
-  <h1 class="welcome-title">财商人格测试</h1>
-  <p class="welcome-sub">30道情景选择题，测出你的财商人格<br>发现你的财务超能力与盲区</p>
-  <div class="welcome-tags">
-    <span class="tag">⏱ 3-4分钟</span>
-    <span class="tag">📋 30道题</span>
-    <span class="tag">🔮 9种人格</span>
-    <span class="tag">💡 专业分析</span>
+
+  <!-- 1. HERO -->
+  <div class="lp-hero">
+    <div class="welcome-emoji">💰</div>
+    <h1 class="welcome-title">你的财商人格是什么？</h1>
+    <p class="welcome-sub">30道情景题，测出你的财商DNA<br>发现你的财务超能力与盲区</p>
+    <div class="welcome-tags">
+      <span class="tag">⏱ 3-4分钟</span>
+      <span class="tag">📋 30道题</span>
+      <span class="tag">🔮 9种人格</span>
+      <span class="tag">💡 专业分析</span>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">开始测试 →</button>
   </div>
-  <button class="btn-primary" onclick="startQuiz()">开始测试 →</button>
+
+  <hr class="lp-divider">
+
+  <!-- 2. DIMENSIONS -->
+  <div class="lp-section" style="padding-left:16px;padding-right:16px;">
+    <div class="lp-section-title">两个维度，揭示你的财务本质</div>
+    <div class="lp-section-sub">财商人格由「财富观」×「行动风格」交叉决定，两两组合出9种独特类型</div>
+    <div class="dim-grid">
+      <div class="dim-card">
+        <div class="dim-card-header">A轴 · 财富观</div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">🛡️</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">安全型</div>
+            <div class="dim-item-desc">钱是保障，首要是不亏</div>
+          </div>
+        </div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">📈</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">增长型</div>
+            <div class="dim-item-desc">钱是工具，首要是增值</div>
+          </div>
+        </div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">🕊️</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">自由型</div>
+            <div class="dim-item-desc">钱是手段，首要是换取时间和选择权</div>
+          </div>
+        </div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-card-header">B轴 · 行动风格</div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">🔍</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">谨慎型</div>
+            <div class="dim-item-desc">先研究再行动，宁可错过不可犯错</div>
+          </div>
+        </div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">⚖️</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">平衡型</div>
+            <div class="dim-item-desc">边走边看，灵活调整</div>
+          </div>
+        </div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">🚀</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">冲劲型</div>
+            <div class="dim-item-desc">先行动再复盘，相信执行力</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="lp-divider">
+
+  <!-- 3. PERSONALITY OVERVIEW -->
+  <div class="lp-section" style="padding-left:16px;padding-right:16px;">
+    <div class="lp-section-title">9种财商人格，你是哪一种？</div>
+    <div class="lp-section-sub">每一种人格都有独特的财务超能力与需要警惕的盲区</div>
+    <div class="persona-grid">
+      <div class="persona-card">
+        <div class="persona-card-emoji">🦁</div>
+        <div class="persona-card-name">金库警卫</div>
+        <div class="persona-card-tag">安全+谨慎<br>把每一分钱锁进保险箱</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🐢</div>
+        <div class="persona-card-name">保险箱</div>
+        <div class="persona-card-tag">安全+平衡<br>稳健但懂得灵活</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🐹</div>
+        <div class="persona-card-name">钱罐子仓鼠</div>
+        <div class="persona-card-tag">安全+冲劲<br>囤钱速度惊人但会踩坑</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🐰</div>
+        <div class="persona-card-name">精算兔子</div>
+        <div class="persona-card-tag">增长+谨慎<br>用数据驱动每一笔投资</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🦊</div>
+        <div class="persona-card-name">理财狐狸</div>
+        <div class="persona-card-tag">增长+平衡<br>聪明配置，稳中求胜</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🦅</div>
+        <div class="persona-card-name">逐利雄鹰</div>
+        <div class="persona-card-tag">增长+冲劲<br>嗅到机会就俯冲</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🦉</div>
+        <div class="persona-card-name">哲学猫头鹰</div>
+        <div class="persona-card-tag">自由+谨慎<br>用钱换时间，但先想清楚</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🦆</div>
+        <div class="persona-card-name">随性鸭子</div>
+        <div class="persona-card-tag">自由+平衡<br>够花就行，活在当下</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🌊</div>
+        <div class="persona-card-name">自由雄狮</div>
+        <div class="persona-card-tag">自由+冲劲<br>为梦想all in，不问回报</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. BOTTOM CTA -->
+  <div style="padding:0 16px;">
+    <div class="lp-cta">
+      <div class="lp-cta-title">✨ 准备好了吗？</div>
+      <div class="lp-cta-sub">30道真实情景题，3-4分钟<br>测出专属于你的财商人格报告</div>
+      <button class="btn-primary" onclick="startQuiz()">开始测试 →</button>
+    </div>
+  </div>
+
 </div>
 
 <!-- QUIZ -->
