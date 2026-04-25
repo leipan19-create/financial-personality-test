@@ -53,8 +53,35 @@ body {
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(124,92,191,.6); }
 .btn-primary:active { transform: translateY(0); }
 
+/* ── AGE SELECT BUTTONS ── */
+.age-select-wrap {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 0;
+}
+.btn-age {
+  display: inline-block; background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; font-size: 16px; font-weight: 700; padding: 13px 30px;
+  border-radius: 999px; border: none; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(124,92,191,.45);
+  transition: transform .15s, box-shadow .15s;
+}
+.btn-age:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(124,92,191,.6); }
+.btn-age:active { transform: translateY(0); }
+.btn-age-teen {
+  background: linear-gradient(135deg, #1a8a6e, #26c99e);
+  box-shadow: 0 4px 20px rgba(26,138,110,.4);
+}
+.btn-age-teen:hover { box-shadow: 0 6px 28px rgba(26,138,110,.6); }
+
 /* ── QUIZ ── */
 #screen-quiz {}
+.mode-badge {
+  display: inline-block; font-size: 12px; font-weight: 700;
+  padding: 4px 12px; border-radius: 999px; margin-bottom: 10px;
+  background: rgba(124,92,191,0.25); color: var(--accent2); border: 1px solid var(--accent);
+}
+.mode-badge-teen {
+  background: rgba(26,138,110,0.25); color: #4de8c2; border: 1px solid #1a8a6e;
+}
 .progress-bar-wrap { height: 6px; background: var(--border); border-radius: 999px; margin-bottom: 10px; }
 .progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 999px; transition: width .4s ease; }
 .progress-label { font-size: 12px; color: var(--text2); text-align: right; margin-bottom: 24px; }
@@ -114,7 +141,6 @@ body {
   font-size: 16px; color: var(--text2); margin-bottom: 28px; line-height: 1.7;
 }
 .lp-hero .welcome-tags { margin-bottom: 36px; }
-.lp-hero .btn-primary { font-size: 18px; padding: 15px 48px; }
 
 /* ── DIMENSION SECTION ── */
 .dim-grid {
@@ -227,7 +253,10 @@ body {
       <span class="tag">🔮 9种人格</span>
       <span class="tag">💡 专业分析</span>
     </div>
-    <button class="btn-primary" onclick="startQuiz()">开始测试 →</button>
+    <div class="age-select-wrap">
+      <button class="btn-age" onclick="startQuiz('adult')">💼 我是成人（18岁以上）→</button>
+      <button class="btn-age btn-age-teen" onclick="startQuiz('teen')">🎒 我是学生（12-18岁）→</button>
+    </div>
   </div>
 
   <hr class="lp-divider">
@@ -348,7 +377,10 @@ body {
     <div class="lp-cta">
       <div class="lp-cta-title">✨ 准备好了吗？</div>
       <div class="lp-cta-sub">30道真实情景题，3-4分钟<br>测出专属于你的财商人格报告</div>
-      <button class="btn-primary" onclick="startQuiz()">开始测试 →</button>
+      <div class="age-select-wrap">
+        <button class="btn-age" onclick="startQuiz('adult')">💼 我是成人（18岁以上）→</button>
+        <button class="btn-age btn-age-teen" onclick="startQuiz('teen')">🎒 我是学生（12-18岁）→</button>
+      </div>
     </div>
   </div>
 
@@ -356,6 +388,7 @@ body {
 
 <!-- QUIZ -->
 <div id="screen-quiz" class="screen">
+  <div id="mode-badge" class="mode-badge">💼 成人版</div>
   <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
   <div class="progress-label" id="progress-label"></div>
   <div class="question-card">
@@ -674,6 +707,279 @@ var QUESTIONS = [
   }
 ];
 
+var QUESTIONS_TEEN = [
+  {
+    id: 1,
+    text: '过年收了1000块压岁钱，你第一反应是：',
+    options: [
+      { label: 'A', text: '先存起来备用，不乱花', score: { a1: 1 } },
+      { label: 'B', text: '看看有没有值得买的东西', score: { a2: 1 } },
+      { label: 'C', text: '早就计划好怎么花了', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 2,
+    text: '班上同学买了双新球鞋，你的反应是：',
+    options: [
+      { label: 'A', text: '有点心动，但自己需要吗？', score: { a1: 1 } },
+      { label: 'B', text: '想知道多少钱，值不值', score: { a2: 1 } },
+      { label: 'C', text: '好看就买，开心最重要', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 3,
+    text: '手机游戏出了新皮肤要68块，你会：',
+    options: [
+      { label: 'A', text: '忍住，存钱比皮肤重要', score: { a1: 1 } },
+      { label: 'B', text: '看看有没有活动更便宜', score: { a2: 1 } },
+      { label: 'C', text: '直接买，错过就没了', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 4,
+    text: '你有500块零花钱结余，你会怎么处理？',
+    options: [
+      { label: 'A', text: '全部存起来，能不花就不花', score: { a1: 1 } },
+      { label: 'B', text: '存一半，留一半慢慢花', score: { a2: 1 } },
+      { label: 'C', text: '买点一直想要的东西', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 5,
+    text: '你觉得存钱是为了什么？',
+    options: [
+      { label: 'A', text: '以防万一，安全感最重要', score: { a1: 1 } },
+      { label: 'B', text: '存够了可以买更贵的东西', score: { a2: 1 } },
+      { label: 'C', text: '为了以后想做的事情', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 6,
+    text: '假如你开始做自媒体，粉丝涨了，你最期待的是：',
+    options: [
+      { label: 'A', text: '能赚点零花钱贴补家用', score: { a1: 1 } },
+      { label: 'B', text: '做大了可以接广告挣钱', score: { a2: 1 } },
+      { label: 'C', text: '分享自己喜欢的内容就够了', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 7,
+    text: '你攒了半年的零花钱买了台相机，结果降价了。你：',
+    options: [
+      { label: 'A', text: '很后悔，早知道再等等', score: { a1: 1 } },
+      { label: 'B', text: '无所谓，我需要它所以值得', score: { a2: 1 } },
+      { label: 'C', text: '没关系，用得开心就行', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 8,
+    text: '你想买一本编程书，但要花掉这个月大半零花钱。你会：',
+    options: [
+      { label: 'A', text: '暂时不买，再存存看', score: { a1: 1 } },
+      { label: 'B', text: '算算值不值，学了有没有用', score: { a2: 1 } },
+      { label: 'C', text: '买！学到东西比省钱重要', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 9,
+    text: '你如果赚到第一桶金（比如1万块），第一件事是：',
+    options: [
+      { label: 'A', text: '存银行，先放着再说', score: { a1: 1 } },
+      { label: 'B', text: '研究一下怎么让它增值', score: { a2: 1 } },
+      { label: 'C', text: '做一件一直想做的事', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 10,
+    text: '考试考好了，爸妈说给你奖励500块，你想：',
+    options: [
+      { label: 'A', text: '先存着，以后再说', score: { a1: 1 } },
+      { label: 'B', text: '买个对学习有用的东西', score: { a2: 1 } },
+      { label: 'C', text: '去玩或者买喜欢的东西', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 11,
+    text: '你觉得钱最大的用处是：',
+    options: [
+      { label: 'A', text: '应急用，有备无患', score: { a1: 1 } },
+      { label: 'B', text: '让钱产生更多钱', score: { a2: 1 } },
+      { label: 'C', text: '换来自己想要的体验', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 12,
+    text: '同学说他零花钱从来不存，用来买潮玩，你觉得：',
+    options: [
+      { label: 'A', text: '太任性了，万一急用怎么办', score: { a1: 1 } },
+      { label: 'B', text: '看他买的东西值不值得', score: { a2: 1 } },
+      { label: 'C', text: '挺好的，花在喜欢的事上没错', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 13,
+    text: '假设暑假可以兼职，你更想：',
+    options: [
+      { label: 'A', text: '多赚点，把零花钱存起来', score: { a1: 1 } },
+      { label: 'B', text: '做能学到本领的工作', score: { a2: 1 } },
+      { label: 'C', text: '选个轻松的，留时间给自己', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 14,
+    text: '你听说有同学靠卖二手书赚了些钱，你：',
+    options: [
+      { label: 'A', text: '我宁可不赚，卖书怪麻烦的', score: { a1: 1 } },
+      { label: 'B', text: '感兴趣，算算能赚多少', score: { a2: 1 } },
+      { label: 'C', text: '有意思，我可以试试别的路子', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 15,
+    text: '零花钱不够用时，你会：',
+    options: [
+      { label: 'A', text: '压缩开支，能省则省', score: { a1: 1 } },
+      { label: 'B', text: '想办法多赚一点', score: { a2: 1 } },
+      { label: 'C', text: '向父母借，下次有了再还', score: { a3: 1 } }
+    ]
+  },
+  {
+    id: 16,
+    text: '同学推荐一款"好用但你没用过"的学习App，要年费198。你：',
+    options: [
+      { label: 'A', text: '先搜口碑和评测，再决定', score: { b1: 1 } },
+      { label: 'B', text: '看看有没有免费试用期', score: { b2: 1 } },
+      { label: 'C', text: '感觉有用就直接订了', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 17,
+    text: '你想买一台平板，已经看了半个月了。你：',
+    options: [
+      { label: 'A', text: '继续观察，等到完全确定', score: { b1: 1 } },
+      { label: 'B', text: '综合比较，差不多就下手', score: { b2: 1 } },
+      { label: 'C', text: '喜欢就买，想太多浪费时间', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 18,
+    text: '你给自己定了"一个月存200块"的计划，第三周已经花超了。你：',
+    options: [
+      { label: 'A', text: '仔细查账，找到超支原因', score: { b1: 1 } },
+      { label: 'B', text: '这周少花点，争取追回来', score: { b2: 1 } },
+      { label: 'C', text: '算了，下个月重新开始', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 19,
+    text: '你想学投资理财，你会怎么开始？',
+    options: [
+      { label: 'A', text: '先把基础知识全学完', score: { b1: 1 } },
+      { label: 'B', text: '边学理论边少量尝试', score: { b2: 1 } },
+      { label: 'C', text: '直接开个账户，摸索着来', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 20,
+    text: '朋友说某款零食是"网红必买"，你在意的是：',
+    options: [
+      { label: 'A', text: '先看评价再决定，别踩雷', score: { b1: 1 } },
+      { label: 'B', text: '价格合理的话可以试试', score: { b2: 1 } },
+      { label: 'C', text: '直接下单，反正不贵', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 21,
+    text: '你觉得花钱计划这种东西：',
+    options: [
+      { label: 'A', text: '要做，而且每月复盘调整', score: { b2: 1 } },
+      { label: 'B', text: '做了就要认真执行', score: { b1: 1 } },
+      { label: 'C', text: '太麻烦，感觉没什么用', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 22,
+    text: '你最喜欢的博主发布了付费课程，你会：',
+    options: [
+      { label: 'A', text: '先仔细看课程大纲和评价', score: { b1: 1 } },
+      { label: 'B', text: '对比一下市面上同类课程', score: { b2: 1 } },
+      { label: 'C', text: '反正喜欢他，直接买了', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 23,
+    text: '你打算靠暑假兼职攒钱，更倾向于：',
+    options: [
+      { label: 'A', text: '稳稳当当，有保障的工作', score: { b1: 1 } },
+      { label: 'B', text: '收入好一点，能接受些不确定', score: { b2: 1 } },
+      { label: 'C', text: '高提成的，干得多赚得多', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 24,
+    text: '你攒钱的目标临近，但钱还差一点。你会：',
+    options: [
+      { label: 'A', text: '继续等，再省一段时间', score: { b1: 1 } },
+      { label: 'B', text: '看看有没有灵活变通的办法', score: { b2: 1 } },
+      { label: 'C', text: '先借一点垫上，后面还', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 25,
+    text: '你玩的手游要更新了，会加入新赛季通行证，你：',
+    options: [
+      { label: 'A', text: '先看看内容值不值再决定', score: { b1: 1 } },
+      { label: 'B', text: '和上赛季比，差不多就买', score: { b2: 1 } },
+      { label: 'C', text: '直接买，不买怕错过', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 26,
+    text: '你发现了一个方法可能让零花钱翻倍，但不确定靠不靠谱。你会：',
+    options: [
+      { label: 'A', text: '多方核实，确认没风险再试', score: { b1: 1 } },
+      { label: 'B', text: '小额测试，看看效果', score: { b2: 1 } },
+      { label: 'C', text: '直接上，大不了失败了再说', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 27,
+    text: '你最近做过的一个消费决定，是怎么做的？',
+    options: [
+      { label: 'A', text: '想了很久，充分确认才买', score: { b1: 1 } },
+      { label: 'B', text: '权衡过利弊，觉得值', score: { b2: 1 } },
+      { label: 'C', text: '看到就下手，当时感觉对', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 28,
+    text: '纠结要不要买一件东西时，你怎么解决纠结？',
+    options: [
+      { label: 'A', text: '继续查资料，直到确认', score: { b1: 1 } },
+      { label: 'B', text: '给自己定个截止日期', score: { b2: 1 } },
+      { label: 'C', text: '直接买，再想也想不清楚', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 29,
+    text: '你要参加一项新活动，但要花一笔报名费，你：',
+    options: [
+      { label: 'A', text: '问清楚详情，再评估', score: { b1: 1 } },
+      { label: 'B', text: '值得就报，不值得算了', score: { b2: 1 } },
+      { label: 'C', text: '先报了再说，机会难得', score: { b3: 1 } }
+    ]
+  },
+  {
+    id: 30,
+    text: '你手里有300块，三个选择：①存进余额宝②买本你感兴趣的书③直接花掉买喜欢的东西。你选：',
+    options: [
+      { label: 'A', text: '选①，存起来更安心', score: { b1: 1, a1: 1 } },
+      { label: 'B', text: '选②，投资自己最值', score: { b2: 1, a2: 1 } },
+      { label: 'C', text: '选③，开心才是真的', score: { b3: 1, a3: 1 } }
+    ]
+  }
+];
+
 var PERSONALITIES = {
   a1_b1: {
     name: '金库警卫',
@@ -830,6 +1136,7 @@ var PERSONALITIES = {
   }
 };
 
+var currentMode = 'adult';
 var currentQ = 0;
 var answers = [];
 var isAdvancing = false;
@@ -843,18 +1150,32 @@ function showScreen(id) {
   window.scrollTo(0, 0);
 }
 
-function startQuiz() {
+function startQuiz(mode) {
+  currentMode = mode || 'adult';
   currentQ = 0;
   answers = [];
   isAdvancing = false;
+  var badge = document.getElementById('mode-badge');
+  if (currentMode === 'teen') {
+    badge.textContent = '🎒 青少年版';
+    badge.className = 'mode-badge mode-badge-teen';
+  } else {
+    badge.textContent = '💼 成人版';
+    badge.className = 'mode-badge';
+  }
   showScreen('screen-quiz');
   renderQuestion();
 }
 
+function getActiveQuestions() {
+  return currentMode === 'teen' ? QUESTIONS_TEEN : QUESTIONS;
+}
+
 function renderQuestion() {
   isAdvancing = false;
-  var q = QUESTIONS[currentQ];
-  var total = QUESTIONS.length;
+  var questions = getActiveQuestions();
+  var q = questions[currentQ];
+  var total = questions.length;
   var pct = (currentQ / total * 100).toFixed(1);
   document.getElementById('progress-bar').style.width = pct + '%';
   document.getElementById('progress-label').textContent = '第 ' + (currentQ + 1) + ' 题 / 共 ' + total + ' 题';
@@ -880,7 +1201,6 @@ function selectOption(optIdx) {
   isAdvancing = true;
   answers[currentQ] = optIdx;
 
-  // Highlight the selected button
   var btns = document.querySelectorAll('.option-btn');
   for (var i = 0; i < btns.length; i++) {
     btns[i].disabled = true;
@@ -889,10 +1209,10 @@ function selectOption(optIdx) {
     }
   }
 
-  // Auto-advance after 300ms
   setTimeout(function() {
+    var questions = getActiveQuestions();
     currentQ++;
-    if (currentQ >= QUESTIONS.length) {
+    if (currentQ >= questions.length) {
       showResult();
     } else {
       renderQuestion();
@@ -909,10 +1229,11 @@ function prevQuestion() {
 
 function calcScores() {
   var scores = { a1: 0, a2: 0, a3: 0, b1: 0, b2: 0, b3: 0 };
+  var questions = getActiveQuestions();
   for (var i = 0; i < answers.length; i++) {
     var optIdx = answers[i];
     if (optIdx === undefined || optIdx === null) continue;
-    var q = QUESTIONS[i];
+    var q = questions[i];
     var score = q.options[optIdx].score;
     for (var k in score) {
       if (scores.hasOwnProperty(k)) scores[k] += score[k];
@@ -1001,7 +1322,7 @@ function showResult() {
 }
 
 function restartQuiz() {
-  startQuiz();
+  showScreen('screen-welcome');
 }
 </script>
 </body>
