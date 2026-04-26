@@ -190,6 +190,25 @@ body {
 .lp-cta-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
 .lp-cta-sub { font-size: 14px; color: var(--text2); margin-bottom: 28px; line-height: 1.6; }
 
+/* ── LOADING SCREEN ── */
+#screen-loading { padding-top: 0; }
+.loading-inner {
+  padding-top: 35vh; text-align: center;
+}
+#loading-text {
+  font-size: 20px; font-weight: 600; min-height: 60px;
+  transition: opacity 0.2s ease;
+}
+.loading-bar-wrap {
+  margin-top: 32px; width: 100%; height: 2px;
+  background: var(--border); border-radius: 2px; overflow: hidden;
+}
+#loading-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 0.3s ease;
+}
+
 /* ── RESULT ── */
 #screen-result { padding-top: 32px; }
 .result-hero {
@@ -226,6 +245,14 @@ body {
 }
 .quote-text { font-size: 15px; font-style: italic; line-height: 1.75; margin-bottom: 8px; }
 .quote-tags { font-size: 12px; color: var(--accent2); }
+
+/* ── 财富关系网 ── */
+.connection-item { display: flex; gap: 16px; align-items: flex-start; }
+.conn-icon { font-size: 24px; flex-shrink: 0; }
+.conn-label { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-weight: 700; }
+.conn-name { font-weight: bold; font-size: 16px; margin-bottom: 4px; color: var(--text); }
+.conn-desc { font-size: 14px; color: var(--text2); line-height: 1.5; }
+
 .restart-btn {
   display: block; width: 100%; text-align: center;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -401,6 +428,16 @@ body {
   </div>
 </div>
 
+<!-- 伪加载页 -->
+<div id="screen-loading" class="screen">
+  <div class="loading-inner">
+    <div id="loading-text"></div>
+    <div class="loading-bar-wrap">
+      <div id="loading-bar"></div>
+    </div>
+  </div>
+</div>
+
 <!-- RESULT -->
 <div id="screen-result" class="screen">
   <div class="result-hero">
@@ -411,16 +448,31 @@ body {
   </div>
   <div class="score-grid" id="score-grid"></div>
   <div class="section-card">
-    <div class="section-title">🗣 一句话神总结</div>
+    <div class="section-title">💊 财富病例确诊</div>
     <div class="summary-text" id="r-summary"></div>
   </div>
   <div class="section-card">
-    <div class="section-title">💪 你的财商超能力</div>
-    <div id="r-powers"></div>
+    <div class="section-title">💰 搞钱必杀技 &amp; 💸 漏财黑洞</div>
+    <div id="r-powers-blindspots"></div>
   </div>
-  <div class="section-card">
-    <div class="section-title">⚠️ 你的财商盲区</div>
-    <div id="r-blindspots"></div>
+  <div class="section-card" id="r-connections-card">
+    <div class="section-title">🌐 你的财富关系网</div>
+    <div class="connection-item">
+      <span class="conn-icon">🤝</span>
+      <div>
+        <div class="conn-label">天生财友</div>
+        <div class="conn-name" id="r-friend-name"></div>
+        <div class="conn-desc" id="r-friend-desc"></div>
+      </div>
+    </div>
+    <div class="connection-item" style="margin-top:16px">
+      <span class="conn-icon">⚔️</span>
+      <div>
+        <div class="conn-label">财富宿敌</div>
+        <div class="conn-name" id="r-enemy-name"></div>
+        <div class="conn-desc" id="r-enemy-desc"></div>
+      </div>
+    </div>
   </div>
   <div class="quote-box">
     <div class="quote-text" id="r-quote"></div>
@@ -428,7 +480,8 @@ body {
   </div>
   <button class="restart-btn" onclick="restartQuiz()">🔄 再测一次</button>
   <div style="margin-top:2rem;padding:1.2rem 1.5rem;background:rgba(255,255,255,0.06);border-radius:12px;text-align:center;border:1px solid rgba(255,255,255,0.12);">
-    <p style="margin:0 0 0.4rem;color:rgba(255,255,255,0.6);font-size:0.85rem;">测完有想法？欢迎来聊聊</p>
+    <p id="r-cta-text" style="margin:0 0 0.6rem;font-size:1rem;font-weight:600;line-height:1.6;color:var(--text);"></p>
+    <p style="margin:0 0 0.4rem;color:rgba(255,255,255,0.6);font-size:0.85rem;">添加微信，一起聊</p>
     <p style="margin:0;font-size:1.05rem;font-weight:600;color:#c4b5fd;">微信：panleicfa</p>
   </div>
 </div>
@@ -1033,7 +1086,7 @@ var PERSONALITIES = {
     hashtags: '#财商人格 #钱罐子仓鼠 #该存钱升级了'
   },
   a2_b1: {
-    name: '投资者兔子',
+    name: '精算兔子',
     emoji: '🐰',
     tagline: '充分调研，理性判断，我对每一笔钱都有说法',
     summary: '你就像一个"小型投资委员会"。每一笔投资都要过你的"审核会"，标准比许多专业投资者还严。',
@@ -1047,10 +1100,10 @@ var PERSONALITIES = {
       { title: '眼高手低：知道得多做的少', desc: '你对理论的理解大于实际操作的执行。有些东西你理论上都懂，但就是没有真金白银去试。' }
     ],
     quote: '投资就像查看食材清单。别人看菜名就下单，我要看生产地、营养标签、保质期。这就是为什么我吃得最安心。',
-    hashtags: '#财商人格 #投资者兔子 #理性投资者'
+    hashtags: '#财商人格 #精算兔子 #理性投资者'
   },
   a2_b2: {
-    name: '聪明狐狸',
+    name: '理财狐狸',
     emoji: '🦊',
     tagline: '眼睛一转就有办法，左右逢源是我的生活哲学',
     summary: '你是"财商圈的八面玲珑"。别人问理财意见时最愿意听你的——既不会给太保守的建议，也不会鼓动别人冒险。',
@@ -1064,10 +1117,10 @@ var PERSONALITIES = {
       { title: '短期思维陷阱', desc: '你容易被"3个月涨20%"的产品吸引，忽视了长期的复利力量。频繁调整的交易成本，可能吃掉你的收益。' }
     ],
     quote: '灵活不是随意，是在坚持中的微调。就像开车，方向盘轻轻转，才能长期稳健到达。',
-    hashtags: '#财商人格 #聪明狐狸 #左右逢源的理财高手'
+    hashtags: '#财商人格 #理财狐狸 #左右逢源的理财高手'
   },
   a2_b3: {
-    name: '创业鹰',
+    name: '逐利雄鹰',
     emoji: '🦅',
     tagline: '看中机会，说干就干，我的财富来自于敢赌和快速执行',
     summary: '你眼光敏锐，行动迅速。别人还在论证可行性，你已经在执行了。',
@@ -1081,10 +1134,10 @@ var PERSONALITIES = {
       { title: '缺乏反思系统', desc: '你做得快，但反思得不够深。为什么成功？为什么失败？规律是什么？成功可以复制，失败也可能重复。' }
     ],
     quote: '机会就像起风，不是所有人都能飞。只有那些敢掠过风浪的鹰，才能看得最远。',
-    hashtags: '#财商人格 #创业鹰 #快手投资者'
+    hashtags: '#财商人格 #逐利雄鹰 #快手投资者'
   },
   a3_b1: {
-    name: '自由思想家',
+    name: '哲学猫头鹰',
     emoji: '🦉',
     tagline: '我用钱换时间，最好的投资是给自己自由',
     summary: '你有着最"不财经"的财商。你不追求钱最多，只追求有足够的钱，让自己足够自由。',
@@ -1098,10 +1151,10 @@ var PERSONALITIES = {
       { title: '计划过于理想化', desc: '你的计划看起来完美，但现实会有变量。可能遇到身体状况变化、家庭变故，需要给人生留一些弹性空间。' }
     ],
     quote: '别人在为钱而活，我在为自由而活。而自由，是需要用现在的理性来换取的。',
-    hashtags: '#财商人格 #自由思想家 #财务自由规划师'
+    hashtags: '#财商人格 #哲学猫头鹰 #财务自由规划师'
   },
   a3_b2: {
-    name: '生活艺术家',
+    name: '随性鸭子',
     emoji: '🦆',
     tagline: '钱够用就好，真正的财富是生活本身',
     summary: '你是最会"活"的人。既能赚钱，也敢花钱，还能保证账户里永远有余粮。这种平衡感，是财商的最高境界。',
@@ -1115,10 +1168,10 @@ var PERSONALITIES = {
       { title: '对变化的应对不足', desc: '突然失业、家人生病，你的"足够生活"可能不够。需要有一个应急方案，不是为了焦虑，是为了安心。' }
     ],
     quote: '钱不是用来拼的，是用来生活的。而一个懂生活的人，比任何人都富有。',
-    hashtags: '#财商人格 #生活艺术家 #懂生活的人最富有'
+    hashtags: '#财商人格 #随性鸭子 #懂生活的人最富有'
   },
   a3_b3: {
-    name: '潇洒浪子',
+    name: '自由雄狮',
     emoji: '🌊',
     tagline: '我命由我不由天，岁月静好就是最大的财富',
     summary: '你不要什么"财务自由"，你只要"灵魂自由"。敢辞职、敢创业、敢说不，这就是你的财商。',
@@ -1132,8 +1185,70 @@ var PERSONALITIES = {
       { title: '没有长期规划导致未来焦虑', desc: '现在你35岁，60岁怎么办？"到时候再说"的心态，可能在50岁时后悔。即使不追求财富最大化，也需要一个养老底线。' }
     ],
     quote: '有人用30年还房贷，我用30年去冒险。谁的人生更值钱，问问我们的灵魂就知道。（但也别忘了给自己留条后路。）',
-    hashtags: '#财商人格 #潇洒浪子 #人生由我定义'
+    hashtags: '#财商人格 #自由雄狮 #人生由我定义'
   }
+};
+
+// ── 人格主题色（疯传版改造点4：S系金色、G系赛博绿、F系霓虹紫）──
+// a1=安全型S, a2=增长型G, a3=自由型F
+var PERSONALITY_COLORS = {
+  a1: '#C9A84C',
+  a2: '#00FF87',
+  a3: '#BF5FFF'
+};
+
+// ── 财富关系网（疯传版改造点1）──
+// key与PERSONALITIES对齐
+var CONNECTIONS = {
+  a1_b1: {
+    friend: { name: '理财狐狸', desc: '互补绝配：他帮你赚，你帮他守。你的金库加上他的操盘，财富双保险。' },
+    enemy:  { name: '自由雄狮', desc: '一个存一个花，三观必然开战。光是看着他的账单你就血压升高。' }
+  },
+  a1_b2: {
+    friend: { name: '精算兔子', desc: '都爱研究，都求稳，两个人坐下来能聊三小时资产配置不带重样的。' },
+    enemy:  { name: '逐利雄鹰', desc: '一个慢慢算，一个快快冲，财务三观根本不在同一频道，迟早吵翻。' }
+  },
+  a1_b3: {
+    friend: { name: '理财狐狸', desc: '他能帮你把冲动转化成系统，给你的每一次「心动」装上刹车。' },
+    enemy:  { name: '自由雄狮', desc: '两个都冲，但方向完全相反——一个存钱冲动，一个花钱冲动，互相看不惯。' }
+  },
+  a2_b1: {
+    friend: { name: '逐利雄鹰', desc: '你出策略，他来执行，完美的智脑+腿脚搭档，项目成功率直线上升。' },
+    enemy:  { name: '随性鸭子', desc: '你在算账，他在花钱买体验，永远谈不拢，一起合伙必定出事。' }
+  },
+  a2_b2: {
+    friend: { name: '金库警卫', desc: '你进攻，他防守，完美的攻守搭档。你赚来的他帮你守住，无懈可击。' },
+    enemy:  { name: '自由雄狮', desc: '理性遇上感性，精算遇上随性，两人在一起注定互相崩溃。' }
+  },
+  a2_b3: {
+    friend: { name: '金库警卫', desc: '他是你冲动时候最需要的那只手——能在关键时刻按住你，救你一命。' },
+    enemy:  { name: '自由雄狮', desc: '两个人凑一起，一个猛赚一个猛花，容易倾家荡产，危险组合。' }
+  },
+  a3_b1: {
+    friend: { name: '精算兔子', desc: '两个都爱规划，偶尔他的执行力能推动你真正走出第一步，不再原地踏步。' },
+    enemy:  { name: '钱罐子仓鼠', desc: '你想飞，他要把门关死，永远不在一个频道，一起出行必吵架。' }
+  },
+  a3_b2: {
+    friend: { name: '理财狐狸', desc: '他帮你设强制储蓄计划，让你在继续享受生活的同时，不至于被突发情况打垮。' },
+    enemy:  { name: '金库警卫', desc: '你要出发去体验，他要把大门关死存钱，相爱相杀，永远在拉锯。' }
+  },
+  a3_b3: {
+    friend: { name: '保险箱', desc: '他帮你兜底，保证你花得再爽也不至于真的归零，是你最需要的安全网。' },
+    enemy:  { name: '金库警卫', desc: '极度相克，一见面就吵钱的问题。你的每一笔消费在他眼里都是罪行。' }
+  }
+};
+
+// ── 定制化引流文案（疯传版改造点4）──
+var CTA_TEXTS = {
+  a1_b1: '想打破通胀魔咒，让钱真正动起来？',
+  a1_b2: '想把"差不多"变成真正的财务增长？',
+  a1_b3: '想把存钱冲动转化成系统性财富积累？',
+  a2_b1: '想把满脑子的策略真正落地执行？',
+  a2_b2: '想找到那个值得All-in的机会？',
+  a2_b3: '想让行动力配上更精准的判断力？',
+  a3_b1: '想让梦想真正从计划走进现实？',
+  a3_b2: '想在享受生活的同时建立真正的财务安全垫？',
+  a3_b3: '想在自由消费的同时，拥有一个不崩的财务底线？'
 };
 
 var currentMode = 'adult';
@@ -1213,7 +1328,7 @@ function selectOption(optIdx) {
     var questions = getActiveQuestions();
     currentQ++;
     if (currentQ >= questions.length) {
-      showResult();
+      showLoading();
     } else {
       renderQuestion();
     }
@@ -1261,14 +1376,64 @@ function getPersonality(scores) {
   return { key: key, aDim: aDim, bDim: bDim, personality: PERSONALITIES[key] };
 }
 
+// ── 伪加载页（疯传版改造点2）──
+function showLoading() {
+  showScreen('screen-loading');
+
+  var messages = [
+    '正在提取你的消费潜意识...',
+    '正在扫描你的搞钱 DNA...',
+    '正在生成你的财富病例...'
+  ];
+
+  var bar = document.getElementById('loading-bar');
+  var textEl = document.getElementById('loading-text');
+
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  textEl.textContent = '';
+  textEl.style.opacity = '1';
+
+  var totalDuration = 2500;
+  var msgInterval = totalDuration / messages.length;
+
+  messages.forEach(function(msg, i) {
+    setTimeout(function() {
+      textEl.style.opacity = '0';
+      setTimeout(function() {
+        textEl.textContent = msg;
+        textEl.style.transition = 'opacity 0.2s ease';
+        textEl.style.opacity = '1';
+      }, 150);
+    }, i * msgInterval);
+  });
+
+  setTimeout(function() {
+    bar.style.transition = 'width ' + totalDuration + 'ms linear';
+    bar.style.width = '100%';
+  }, 50);
+
+  setTimeout(function() {
+    showResult();
+  }, totalDuration);
+}
+
 function showResult() {
   var scores = calcScores();
   var res = getPersonality(scores);
   var p = res.personality;
 
+  // ── 人格主题色（疯传版改造点4）──
+  var titleColor = PERSONALITY_COLORS[res.aDim] || '#e8e8f0';
+
   document.getElementById('r-emoji').textContent = p.emoji;
-  document.getElementById('r-name').textContent = p.emoji + ' ' + p.name;
+  var nameEl = document.getElementById('r-name');
+  nameEl.textContent = p.emoji + ' ' + p.name;
+  nameEl.style.color = titleColor;
+
   document.getElementById('r-tagline').textContent = p.tagline;
+
+  // ── 文案升级：「💊 财富病例确诊」（改造点3，已在HTML静态写入）──
   document.getElementById('r-summary').textContent = p.summary;
 
   var grid = document.getElementById('score-grid');
@@ -1293,30 +1458,45 @@ function showResult() {
     grid.appendChild(cell);
   }
 
-  var powersEl = document.getElementById('r-powers');
-  powersEl.innerHTML = '';
+  // ── 文案升级：「💰 搞钱必杀技 & 💸 漏财黑洞」（改造点3，HTML静态写入）──
+  // powers 和 blindspots 合并到同一个 section-card
+  var pbEl = document.getElementById('r-powers-blindspots');
+  pbEl.innerHTML = '';
   for (var i = 0; i < p.powers.length; i++) {
     var pw = p.powers[i];
     var div = document.createElement('div');
     div.className = 'power-item';
-    div.innerHTML = '<div class="power-title">\u2728 ' + pw.title + '</div>' +
+    div.innerHTML = '<div class="power-title">✨ ' + pw.title + '</div>' +
       '<div class="power-desc">' + pw.desc + '</div>';
-    powersEl.appendChild(div);
+    pbEl.appendChild(div);
   }
-
-  var blindEl = document.getElementById('r-blindspots');
-  blindEl.innerHTML = '';
   for (var i = 0; i < p.blindspots.length; i++) {
     var bl = p.blindspots[i];
     var div = document.createElement('div');
     div.className = 'blind-item';
-    div.innerHTML = '<div class="blind-title">\uD83D\uDD0D ' + bl.title + '</div>' +
+    div.innerHTML = '<div class="blind-title">🔍 ' + bl.title + '</div>' +
       '<div class="blind-desc">' + bl.desc + '</div>';
-    blindEl.appendChild(div);
+    pbEl.appendChild(div);
+  }
+
+  // ── 财富关系网（疯传版改造点1）──
+  var conn = CONNECTIONS[res.key];
+  if (conn) {
+    document.getElementById('r-friend-name').textContent = conn.friend.name;
+    document.getElementById('r-friend-desc').textContent = conn.friend.desc;
+    document.getElementById('r-enemy-name').textContent = conn.enemy.name;
+    document.getElementById('r-enemy-desc').textContent = conn.enemy.desc;
+    document.getElementById('r-connections-card').style.display = 'block';
+  } else {
+    document.getElementById('r-connections-card').style.display = 'none';
   }
 
   document.getElementById('r-quote').textContent = '\u201c' + p.quote + '\u201d';
   document.getElementById('r-hashtags').textContent = p.hashtags;
+
+  // ── 定制引流文案（疯传版改造点4）──
+  var ctaText = CTA_TEXTS[res.key] || '想找到属于你的搞钱路径？';
+  document.getElementById('r-cta-text').textContent = ctaText;
 
   showScreen('screen-result');
 }
