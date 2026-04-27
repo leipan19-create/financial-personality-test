@@ -65,6 +65,17 @@
 
   .restart-btn { background: var(--text); color: var(--bg); width: 100%; padding: 18px; border-radius: 12px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; margin-top: 20px; }
 
+  .ranking-btn {
+    background: linear-gradient(135deg, #7c5cbf, #9b7ee0);
+    color: #fff; width: 100%; padding: 16px;
+    border-radius: 12px; font-size: 16px; font-weight: bold;
+    border: none; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .ranking-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(124,92,191,0.45); }
+  .ranking-btn:active { transform: translateY(0); }
+  .ranking-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
   /* 财富关系网 */
   .connection-item { display: flex; gap: 16px; align-items: flex-start; }
   .conn-icon { font-size: 24px; flex-shrink: 0; }
@@ -377,6 +388,15 @@
   <div style="text-align: center; margin-top: 40px; padding: 24px; background: var(--card); border-radius: 16px; border: 1px solid var(--border);">
     <div id="r-cta-text" style="font-size: 16px; margin-bottom: 12px; line-height: 1.6;"></div>
     <div style="color: var(--text-dim); font-size: 14px;">添加微信：<span style="color: var(--text); font-weight: bold;">panleicfa</span></div>
+  </div>
+
+  <div style="text-align: center; margin-top: 24px;">
+    <button class="ranking-btn" id="ranking-submit-btn" onclick="submitToRanking()">📊 提交到排行榜</button>
+    <div id="ranking-feedback" style="margin-top: 10px; font-size: 13px;"></div>
+  </div>
+
+  <div style="text-align: center; margin-top: 16px;">
+    <a href="ranking.html" style="color: var(--text-dim); font-size: 13px; text-decoration: none;">查看完整排行榜 →</a>
   </div>
 
   <button class="restart-btn" onclick="location.reload()">再测一次</button>
@@ -1222,6 +1242,9 @@ function showResult() {
   var dim2 = ["T", "B", "A"].sort(function(a, b) { return scores[b] - scores[a]; })[0];
   var code = dim1 + "-" + dim2;
 
+  // 存下来给排行榜提交用
+  _currentResultCode = code;
+
   var p = PERSONALITIES[code] || PERSONALITIES["default"];
   var conn = CONNECTIONS[code] || CONNECTIONS["default"];
   var ctaText = CTA[code] || CTA["default"];
@@ -1252,6 +1275,57 @@ function showResult() {
 
   document.querySelectorAll(".screen").forEach(function(el) { el.classList.remove("active"); });
   document.getElementById("screen-result").classList.add("active");
+}
+
+// =====================================================================
+// Supabase 排行榜提交
+// =====================================================================
+var _currentResultCode = "";
+
+const SUPABASE_URL = "https://pwnvgbtiueoeiwyqwedc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_cWFID2KH50WldvGfF-AnFA_u4F53Au1";
+
+function submitToRanking() {
+  var btn = document.getElementById("ranking-submit-btn");
+  var fb = document.getElementById("ranking-feedback");
+  
+  if (!_currentResultCode) {
+    fb.textContent = "出错了，请刷新重试";
+    fb.style.color = "#e74c3c";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "提交中...";
+  fb.textContent = "";
+
+  fetch(SUPABASE_URL + "/rest/v1/submissions", {
+    method: "POST",
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY,
+      "Content-Type": "application/json",
+      "Prefer": "return=minimal"
+    },
+    body: JSON.stringify({ personality_code: _currentResultCode })
+  })
+  .then(function(resp) {
+    if (resp.ok) {
+      btn.textContent = "✅ 已提交";
+      btn.style.background = "linear-gradient(135deg, #1a8a6e, #26c99e)";
+      fb.textContent = "去看看排行榜上你排第几？";
+      fb.style.color = "#48c78e";
+    } else {
+      return resp.text().then(function(t) { throw new Error(t.slice(0, 200)); });
+    }
+  })
+  .catch(function(e) {
+    btn.disabled = false;
+    btn.textContent = "📊 提交到排行榜";
+    fb.textContent = "提交失败，稍后再试";
+    fb.style.color = "#e74c3c";
+    console.error("Ranking submit error:", e);
+  });
 }
 </script>
 </body>
