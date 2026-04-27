@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>财商人格排行榜</title>
+<style>
+  :root {
+    --bg: #111111;
+    --card: #1c1c1c;
+    --text: #f0f0f0;
+    --text-dim: #888888;
+    --border: #333333;
+    --accent: #7c5cbf;
+    --gold: #f0c040;
+    --silver: #b8c0d0;
+    --bronze: #c8945c;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { width: 100%; max-width: 640px; padding: 40px 24px; }
+
+  .header { text-align: center; margin-bottom: 40px; }
+  .header-icon { font-size: 48px; margin-bottom: 12px; }
+  .header-title { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .header-sub { font-size: 14px; color: var(--text-dim); margin-bottom: 6px; }
+
+  .total-badge {
+    display: inline-block; background: var(--card); border: 1px solid var(--border);
+    border-radius: 999px; padding: 8px 20px; font-size: 14px; color: var(--text-dim); margin-bottom: 32px;
+  }
+  .total-badge strong { color: var(--text); font-size: 18px; }
+
+  .rank-list { margin-bottom: 40px; }
+  .rank-item {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px; margin-bottom: 10px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .rank-item:hover { transform: translateX(6px); border-color: var(--accent); }
+
+  .rank-number { 
+    font-size: 18px; font-weight: 900; width: 32px; text-align: center; flex-shrink: 0;
+    color: var(--text-dim);
+  }
+  .rank-item:nth-child(1) .rank-number { color: var(--gold); font-size: 22px; }
+  .rank-item:nth-child(2) .rank-number { color: var(--silver); font-size: 22px; }
+  .rank-item:nth-child(3) .rank-number { color: var(--bronze); font-size: 22px; }
+
+  .rank-emoji { font-size: 32px; flex-shrink: 0; }
+  .rank-info { flex: 1; min-width: 0; }
+  .rank-name { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+  .rank-code { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
+  .rank-desc { font-size: 12px; color: var(--text-dim); line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rank-bar-wrap { 
+    flex-shrink: 0; text-align: right; min-width: 100px;
+  }
+  .rank-count { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .rank-pct { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
+  .rank-bar {
+    height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+  }
+  .rank-bar-fill {
+    height: 100%; background: var(--accent); border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+  .rank-item:nth-child(1) .rank-bar-fill { background: linear-gradient(90deg, #f0c040, #ffd700); }
+  .rank-item:nth-child(2) .rank-bar-fill { background: linear-gradient(90deg, #b8c0d0, #d0d8e0); }
+  .rank-item:nth-child(3) .rank-bar-fill { background: linear-gradient(90deg, #c8945c, #d4a574); }
+
+  .back-link {
+    display: block; text-align: center; color: var(--text-dim); font-size: 14px;
+    text-decoration: none; padding: 12px; transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--text); }
+
+  .loading, .error-msg { text-align: center; padding: 60px 24px; color: var(--text-dim); font-size: 16px; }
+  .spinner {
+    display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .footer {
+    text-align: center; padding: 32px 0; border-top: 1px solid var(--border); margin-top: 20px;
+  }
+  .footer-note { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+
+  @media (max-width: 480px) {
+    .rank-bar-wrap { min-width: 70px; }
+    .rank-item { padding: 14px; gap: 10px; }
+    .rank-emoji { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-icon">🏆</div>
+    <h1 class="header-title">财商人格排行榜</h1>
+    <p class="header-sub">9种人格，谁是最稀缺的财务物种？</p>
+  </div>
+
+  <div style="text-align: center;">
+    <div class="total-badge" id="total-badge">加载中...</div>
+  </div>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <div>正在拉取排行榜数据...</div>
+  </div>
+
+  <div id="error" class="error-msg" style="display:none;"></div>
+
+  <div class="rank-list" id="rank-list" style="display:none;"></div>
+
+  <div class="footer" id="footer" style="display:none;">
+    <p class="footer-note">
+      排行榜仅统计主动点击"提交到排行榜"的匿名结果<br>
+      不保存任何个人信息与逐题答案
+    </p>
+    <a class="back-link" href="https://www.ganlin.cloud-ip.cc/">← 返回测试</a>
+  </div>
+
+</div>
+
+<script>
+// =====================================================================
+// Supabase 配置
+// =====================================================================
+const SUPABASE_URL = "https://pwnvgbtiueoeiwyqwedc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_cWFID2KH50WldvGfF-AnFA_u4F53Au1";
+
+// =====================================================================
+// 人格映射
+// =====================================================================
+const PERSONALITY_META = {
+  "S-T": { emoji: "🦁", name: "金库守卫者",    desc: "把每一分钱锁进保险箱" },
+  "S-B": { emoji: "🐢", name: "稳健囤粮官",    desc: "既不冒进也不挥霍，活成余额宝" },
+  "S-A": { emoji: "🐹", name: "冲动存钱机",    desc: "攒钱和踩坑交替上演" },
+  "G-T": { emoji: "🐰", name: "深渊策略家",    desc: "满脑子计划但迟迟不出手" },
+  "G-B": { emoji: "🦊", name: "精算操盘手",    desc: "聪明配置，稳中求胜" },
+  "G-A": { emoji: "🦅", name: "逐风掠食者",    desc: "嗅到机会就俯冲" },
+  "F-T": { emoji: "🦉", name: "佛系规划师",    desc: "梦想丰满，执行骨感" },
+  "F-B": { emoji: "🦆", name: "旷野体验家",    desc: "钱花出质感，但缺后备" },
+  "F-A": { emoji: "🌊", name: "自由烧钱怪",    desc: "活在当下的极致践行者" }
+};
+
+// =====================================================================
+// 加载排行榜
+// =====================================================================
+async function loadRanking() {
+  try {
+    const resp = await fetch(
+      SUPABASE_URL + "/rest/v1/submissions?select=personality_code",
+      {
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY
+        }
+      }
+    );
+
+    if (!resp.ok) throw new Error("HTTP " + resp.status + ": " + (await resp.text()).slice(0, 200));
+
+    const rows = await resp.json();
+    const counts = {};
+    let total = 0;
+
+    rows.forEach(function(row) {
+      const code = row.personality_code;
+      counts[code] = (counts[code] || 0) + 1;
+      total++;
+    });
+
+    if (total === 0) {
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("error").style.display = "block";
+      document.getElementById("error").textContent = "还没有人提交排行榜数据。去做完测试，第一个上榜！";
+      document.getElementById("footer").style.display = "block";
+      return;
+    }
+
+    // 排序
+    const sorted = Object.keys(counts).sort(function(a, b) { return counts[b] - counts[a]; });
+
+    document.getElementById("total-badge").innerHTML = 
+      "累计提交 <strong>" + total.toLocaleString() + "</strong> 次";
+
+    const listEl = document.getElementById("rank-list");
+    listEl.innerHTML = "";
+
+    sorted.forEach(function(code, i) {
+      const meta = PERSONALITY_META[code] || { emoji: "❓", name: code, desc: "" };
+      const count = counts[code];
+      const pct = ((count / total) * 100).toFixed(1);
+      const maxCount = counts[sorted[0]];
+      const barWidth = (count / maxCount * 100).toFixed(1);
+
+      const item = document.createElement("div");
+      item.className = "rank-item";
+      item.innerHTML = 
+        '<div class="rank-number">#' + (i + 1) + '</div>' +
+        '<div class="rank-emoji">' + meta.emoji + '</div>' +
+        '<div class="rank-info">' +
+          '<div class="rank-name">' + meta.name + '</div>' +
+          '<div class="rank-code">' + code + ' 型</div>' +
+          '<div class="rank-desc">' + meta.desc + '</div>' +
+        '</div>' +
+        '<div class="rank-bar-wrap">' +
+          '<div class="rank-count">' + count.toLocaleString() + '</div>' +
+          '<div class="rank-pct">' + pct + '%</div>' +
+          '<div class="rank-bar"><div class="rank-bar-fill" style="width:' + barWidth + '%"></div></div>' +
+        '</div>';
+      listEl.appendChild(item);
+    });
+
+    document.getElementById("loading").style.display = "none";
+    listEl.style.display = "block";
+    document.getElementById("footer").style.display = "block";
+
+  } catch (e) {
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("error").style.display = "block";
+    document.getElementById("error").textContent = "加载失败：" + e.message;
+    document.getElementById("footer").style.display = "block";
+  }
+}
+
+loadRanking();
+</script>
+</body>
+</html>
