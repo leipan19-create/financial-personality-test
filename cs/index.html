@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>财商人格测试 | 揭露你的金钱潜意识</title>
+<style>
+  :root {
+    --bg: #111111;
+    --card: #1c1c1c;
+    --text: #f0f0f0;
+    --text-dim: #888888;
+    --accent: #e5e5e5;
+    --border: #333333;
+    /* Landing page extras (ported from old version) */
+    --bg2:   #16213e;
+    --bg3:   #0f3460;
+    --accent-lp: #7c5cbf;
+    --accent2-lp: #9b7ee0;
+    --gold:  #f0c040;
+    --green: #48c78e;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .screen { display: none; width: 100%; max-width: 600px; padding: 40px 24px; margin: auto; }
+  .screen.active { display: block; animation: fadeIn 0.5s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; font-size: 14px; color: var(--text-dim); }
+  .question-text { font-size: 22px; font-weight: 600; line-height: 1.5; margin-bottom: 32px; }
+
+  .option-btn {
+    display: flex; align-items: flex-start; gap: 16px;
+    background: var(--card); border: 1px solid var(--card);
+    border-radius: 12px; padding: 20px; margin-bottom: 12px; cursor: pointer;
+    text-align: left; width: 100%; color: var(--text); font-size: 16px; line-height: 1.5;
+    transition: all 0.2s ease;
+  }
+  .option-btn:hover { background: #262626; border-color: #444; transform: translateX(4px); }
+  .option-label { font-weight: bold; color: var(--text-dim); }
+
+  .back-btn { background: none; border: none; color: var(--text-dim); font-size: 14px; cursor: pointer; margin-top: 20px; padding: 10px 0; }
+  .back-btn:hover { color: var(--text); }
+
+  #screen-result { text-align: left; }
+  .result-code { font-size: 18px; color: var(--text-dim); font-weight: bold; letter-spacing: 2px; margin-bottom: 8px; }
+  .result-title { font-size: 42px; font-weight: 900; margin-bottom: 24px; letter-spacing: -1px; }
+
+  .result-card { background: var(--card); border-radius: 16px; padding: 24px; margin-bottom: 20px; border: 1px solid var(--border); }
+  .card-title { font-size: 14px; color: var(--text-dim); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .card-content { font-size: 16px; line-height: 1.6; }
+
+  .trait-item { margin-bottom: 16px; }
+  .trait-title { font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .trait-desc { color: var(--text-dim); font-size: 14px; line-height: 1.5; }
+
+  .restart-btn { background: var(--text); color: var(--bg); width: 100%; padding: 18px; border-radius: 12px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; margin-top: 20px; }
+
+  .ranking-btn {
+    background: linear-gradient(135deg, #7c5cbf, #9b7ee0);
+    color: #fff; width: 100%; padding: 16px;
+    border-radius: 12px; font-size: 16px; font-weight: bold;
+    border: none; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .ranking-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(124,92,191,0.45); }
+  .ranking-btn:active { transform: translateY(0); }
+  .ranking-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* 财富关系网 */
+  .connection-item { display: flex; gap: 16px; align-items: flex-start; }
+  .conn-icon { font-size: 24px; flex-shrink: 0; }
+  .conn-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .conn-name { font-weight: bold; font-size: 16px; margin-bottom: 4px; }
+  .conn-desc { font-size: 14px; color: var(--text-dim); line-height: 1.5; }
+
+  /* ── WELCOME LANDING PAGE (ported from teen version) ── */
+  #screen-welcome { text-align: center; padding-top: 0; }
+
+  .lp-hero {
+    padding: 64px 24px 48px;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,92,191,0.22) 0%, transparent 70%);
+  }
+  .lp-hero .welcome-emoji { font-size: 80px; margin-bottom: 20px; }
+  .lp-hero .welcome-title { font-size: 32px; font-weight: 900; letter-spacing: -0.8px; margin-bottom: 12px; color: var(--text); }
+  .lp-hero .welcome-sub {
+    font-size: 16px; color: var(--text-dim); margin-bottom: 28px; line-height: 1.7;
+  }
+  .lp-hero .welcome-tags { margin-bottom: 36px; }
+
+  .lp-divider {
+    border: none; border-top: 1px solid var(--border); margin: 0;
+  }
+
+  .lp-section { padding: 48px 0 32px; }
+  .lp-section-title {
+    font-size: 20px; font-weight: 800; text-align: center;
+    margin-bottom: 8px; letter-spacing: -0.3px;
+  }
+  .lp-section-sub {
+    font-size: 14px; color: var(--text-dim); text-align: center; margin-bottom: 32px; line-height: 1.6;
+  }
+
+  .welcome-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px; }
+  .tag { background: #1c2a3a; padding: 6px 14px; border-radius: 999px; font-size: 13px; color: var(--text-dim); }
+
+  .age-select-wrap {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 0;
+  }
+  .btn-age {
+    display: inline-block; background: linear-gradient(135deg, #7c5cbf, #9b7ee0);
+    color: #fff; font-size: 16px; font-weight: 700; padding: 13px 30px;
+    border-radius: 999px; border: none; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(124,92,191,.45);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn-age:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(124,92,191,.6); }
+  .btn-age:active { transform: translateY(0); }
+  .btn-age-teen {
+    background: linear-gradient(135deg, #1a8a6e, #26c99e);
+    box-shadow: 0 4px 20px rgba(26,138,110,.4);
+  }
+  .btn-age-teen:hover { box-shadow: 0 6px 28px rgba(26,138,110,.6); }
+
+  /* ── DIMENSION SECTION ── */
+  .dim-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin-bottom: 0;
+  }
+  @media (max-width: 520px) { .dim-grid { grid-template-columns: 1fr; } }
+  .dim-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 22px 18px;
+  }
+  .dim-card-header {
+    font-size: 13px; font-weight: 700; color: #9b7ee0;
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px;
+  }
+  .dim-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin-bottom: 12px;
+  }
+  .dim-item:last-child { margin-bottom: 0; }
+  .dim-item-emoji { font-size: 20px; flex-shrink: 0; line-height: 1.4; }
+  .dim-item-body {}
+  .dim-item-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .dim-item-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+
+  /* ── PERSONALITY CARDS ── */
+  .persona-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  }
+  @media (max-width: 480px) { .persona-grid { grid-template-columns: repeat(2, 1fr); } }
+  .persona-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 18px 12px; text-align: center;
+    transition: border-color .2s, transform .2s;
+  }
+  .persona-card:hover { border-color: #9b7ee0; transform: translateY(-3px); }
+  .persona-card-emoji { font-size: 32px; margin-bottom: 8px; }
+  .persona-card-name { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+  .persona-card-tag { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+
+  /* ── BOTTOM CTA ── */
+  .lp-cta {
+    background: linear-gradient(135deg, rgba(124,92,191,0.18), rgba(15,52,96,0.5));
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 40px 24px; text-align: center; margin: 32px 0 40px;
+  }
+  .lp-cta-title { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+  .lp-cta-sub { font-size: 14px; color: var(--text-dim); margin-bottom: 28px; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<!-- WELCOME / LANDING PAGE (from teen version) -->
+<div id="screen-welcome" class="screen active">
+
+  <!-- 1. HERO -->
+  <div class="lp-hero">
+    <div class="welcome-emoji">💰</div>
+    <h1 class="welcome-title">你的财商人格是什么？</h1>
+    <p class="welcome-sub">30道情景题，测出你的财商DNA<br>发现你的财务超能力与盲区</p>
+    <div class="welcome-tags">
+      <span class="tag">⏱ 3-4分钟</span>
+      <span class="tag">📋 30道题</span>
+      <span class="tag">🔮 9种人格</span>
+      <span class="tag">💡 专业分析</span>
+    </div>
+    <div class="age-select-wrap">
+      <button class="btn-age" onclick="startQuiz('adult')">💼 我是成人（18岁以上）→</button>
+      <button class="btn-age btn-age-teen" onclick="startQuiz('teen')">🎒 我是学生（12-18岁）→</button>
+    </div>
+  </div>
+
+  <hr class="lp-divider">
+
+  <!-- 2. DIMENSIONS -->
+  <div class="lp-section" style="padding-left:16px;padding-right:16px;">
+    <div class="lp-section-title">两个维度，揭示你的财务本质</div>
+    <div class="lp-section-sub">财商人格由「财富观」×「行动风格」交叉决定，两两组合出9种独特类型</div>
+    <div class="dim-grid">
+      <div class="dim-card">
+        <div class="dim-card-header">A轴 · 财富观</div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">🛡️</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">安全型</div>
+            <div class="dim-item-desc">钱是保障，首要是不亏</div>
+          </div>
+        </div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">📈</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">增长型</div>
+            <div class="dim-item-desc">钱是工具，首要是增值</div>
+          </div>
+        </div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">🕊️</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">自由型</div>
+            <div class="dim-item-desc">钱是手段，首要是换取时间和选择权</div>
+          </div>
+        </div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-card-header">B轴 · 行动风格</div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">🔍</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">谨慎型</div>
+            <div class="dim-item-desc">先研究再行动，宁可错过不可犯错</div>
+          </div>
+        </div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">⚖️</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">平衡型</div>
+            <div class="dim-item-desc">边走边看，灵活调整</div>
+          </div>
+        </div>
+        <div class="dim-item">
+          <div class="dim-item-emoji">🚀</div>
+          <div class="dim-item-body">
+            <div class="dim-item-name">冲劲型</div>
+            <div class="dim-item-desc">先行动再复盘，相信执行力</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="lp-divider">
+
+  <!-- 3. PERSONALITY OVERVIEW -->
+  <div class="lp-section" style="padding-left:16px;padding-right:16px;">
+    <div class="lp-section-title">9种财商人格，你是哪一种？</div>
+    <div class="lp-section-sub">每一种人格都有独特的财务超能力与需要警惕的盲区</div>
+    <div class="persona-grid">
+      <div class="persona-card">
+        <div class="persona-card-emoji">🦁</div>
+        <div class="persona-card-name">金库警卫</div>
+        <div class="persona-card-tag">安全+谨慎<br>把每一分钱锁进保险箱</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🐢</div>
+        <div class="persona-card-name">保险箱</div>
+        <div class="persona-card-tag">安全+平衡<br>稳健但懂得灵活</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🐹</div>
+        <div class="persona-card-name">钱罐子仓鼠</div>
+        <div class="persona-card-tag">安全+冲劲<br>囤钱速度惊人但会踩坑</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🐰</div>
+        <div class="persona-card-name">精算兔子</div>
+        <div class="persona-card-tag">增长+谨慎<br>用数据驱动每一笔投资</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🦊</div>
+        <div class="persona-card-name">理财狐狸</div>
+        <div class="persona-card-tag">增长+平衡<br>聪明配置，稳中求胜</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🦅</div>
+        <div class="persona-card-name">逐利雄鹰</div>
+        <div class="persona-card-tag">增长+冲劲<br>嗅到机会就俯冲</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🦉</div>
+        <div class="persona-card-name">哲学猫头鹰</div>
+        <div class="persona-card-tag">自由+谨慎<br>用钱换时间，但先想清楚</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🦆</div>
+        <div class="persona-card-name">随性鸭子</div>
+        <div class="persona-card-tag">自由+平衡<br>够花就行，活在当下</div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-card-emoji">🌊</div>
+        <div class="persona-card-name">自由雄狮</div>
+        <div class="persona-card-tag">自由+冲劲<br>为梦想all in，不问回报</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. BOTTOM CTA -->
+  <div style="padding:0 16px;">
+    <div class="lp-cta">
+      <div class="lp-cta-title">✨ 准备好了吗？</div>
+      <div class="lp-cta-sub">30道真实情景题，3-4分钟<br>测出专属于你的财商人格报告</div>
+      <div class="age-select-wrap">
+        <button class="btn-age" onclick="startQuiz('adult')">💼 我是成人（18岁以上）→</button>
+        <button class="btn-age btn-age-teen" onclick="startQuiz('teen')">🎒 我是学生（12-18岁）→</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <span id="progress-text">1 / 30</span>
+    <span id="mode-text">社会人版</span>
+  </div>
+  <div class="question-container" id="q-container">
+    <div class="question-text" id="question-text">问题加载中...</div>
+    <div id="options-list"></div>
+  </div>
+  <button class="back-btn" onclick="prevQuestion()" id="back-btn">← 上一题</button>
+</div>
+
+<!-- 伪加载页 -->
+<div id="screen-loading" class="screen">
+  <div style="padding-top: 35vh; text-align: center;">
+    <div id="loading-text" style="font-size: 20px; font-weight: 600; min-height: 60px;"></div>
+    <div style="margin-top: 32px; width: 100%; height: 2px; background: var(--border); border-radius: 2px; overflow: hidden;">
+      <div id="loading-bar" style="height: 100%; width: 0%; background: var(--text); transition: width 0.3s ease;"></div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-result" class="screen">
+  <div class="result-code" id="r-code">S-T 型</div>
+  <div class="result-title" id="r-name">金库守卫者</div>
+
+  <div class="result-card">
+    <div class="card-title">💊 财富病例确诊</div>
+    <div class="card-content" id="r-summary">你的钱一旦进了口袋，就相当于进了黑洞。</div>
+  </div>
+
+  <div class="result-card">
+    <div class="card-title">💰 搞钱必杀技 &amp; 💸 漏财黑洞</div>
+    <div id="r-traits"></div>
+  </div>
+
+  <div class="result-card" id="r-connections">
+    <div class="card-title">你的财富关系网</div>
+    <div class="connection-item">
+      <span class="conn-icon">🤝</span>
+      <div>
+        <div class="conn-label">天生财友</div>
+        <div class="conn-name" id="r-friend-name">XXX</div>
+        <div class="conn-desc" id="r-friend-desc">原因说明</div>
+      </div>
+    </div>
+    <div class="connection-item" style="margin-top:16px">
+      <span class="conn-icon">⚔️</span>
+      <div>
+        <div class="conn-label">财富宿敌</div>
+        <div class="conn-name" id="r-enemy-name">XXX</div>
+        <div class="conn-desc" id="r-enemy-desc">原因说明</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 40px; padding: 24px; background: var(--card); border-radius: 16px; border: 1px solid var(--border);">
+    <div id="r-cta-text" style="font-size: 16px; margin-bottom: 12px; line-height: 1.6;"></div>
+    <div style="color: var(--text-dim); font-size: 14px;">添加微信：<span style="color: var(--text); font-weight: bold;">panleicfa</span></div>
+  </div>
+
+  <div style="text-align: center; margin-top: 24px;">
+    <button class="ranking-btn" id="ranking-submit-btn" onclick="submitToRanking()">📊 提交到排行榜</button>
+    <div id="ranking-feedback" style="margin-top: 10px; font-size: 13px;"></div>
+  </div>
+
+  <div style="text-align: center; margin-top: 16px;">
+    <a href="ranking.html" style="color: var(--text-dim); font-size: 13px; text-decoration: none;">查看完整排行榜 →</a>
+  </div>
+
+  <button class="restart-btn" onclick="location.reload()">再测一次</button>
+</div>
+
+<script>
+// =====================================================================
+// 社会人版题库：30题，每题4个选项
+// 主题覆盖：收入/年终奖/副业/投资/消费/借贷/职业/人生观
+// =====================================================================
+var QUESTIONS = [
+  // --- 1-5 收入 / 工资 / 年终奖 / 副业 / 意外之财 ---
+  {
+    text: "叮！公司老板居然没画大饼，真给你发了 15 万年终奖。你的真实第一反应是：",
+    options: [
+      { label: "A", text: "雷打不动转进大额存单或提前还贷。落袋为安，看着那个数字才算真实拥有过。", score: { S: 1, T: 1 } },
+      { label: "B", text: "打开行情软件复盘仓位，制定一份资产配置方案，本金来了要让它干活。", score: { G: 1, B: 1 } },
+      { label: "C", text: "先存 3 万备用金，剩下的按比例分给基金、旅行和父母红包，每笔都有去处。", score: { G: 1, T: 1 } },
+      { label: "D", text: "光速截图发群，打开携程订冰岛。钱不花就是废纸，15 万快乐指数拉满！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "才10号，工资已经去了大半，账户余额正在用嘶喊声召唤你。你的应急方案是：",
+    options: [
+      { label: "A", text: "开启极限省钱模式：停掉所有外卖，午饭自带便当，能走路坚决不打车，熬到发薪日。", score: { S: 1, T: 1 } },
+      { label: "B", text: "盘点一下月初哪些消费不必要，下个月重新设预算分类，这次是教训。", score: { S: 1, B: 1 } },
+      { label: "C", text: "盘点一下最近能接的副业单子：公众号、拍视频、外包设计，先快速回笼一笔。", score: { G: 1, A: 1 } },
+      { label: "D", text: "无所谓，直接把信用卡额度当二月份工资用，下个月再分期还，先过好今天。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "深夜刷朋友圈，曾经成绩不如你的同学晒单：「靠副业上岸，月入10万」。你心里咯噔一下，然后：",
+    options: [
+      { label: "A", text: "微微一笑：「十有八九是割韭菜的微商。」划走，睡觉，明天照常上班。", score: { S: 1, T: 1 } },
+      { label: "B", text: "默默点进他的主页研究商业模式，寻找可复制的路径，但不轻易表态。", score: { G: 1, T: 1 } },
+      { label: "C", text: "认真分析：他做的这个赛道我能切入吗？用一周时间做个市场调研再决策。", score: { G: 1, B: 1 } },
+      { label: "D", text: "直接私聊：「哥，带带我，学费多少？」冲就完了，机会转瞬即逝。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "老同学酒后透露，他做自媒体副业月入2万，你心动了，但副业意味着要牺牲大量业余时间。你会：",
+    options: [
+      { label: "A", text: "心里算了算：下班后本来就是刷手机，钱是假的，时间是真的，不折腾了。", score: { S: 1, T: 1 } },
+      { label: "B", text: "认真问他细节，回家研究方向可行性，如果三个月内没起色就放弃，止损要快。", score: { G: 1, B: 1 } },
+      { label: "C", text: "当场拍板：「下周开始更新，帮我设计个封面。」行动力就是最大的竞争力。", score: { G: 1, A: 1 } },
+      { label: "D", text: "喝完酒回家睡觉，下周忘得干干净净，人生嘛，得过且过，体验才是正道。", score: { F: 1, T: 1 } }
+    ]
+  },
+  {
+    text: "某天下午，彩票站老板跑来恭喜你：你买的那注小彩票中了 5 万块！第一反应是：",
+    options: [
+      { label: "A", text: "先存起来再说，冷静三天，想清楚用途再动，不能被意外之财冲昏头。", score: { S: 1, T: 1 } },
+      { label: "B", text: "这是一笔「风险本金」，直接投进一直看好但没有闲钱买的那只资产。", score: { G: 1, A: 1 } },
+      { label: "C", text: "拿出 1 万奖励自己一次旅行，剩下 4 万按正常理财计划分配，不多不少。", score: { G: 1, B: 1 } },
+      { label: "D", text: "这是老天赏的零花钱，必须花在平时舍不得的地方，不然对不起这份运气。", score: { F: 1, A: 1 } }
+    ]
+  },
+  // --- 6-10 投资 / 股票 / 基金 / 房产 / 创业 ---
+  {
+    text: "某个你重仓买入的基金，今天突然暴跌了 15%。你此时在想什么？",
+    options: [
+      { label: "A", text: "血压飙升，懊悔当初没买稳健理财，默默割肉，发誓这辈子不再买权益类产品。", score: { S: 1, A: 1 } },
+      { label: "B", text: "去查暴跌的底层逻辑：基本面有没有变？没有的话继续持有，甚至考虑补仓。", score: { G: 1, B: 1 } },
+      { label: "C", text: "冷静盯着 K 线图分析，如果跌破关键支撑位就止损，止损前不慌。", score: { G: 1, T: 1 } },
+      { label: "D", text: "跌就跌吧，反正是闲钱，只要我不卖，韭菜就割不到我，静待花开。", score: { F: 1, T: 1 } }
+    ]
+  },
+  {
+    text: "好兄弟半夜神秘私信你：「哥们，踩中AI风口的创业项目，半年回本，就差你了！」你会：",
+    options: [
+      { label: "A", text: "礼貌回复「祝你发财」，然后拉黑。内心OS：又一个杀猪盘启动了。", score: { S: 1, T: 1 } },
+      { label: "B", text: "回他：「发商业计划书、财务模型、退出机制来看看，数据不全不聊。」", score: { G: 1, T: 1 } },
+      { label: "C", text: "约面谈，亲眼看产品，看团队，综合判断后决策，但要控制仓位。", score: { G: 1, B: 1 } },
+      { label: "D", text: "热血沸腾直接问：「多少钱能上车？明天转给你！」大不了当交了学费。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "你存了 30 万，够付一套房的首付。但现在楼市不明朗，你的决策是：",
+    options: [
+      { label: "A", text: "先买！租房的钱打水漂了，买了就是自己的，月供我能扛，安心最重要。", score: { S: 1, A: 1 } },
+      { label: "B", text: "继续等，研究政策走向和城市人口流入数据，看清楚再出手，不急。", score: { G: 1, T: 1 } },
+      { label: "C", text: "把 30 万分散配置到其他资产，租房住，保持资金流动性，机会来了更灵活。", score: { G: 1, B: 1 } },
+      { label: "D", text: "30 万都押在首付上太无聊了，先拿去投资试试，翻倍了再考虑买房。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "前同事找你合伙创业，项目靠谱，但需要你拿出 20 万真金白银入股。你会：",
+    options: [
+      { label: "A", text: "婉拒。20 万是我好几年的血汗钱，创业九死一生，我不是那块料。", score: { S: 1, T: 1 } },
+      { label: "B", text: "花两周做尽职调查：看他过往履历、财务模型、竞品和退出机制，数据说话。", score: { G: 1, T: 1 } },
+      { label: "C", text: "谈清楚股权比例和退出条款，如果条款合理，拿出最多 5 万当风险仓。", score: { G: 1, B: 1 } },
+      { label: "D", text: "人信得过就够了，20 万全投，大不了重头再来，人生要赌才有意思。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "你在网上看到一个号称「年化 18% 稳定收益」的理财产品，还有朋友担保背书。你怎么看？",
+    options: [
+      { label: "A", text: "「年化18%稳定收益」六个字同时出现，这就是骗局，一分钱都不投。", score: { S: 1, T: 1 } },
+      { label: "B", text: "去查这家平台的备案资质、资金托管方式和合规记录，再决定要不要进一步了解。", score: { G: 1, T: 1 } },
+      { label: "C", text: "让朋友详细说明底层资产和风控机制，不弄清楚来源绝不投钱。", score: { G: 1, B: 1 } },
+      { label: "D", text: "先扔进去一万块试试水，收益到账了再加仓，反正只是一小部分。", score: { F: 1, A: 1 } }
+    ]
+  },
+  // --- 11-15 消费 / 购物 / 奢侈 / 信用卡 / 朋友局 ---
+  {
+    text: "车贷、花呗、信用卡分期……面对「借钱消费」这件事，你内心深处的真实OS是：",
+    options: [
+      { label: "A", text: "负债是我的噩梦。能全款绝不分期，欠着别人的钱连觉都睡不踏实。", score: { S: 1, T: 1 } },
+      { label: "B", text: "贷款利率低于我的投资收益率，那就是白捡便宜，不借才是傻子。", score: { G: 1, A: 1 } },
+      { label: "C", text: "消费贷坚决不碰，但低息经营贷用于资产配置，这是两回事。", score: { G: 1, T: 1 } },
+      { label: "D", text: "每月还款额不影响我喝咖啡蹦迪就行，分期不就是穷人版的印钞机吗？", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "几个朋友非要拉你去吃人均 2000 的黑珍珠餐厅，「就你没去过」。你心里在想：",
+    options: [
+      { label: "A", text: "「两千块够我吃一个月外卖了，头痛，找个借口鸽了吧。」", score: { S: 1, T: 1 } },
+      { label: "B", text: "「好，局上有几个大佬，算社交投资，说不定聊出机会来。」", score: { G: 1, B: 1 } },
+      { label: "C", text: "「吃一次体验一下可以，但下个月消费预算要压缩一笔来平衡。」", score: { G: 1, T: 1 } },
+      { label: "D", text: "「冲！本来就想去！吃爽了我来买单，花就花吧，体验才是人生意义！」", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "商场打折季，你平时看上的那件大衣从 3000 元降到了 1200。你会：",
+    options: [
+      { label: "A", text: "「打折就打折，我的衣柜不需要它。」果断离场，一分不花才是真赢。", score: { S: 1, T: 1 } },
+      { label: "B", text: "「已经研究了三个月，这个价格低于历史最低价，理性买入。」", score: { G: 1, B: 1 } },
+      { label: "C", text: "「先买，回家比价，不满意七天无理由退货，反正不亏。」", score: { F: 1, B: 1 } },
+      { label: "D", text: "「买买买！打折就是赚到了1800块！」顺便再拿几件同款配色。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "信用卡账单出来了，这个月消费超出预算 40%。你的第一个动作是：",
+    options: [
+      { label: "A", text: "对账，逐条核查每笔消费是否必要，把不该花的找出来，纳入下月警戒清单。", score: { S: 1, T: 1 } },
+      { label: "B", text: "分析超支原因并调整预算分类，也许是某类消费低估了，重新校准一次。", score: { G: 1, B: 1 } },
+      { label: "C", text: "找一两个本月可以接的外包单快速回血，支出高就提高收入来对冲。", score: { G: 1, A: 1 } },
+      { label: "D", text: "直接申请最低还款额，剩下的分期慢慢还，反正利息也没多少，活在当下。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "某品牌联名款限量球鞋今晚 0 点抢购，朋友说「必买」。这双鞋要 3000 块，你：",
+    options: [
+      { label: "A", text: "根本没设闹钟。3000 块的鞋，穿出去也不能直接变钱，跳过。", score: { S: 1, T: 1 } },
+      { label: "B", text: "查了一下转售价，溢价超过 50% 就抢，当倒卖标的而不是消费。", score: { G: 1, A: 1 } },
+      { label: "C", text: "想想自己鞋柜里的库存，决定不重复，这双还是算了，等下一双更喜欢的。", score: { S: 1, B: 1 } },
+      { label: "D", text: "定好三个闹钟，必须抢到，睡前还在刷购买攻略，喜欢的东西就要拥有！", score: { F: 1, A: 1 } }
+    ]
+  },
+  // --- 16-20 借贷 / AA / 朋友借钱 / 理财产品 ---
+  {
+    text: "终于等来一个完整的周末，没有班要加。如果要处理财务，大概率在干什么？",
+    options: [
+      { label: "A", text: "对账：核对流水，顺手取消那些忘记关掉的自动续费会员，每分钱都要管到。", score: { S: 1, T: 1 } },
+      { label: "B", text: "开着财经播客，复盘投资组合，研究哪只可以调仓，哪只继续持有。", score: { G: 1, B: 1 } },
+      { label: "C", text: "更新一下账本，看看各项目是否达标，然后奖励自己一顿好饭。", score: { G: 1, B: 1 } },
+      { label: "D", text: "处理什么财务！大好周末不出去消费，活着有什么意思？钱是用来体验的！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "老朋友来借 2 万，说是临时周转，「下个月肯定还」。你们关系不错，但他的还款历史让你有点顾虑。",
+    options: [
+      { label: "A", text: "「没有，我最近也紧。」能力范围内也不借，借钱最伤感情，不如早说死。", score: { S: 1, T: 1 } },
+      { label: "B", text: "借 5000，微信上白纸黑字说清楚还款日期，超过则每天提醒，友情归友情。", score: { G: 1, B: 1 } },
+      { label: "C", text: "问清楚用途，如果是真急用，借出去当成送出去的钱心里才平衡，不要期待。", score: { F: 1, T: 1 } },
+      { label: "D", text: "直接转 2 万，朋友有难就要帮，真要计较那么多，不如别做朋友。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "一群朋友聚餐，有人提议 AA，有人说「下次你请，今晚我买单」。你最习惯哪种模式？",
+    options: [
+      { label: "A", text: "坚持 AA。花多少算多少，人情债最难还，清清楚楚才是真朋友。", score: { S: 1, T: 1 } },
+      { label: "B", text: "AA 或轮流请都行，但要有个默认的规则，大家心里有数就不会有矛盾。", score: { G: 1, B: 1 } },
+      { label: "C", text: "看情况：小聚就 AA，大局有人买单就顺势，不纠结，不计较。", score: { F: 1, B: 1 } },
+      { label: "D", text: "直接抢着买单，我请！钱花在朋友身上最值，计较这几百块太没格局。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "银行客户经理打电话推荐一款「保本浮动收益」理财产品，预期年化 6%，起购 10 万。你会：",
+    options: [
+      { label: "A", text: "「保本」两个字让我心动，但 6% 意味着底层资产有风险，让我研究一下再说。", score: { S: 1, T: 1 } },
+      { label: "B", text: "问清楚底层资产是什么、流动性怎样、有没有历史净值数据，不答复就不买。", score: { G: 1, T: 1 } },
+      { label: "C", text: "买一点试水，10 万起购有点重，看能不能分散到几款不同底层的产品。", score: { G: 1, B: 1 } },
+      { label: "D", text: "「预期 6%」就是在说梦话，现在哪有保本又稳定的，挂了。", score: { S: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "同事在茶水间科普：「你那个货币基金利率太低了，不如买点高息债券基金。」你：",
+    options: [
+      { label: "A", text: "「我就喜欢低利率，稳稳的，高收益背后是高风险，我不需要那种刺激。」", score: { S: 1, T: 1 } },
+      { label: "B", text: "「你说的哪只？让我看看历史回撤、规模和基金经理，对比一下再说。」", score: { G: 1, T: 1 } },
+      { label: "C", text: "当天回家自己搜了一下，觉得有道理，把闲置的一部分迁移过去试试。", score: { G: 1, B: 1 } },
+      { label: "D", text: "「行，推荐一个，晚上我直接买了。」同事靠谱，听听建议也没事。", score: { G: 1, A: 1 } }
+    ]
+  },
+  // --- 21-25 职业 / 跳槽 / 失业 / 风险 / 机会成本 ---
+  {
+    text: "猎头找过来，对方公司薪资涨 30%，但要从国企跳到初创公司，你会怎么考量？",
+    options: [
+      { label: "A", text: "拒绝。国企是铁饭碗，初创公司三年内倒闭率超60%，薪资涨30%换不来稳定。", score: { S: 1, T: 1 } },
+      { label: "B", text: "深度调研：融资轮次、核心团队背景、竞品生存状态，数据合格了再谈下一步。", score: { G: 1, T: 1 } },
+      { label: "C", text: "谈清楚期权、赔偿条款和试用期退出机制，如果都OK，值得一跳，风险可控。", score: { G: 1, B: 1 } },
+      { label: "D", text: "「30%，冲了！」机会不等人，大不了半年后再跳回来，人生就是要折腾。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "今天早上收到邮件，公司倒了，你拿着 N+1 赔偿金正式失业。接下来你会：",
+    options: [
+      { label: "A", text: "立刻启动「极限抠门模式」，算出这笔钱能苟几个月，同时疯狂海投简历。", score: { S: 1, T: 1 } },
+      { label: "B", text: "用这笔钱启动那个已经想了很久的轻资产副业，危机才是最好的入场时机。", score: { G: 1, A: 1 } },
+      { label: "C", text: "给自己三个月的战略过渡期：一半时间找工作，一半时间测试副业方向。", score: { G: 1, B: 1 } },
+      { label: "D", text: "太好了！先订机票放空半个月，钱的事回来再说，活在当下！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "你的工作每天都在消耗你的灵魂，但月薪 2 万。一个喜欢的方向只有 8000 块起步。你选：",
+    options: [
+      { label: "A", text: "留在原地。2万和8000，差的那12000才是稳定的保障，喜欢的事下班做就好。", score: { S: 1, T: 1 } },
+      { label: "B", text: "先在那个方向做兼职，两年内如果副业收入达到 1.5 万才转正，有数据再跳。", score: { G: 1, T: 1 } },
+      { label: "C", text: "喜欢才能做好，做好了收入自然上来，咬牙跳，接受初期的阵痛。", score: { F: 1, A: 1 } },
+      { label: "D", text: "先跳再说，人生就这几十年，不值得为了12000块把热情慢慢磨碎。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "公司给了个机会：调去海外新市场，薪资涨20%，但生活成本也会大幅增加，还离家很远。你：",
+    options: [
+      { label: "A", text: "算了算：涨的20%扣掉生活成本差价，实际到手没多多少，不值得折腾。", score: { S: 1, T: 1 } },
+      { label: "B", text: "详细测算税后收入、汇率风险、职级提升空间，综合收益为正才去。", score: { G: 1, T: 1 } },
+      { label: "C", text: "去！异国经历是简历上的稀缺资产，长期人力资本回报远超眼前的成本。", score: { G: 1, A: 1 } },
+      { label: "D", text: "去！换个城市换个人生，旅居式工作就是我的梦想，机会来了不能错过。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "你有10万闲钱，一个看起来靠谱的项目需要全投，另一种方案是分散到多个低风险资产。你会：",
+    options: [
+      { label: "A", text: "全部分散到低风险资产，保本第一，收益其次，一个项目全押太冒险了。", score: { S: 1, T: 1 } },
+      { label: "B", text: "拿出2万打入那个项目作为风险仓，8万继续稳健配置，控制最大回撤。", score: { G: 1, B: 1 } },
+      { label: "C", text: "如果这个项目调研够充分，值得重仓，全投。机会成本比分散风险更贵。", score: { G: 1, A: 1 } },
+      { label: "D", text: "把这10万花掉去学一个有价值的技能，投资自己才是最高ROI的选择。", score: { F: 1, B: 1 } }
+    ]
+  },
+  // --- 26-30 人生观 / 财务目标 / 未来规划 / 价值观 ---
+  {
+    text: "闭上眼睛，想象 10 年后你最理想的生活状态。脑子里第一个跳出来的画面是：",
+    options: [
+      { label: "A", text: "一套没有房贷的房子，银行卡里一笔厚存款，数字看着就安心，什么都不缺。", score: { S: 1, T: 1 } },
+      { label: "B", text: "有几个能自动产生现金流的资产，每天醒来账户在涨，不用靠打卡活着。", score: { G: 1, A: 1 } },
+      { label: "C", text: "在某个陌生城市旅居，明天去哪儿看心情，钱够花就好，自由才是最贵的东西。", score: { F: 1, B: 1 } },
+      { label: "D", text: "做自己喜欢的事，不用讨好任何人，财务自由只是附带品，不是终点。", score: { F: 1, T: 1 } }
+    ]
+  },
+  {
+    text: "如果只能选一个，你认为财富最重要的功能是什么？",
+    options: [
+      { label: "A", text: "安全垫。让我在任何突发情况下都不会陷入绝境，随时有底气说「我不需要这份工作」。", score: { S: 1, T: 1 } },
+      { label: "B", text: "杠杆。钱本身不重要，重要的是它能撬动更多资源，让我的决策变得更有力。", score: { G: 1, B: 1 } },
+      { label: "C", text: "门票。有了钱才能去体验那些没钱体验不到的人生——不是奢侈，是丰富。", score: { F: 1, A: 1 } },
+      { label: "D", text: "时间。我愿意用财富换时间，而不是用时间换财富，这是优先级问题。", score: { F: 1, T: 1 } }
+    ]
+  },
+  {
+    text: "朋友问你：「你的财务目标是什么？」你会怎么回答？",
+    options: [
+      { label: "A", text: "「在50岁前存够800万，然后不再依赖任何人，银行卡里永远有钱看着。」", score: { S: 1, T: 1 } },
+      { label: "B", text: "「被动收入覆盖主动支出，真正的财务自由不是有钱，是有选择权。」", score: { G: 1, B: 1 } },
+      { label: "C", text: "「我不太算这种，活得开心比账户好看更重要，体验人生不是靠存钱。」", score: { F: 1, A: 1 } },
+      { label: "D", text: "「先实现某个阶段性目标，比如三年内资产翻倍，然后再定下一个目标。」", score: { G: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "你认为一个人最应该在哪方面多花钱，投资回报率最高？",
+    options: [
+      { label: "A", text: "不花。省下来才是真的回报，花出去的钱永远是成本。", score: { S: 1, T: 1 } },
+      { label: "B", text: "健康和学习。身体垮了什么都归零，知识和技能才是不贬值的资产。", score: { G: 1, T: 1 } },
+      { label: "C", text: "人脉和社交。机会从人来，认识对的人比存钱更值钱。", score: { G: 1, B: 1 } },
+      { label: "D", text: "体验和旅行。那些记忆是真正属于你的，没有波动没有风险，永远不会亏损。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "最后一道送命题：你觉得自己这辈子「赢」的标准是什么？",
+    options: [
+      { label: "A", text: "账户里有足够厚的安全垫，不用为账单焦虑，可以随时拒绝不想做的事。", score: { S: 1, T: 1 } },
+      { label: "B", text: "打造了一个可以自己运转的资产体系，钱替我工作，而不是我替钱工作。", score: { G: 1, B: 1 } },
+      { label: "C", text: "把生命中最精彩的体验都实实在在活过了，不留遗憾，不管账户里剩多少。", score: { F: 1, A: 1 } },
+      { label: "D", text: "在我最想做的事情上留下了点什么，财富只是衡量标准之一，不是全部。", score: { F: 1, T: 1 } }
+    ]
+  }
+];
+
+// =====================================================================
+// 学生版题库：30题，每题4个选项
+// =====================================================================
+var QUESTIONS_TEEN = [
+  // --- 1-5 零花钱 / 压岁钱 / 月底月初 ---
+  {
+    text: "过年亲戚刚塞给你 2000 块巨额压岁钱，你妈还没来得及「帮你保管」，你会：",
+    options: [
+      { label: "A", text: "立马存进自己的秘密账户，看着余额变多比打游戏还爽，一分不动。", score: { S: 1, T: 1 } },
+      { label: "B", text: "盘算着买点什么能「钱生钱」——倒卖稀有卡牌或者批发零食转手。", score: { G: 1, B: 1 } },
+      { label: "C", text: "拿出500犒劳自己，剩下1500存起来，奖惩分明，才叫会花钱。", score: { G: 1, B: 1 } },
+      { label: "D", text: "清空购物车！那双鞋和那个皮肤我馋了很久了，今天全买，爽！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "才10号，你的零花钱余额已经在发出求救信号了。在爸妈发现前，你的应对方案是：",
+    options: [
+      { label: "A", text: "不可能见底——本仓鼠在床垫底下还有一笔你们永远不会知道的秘密备用金。", score: { S: 1, T: 1 } },
+      { label: "B", text: "去找爸妈正式谈判：做家务换零花钱，做完就结算，天经地义的劳务关系。", score: { G: 1, A: 1 } },
+      { label: "C", text: "蹭同学零食、蹭饭卡、用人情债撑到下个月发钱，社牛能力全开。", score: { F: 1, A: 1 } },
+      { label: "D", text: "反省一下是哪笔花超了，下个月在那个类别压缩一点，本次吸取教训。", score: { S: 1, B: 1 } }
+    ]
+  },
+  {
+    text: "月底了，账户就剩 50 块撑 3 天，学校离家 2 小时，最近不想跟爸妈开口要钱。你会：",
+    options: [
+      { label: "A", text: "翻出宿舍里的泡面和零食存货，熬过去，下个月开始严格记账。", score: { S: 1, T: 1 } },
+      { label: "B", text: "把书包里闲置的几本教辅挂到闲鱼，先回血再说，以物换钱没什么丢人的。", score: { G: 1, A: 1 } },
+      { label: "C", text: "找死党先借100，下个月一发钱立刻还，短期周转正常操作。", score: { F: 1, B: 1 } },
+      { label: "D", text: "给家里打电话，直接说实话，花超了就花超了，解释清楚就好。", score: { F: 1, T: 1 } }
+    ]
+  },
+  {
+    text: "下午放学，你发现自己今天消费超预算了——但起因是帮同学垫了一顿饭钱还没收回来。你心里：",
+    options: [
+      { label: "A", text: "当天晚上就发消息要回来，不是小气，是养成好习惯，钱不要不清不楚的。", score: { S: 1, T: 1 } },
+      { label: "B", text: "记在心里，下次吃饭的时候让他买单，不用开口，自然就抵消了。", score: { G: 1, B: 1 } },
+      { label: "C", text: "算了，朋友之间不计较这点，当给自己买了个好人缘，几十块而已。", score: { F: 1, A: 1 } },
+      { label: "D", text: "今天的预算在记账里备注一下，下次出门预留一点机动金，正常情况提前防住。", score: { G: 1, T: 1 } }
+    ]
+  },
+  {
+    text: "爸妈每月给你的零花钱数额是固定的，但你觉得根本不够用。你的长期对策是：",
+    options: [
+      { label: "A", text: "减少非必要消费：奶茶、盲盒、外卖能省则省，调整自己的生活方式适配预算。", score: { S: 1, T: 1 } },
+      { label: "B", text: "和爸妈谈判，列清楚自己的支出结构，用数据证明现在的额度不够，争取合理涨价。", score: { G: 1, B: 1 } },
+      { label: "C", text: "找渠道自己赚：闲鱼卖闲置、接单做任务，补上缺口，不靠家里增加。", score: { G: 1, A: 1 } },
+      { label: "D", text: "该花就花，不够了就多申请一次，爸妈又不会真不给，偶尔透支很正常。", score: { F: 1, A: 1 } }
+    ]
+  },
+  // --- 6-10 消费 / 购物 / 潮流 / 盲盒 / 手机 ---
+  {
+    text: "放学路上，小卖部新到一批「全网炸裂」的绝版卡包，同学们已经在排队了。你：",
+    options: [
+      { label: "A", text: "旁观三秒，拎起一瓶汽水走人。几十块买塑料？智商税一分不交。", score: { S: 1, T: 1 } },
+      { label: "B", text: "掏钱买一包，拆开——如果是隐藏款，立刻加价甩给在求购的同学。", score: { G: 1, A: 1 } },
+      { label: "C", text: "先旁观别人拆，看到出货率再决定要不要参与，不做信息不足的决策。", score: { G: 1, T: 1 } },
+      { label: "D", text: "直接把剩下的半架子全包了，不抽出最闪的卡绝不回家！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "全班已经有五个人穿上了那双两千块的潮牌联名鞋，昨天还有人拍照@了你。你的反应：",
+    options: [
+      { label: "A", text: "完全无感。鞋子能穿就行，两千块是好几个月的零花钱，跟我的鞋柜无关。", score: { S: 1, T: 1 } },
+      { label: "B", text: "去得物和闲鱼蹲二手，坚决不当原价大冤种，九折以下再谈。", score: { G: 1, B: 1 } },
+      { label: "C", text: "列入愿望清单，攒够钱了再买，不提前透支，等到的东西更香。", score: { S: 1, B: 1 } },
+      { label: "D", text: "当天晚上死缠烂打，实在不行就透支三个月零花钱，必须买！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "手机用了两年，跑起来已经不太顺滑了。新旗舰刚发布，6000 块，你觉得：",
+    options: [
+      { label: "A", text: "「跑得动就先用，手机卡顿不是换机的理由，坏了再换。」", score: { S: 1, T: 1 } },
+      { label: "B", text: "「研究一下二手机或者上一代旗舰，性能够用价格砍半，划算多了。」", score: { G: 1, B: 1 } },
+      { label: "C", text: "「先攒三个月，等到双十一叠券买，6000能砍到4500以内再入手。」", score: { G: 1, T: 1 } },
+      { label: "D", text: "「明天就下单，找爸妈支持一下，新旗舰用着开心才是正经事！」", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "同学送了你一张奶茶限时买一送一的券，但你今天的饮料预算已经用完了。你会：",
+    options: [
+      { label: "A", text: "转给别人，预算就是预算，多这一杯也是打破原则，不行。", score: { S: 1, T: 1 } },
+      { label: "B", text: "买两杯，其中一杯卖给有需要的同学，原价收回成本，相当于白喝。", score: { G: 1, A: 1 } },
+      { label: "C", text: "「这次破例，下次在别的地方补回来。」超一次不算大事，灵活处理。", score: { F: 1, B: 1 } },
+      { label: "D", text: "当然买！买一送一错过就亏了，预算是死的人是活的，喝！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "班里最近流行开盲盒，你已经为同一个系列花了 200 块，但那个隐藏款还没出。你：",
+    options: [
+      { label: "A", text: "停。200块已经够多了，继续开就是在为概率买单，成本不可追，止损离场。", score: { S: 1, T: 1 } },
+      { label: "B", text: "算一下期望值：隐藏款转售价是多少？如果溢价够高，再开几个也是理性的。", score: { G: 1, B: 1 } },
+      { label: "C", text: "去二手平台直接收那个隐藏款，比赌概率更有效率，省了乱开的钱。", score: { G: 1, T: 1 } },
+      { label: "D", text: "再买！再买！就差这一个了，不拿到手心里过不去，冲！", score: { F: 1, A: 1 } }
+    ]
+  },
+  // --- 11-15 赚钱 / 副业 / 闲鱼 / 摆摊 / 兼职 ---
+  {
+    text: "终于放暑假了！两个月，你想让自己手头宽裕一点点，你会怎么做？",
+    options: [
+      { label: "A", text: "躺平在家吹空调玩免费游戏。只要我不出门，这个世界赚不走我一分钱。", score: { S: 1, T: 1 } },
+      { label: "B", text: "把家里闲置书和手办挂上闲鱼回血，再去夜市摆摊卖小东西，赚到算赚到。", score: { G: 1, A: 1 } },
+      { label: "C", text: "找一份固定的暑期打工——奶茶店、书店、超市都行，稳定收入比折腾更踏实。", score: { G: 1, B: 1 } },
+      { label: "D", text: "约饭、看演出、买新衣服，钱不够了就找长辈要，放假不挥霍叫什么暑假？", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "你在闲鱼挂了一件九成新的外套，出价 150，对方出价 80，你觉得：",
+    options: [
+      { label: "A", text: "不降，80块太委屈这件衣服了，自己留着放着也比卖便宜了强。", score: { S: 1, T: 1 } },
+      { label: "B", text: "「110 是底线，你来我家自取可以再减 10，总价 100 最低了。」讨价还价是基本功。", score: { G: 1, B: 1 } },
+      { label: "C", text: "同意 80，快速变现比等一个出价合适的买家更有效率，闲置占空间。", score: { G: 1, A: 1 } },
+      { label: "D", text: "直接送给同学算了，二手交易太麻烦，人情比 150 块值钱。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "B站突然给你推了一个视频：《14岁初中生靠这招赚到人生第一个一万块》。你会：",
+    options: [
+      { label: "A", text: "嘴角微扯直接划走——营销号标配，信这个的才是真韭菜。", score: { S: 1, T: 1 } },
+      { label: "B", text: "点进去认真看完，顺手做笔记，评估这套路在我们学校能不能复制。", score: { G: 1, B: 1 } },
+      { label: "C", text: "看完决定直接试一下，反正成本低，做坏了也就是浪费几天时间而已。", score: { G: 1, A: 1 } },
+      { label: "D", text: "随手点赞，评论「接好运」，然后切回去看搞笑视频，下一个！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "你想在学校门口摆摊卖炸串，前期本金大概需要 300 块，但不知道能不能回本。你会：",
+    options: [
+      { label: "A", text: "算了，300块万一亏了就白搭，风险太大，不值得。", score: { S: 1, T: 1 } },
+      { label: "B", text: "先去观察同类摊位一周：客流量、单价、消耗速度，数据齐了再下手。", score: { G: 1, T: 1 } },
+      { label: "C", text: "拿 100 块试水一天，看实际转化，验证了再追加投入，不用押注太重。", score: { G: 1, B: 1 } },
+      { label: "D", text: "直接上！失败了就当花300块买了经验，先动起来再说！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "花了三百块买的高评分游戏，玩了两小时发现无聊到犯困，退款期也过了。你会：",
+    options: [
+      { label: "A", text: "在床上心痛半小时，立誓以后任何消费前必须看够十篇评测才能下单。", score: { S: 1, T: 1 } },
+      { label: "B", text: "马上挂号把账号出租，或者把极品装备出掉回血，能回本一块是一块。", score: { G: 1, B: 1 } },
+      { label: "C", text: "把游戏赠给有需要的同学，换点人情，总比烂在账号里强。", score: { F: 1, B: 1 } },
+      { label: "D", text: "无所谓，就当买了个「不好玩」的经历，直接卸载，去买下一个。", score: { F: 1, A: 1 } }
+    ]
+  },
+  // --- 16-20 借钱 / AA / 同学关系 / 请客 ---
+  {
+    text: "你最好的死党突然私信你：「借我500，想去抢那场演唱会的票！」你会：",
+    options: [
+      { label: "A", text: "找个委婉借口拒绝。借钱最伤感情了，宁可不借，也不要因为钱搞砸关系。", score: { S: 1, T: 1 } },
+      { label: "B", text: "「借可以，但说清楚还款日期，还钱的时候顺便请我一杯奶茶当利息。」", score: { G: 1, B: 1 } },
+      { label: "C", text: "先问他是否有能力还，如果确定有收入来源，借出去当然没问题。", score: { G: 1, T: 1 } },
+      { label: "D", text: "秒转，什么时候还不问，为好兄弟/好闺蜜两肋插刀，这才叫朋友！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "同学过生日，朋友群里发起凑礼金，建议每人 50 块。你只认识其中两三个人，你会：",
+    options: [
+      { label: "A", text: "不参与，礼金这种事要有选择，不认识就不凑，不用陪跑。", score: { S: 1, T: 1 } },
+      { label: "B", text: "凑 20 块，给个心意就好，没必要因为不好意思凑满额。", score: { G: 1, B: 1 } },
+      { label: "C", text: "凑 50 块，大家都凑 50 我凑少了不好意思，随大流最安全。", score: { F: 1, B: 1 } },
+      { label: "D", text: "大方凑 100，多凑点显得我够意思，反正以后混熟了也能认识更多朋友。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "你和同学吃饭，饭后对方说「你来买单吧，下次我请」。这是第三次了，下次还没来。你：",
+    options: [
+      { label: "A", text: "当天吃完就要求 AA，不欠不占，钱的事情最好当场清楚。", score: { S: 1, T: 1 } },
+      { label: "B", text: "这次再买，但开口说明：「下次真的要记得，不然之后我们就 AA。」", score: { G: 1, B: 1 } },
+      { label: "C", text: "继续买，不好意思开口，就当朋友关系维护成本，忍了算了。", score: { F: 1, T: 1 } },
+      { label: "D", text: "无所谓，多请几顿也没什么，交朋友哪能这么算，生气不值得。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "学校食堂今天特别良心，但你每天只有 50 块午饭预算。你打算怎么花这 50 块？",
+    options: [
+      { label: "A", text: "点 15 块特价套餐吃饱，剩下 35 块转进储蓄账户，今天又超额完成任务。", score: { S: 1, T: 1 } },
+      { label: "B", text: "吃 30 块，用剩下 20 块批发零食，晚自习饿了的同学就是精准客户。", score: { G: 1, A: 1 } },
+      { label: "C", text: "正常消费 50 块，吃好才有精力学习，不用算这么细。", score: { F: 1, B: 1 } },
+      { label: "D", text: "直接上 50 块的豪华套餐，不够就借明天的，今天必须吃到位！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "班上组织了一次同学聚餐，提前 AA 交了 100 块，但当天你临时有事没去，你会：",
+    options: [
+      { label: "A", text: "找组织者要回那 100 块，没消费的钱当然要退，没商量。", score: { S: 1, T: 1 } },
+      { label: "B", text: "不去但不退钱，算一份情谊投入，以后再补回来就行。", score: { G: 1, B: 1 } },
+      { label: "C", text: "发个红包替代：「这次没去，下次我请大家喝奶茶」，礼数到了就好。", score: { F: 1, B: 1 } },
+      { label: "D", text: "100 块就 100 块，下次参加就好了，不值得为了这点钱搞得很麻烦。", score: { F: 1, A: 1 } }
+    ]
+  },
+  // --- 21-25 游戏 / 充值 / 装备 / 电竞消费 ---
+  {
+    text: "你最爱的游戏出了一套只限时3天的皮肤套装，要 648 元，不买就永久错过。你：",
+    options: [
+      { label: "A", text: "「再好看也是数字，648 买不了任何现实里的东西，过了就过了。」", score: { S: 1, T: 1 } },
+      { label: "B", text: "研究下这套皮肤之后的二手价和账号增值空间，如果值就买，不值就算。", score: { G: 1, T: 1 } },
+      { label: "C", text: "「我已经三个月没充值了，攒着呢，这套绝版皮肤买定了，值！」", score: { F: 1, B: 1 } },
+      { label: "D", text: "今晚全家动员要钱，无论如何都要入手，错过这套睡不着觉！", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "你发现一款新游戏「首充6元得超值礼包」，但你知道后面会有更多付费诱惑。你的策略是：",
+    options: [
+      { label: "A", text: "不充，第一刀下去就停不了，0元党才是最清醒的人。", score: { S: 1, T: 1 } },
+      { label: "B", text: "充6元，然后给自己设一个总额上限，超过就强制卸载，有纪律才敢玩。", score: { G: 1, T: 1 } },
+      { label: "C", text: "「充一点点，后面慢慢看，反正玩腻了就停。」", score: { F: 1, B: 1 } },
+      { label: "D", text: "「首充那么便宜！先充先充，后面的付费到时候再说，现在不亏。」", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "班里有人拿到了超强排位号，出价 200 块想卖给你。你：",
+    options: [
+      { label: "A", text: "拒绝。为别人的账号掏钱，永远是说停就停的风险投资，太蠢了。", score: { S: 1, T: 1 } },
+      { label: "B", text: "「这个号的战力和皮肤值不值 200 让我研究一下，你等我半小时。」", score: { G: 1, T: 1 } },
+      { label: "C", text: "「100 块，买就买，不买算了。」要就要个好价格，贵了不值。", score: { G: 1, B: 1 } },
+      { label: "D", text: "「成交！」200 块买了就买了，能玩得爽就值，不用想那么多。", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "你玩的游戏出了一个充值满 500 返 200 代金券的活动。你：",
+    options: [
+      { label: "A", text: "「这就是让你多花 500 的套路，代金券只能在游戏里用，滚。」", score: { S: 1, T: 1 } },
+      { label: "B", text: "算一下我未来三个月的充值计划，如果本来就要花这些，充一次合并划算。", score: { G: 1, T: 1 } },
+      { label: "C", text: "「返 200 感觉很赚，充了！」冲完再想花哪里，总之先拿到优惠再说。", score: { F: 1, A: 1 } },
+      { label: "D", text: "和几个队友一起合充，每人出一点，代金券一起用，降低个人成本。", score: { G: 1, B: 1 } }
+    ]
+  },
+  {
+    text: "一个游戏主播直播间里说：「这个装备我用了之后胜率提升了 20%，现在打折，限时购。」",
+    options: [
+      { label: "A", text: "「主播说啥都是广告，胜率靠操作不靠装备，一分不充。」", score: { S: 1, T: 1 } },
+      { label: "B", text: "「去游戏数据平台核实一下这个装备的实际数据，再决定。」", score: { G: 1, T: 1 } },
+      { label: "C", text: "「他说提升 20% 那肯定有点道理，冲一波，输了也只是钱的问题。」", score: { F: 1, A: 1 } },
+      { label: "D", text: "「看上去不错，但先等它打折结束再看评价，不急着入。」", score: { G: 1, B: 1 } }
+    ]
+  },
+  // --- 26-30 未来 / 大学 / 职业 / 人生规划 ---
+  {
+    text: "假设你高考发挥失常，分数只能去一个普通二本，和你梦想的大学差距很大。你会：",
+    options: [
+      { label: "A", text: "先稳妥入学，然后拼命准备专升本或考研，稳定地往上走才是正道。", score: { S: 1, T: 1 } },
+      { label: "B", text: "复读一年，调研了历年数据，只要备考得当，风险可控，值得赌一次。", score: { G: 1, B: 1 } },
+      { label: "C", text: "去读，但同时把所有精力压进去做一件能建立个人标签的事，学校不是全部。", score: { G: 1, A: 1 } },
+      { label: "D", text: "「分数只是一个号码，人生的精彩程度跟学校没关系，去就去，问题不大。」", score: { F: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "大家都在说「选专业要看就业率和薪资」，但你真正喜欢的专业就业率一般。你会：",
+    options: [
+      { label: "A", text: "听家里人的，读热门专业，喜欢的事下班后再做，先把饭碗端稳。", score: { S: 1, T: 1 } },
+      { label: "B", text: "研究那个专业的就业路径，找到里面薪资最高的细分方向，喜欢也要理性选。", score: { G: 1, T: 1 } },
+      { label: "C", text: "选喜欢的，做得好的事才能做到极致，最终挣的钱不会少于凑合读的专业。", score: { F: 1, A: 1 } },
+      { label: "D", text: "先选喜欢的，大学里再根据市场反馈调整方向，人要先试才知道。", score: { G: 1, B: 1 } }
+    ]
+  },
+  {
+    text: "你周围越来越多人开始谈论「财务自由」。你觉得这件事对你来说：",
+    options: [
+      { label: "A", text: "最重要的目标。我要存够足够的钱，让自己永远不用担心账单这件事。", score: { S: 1, T: 1 } },
+      { label: "B", text: "是结果，不是目标——先搞清楚自己擅长什么、能创造什么价值，钱是跟过来的。", score: { G: 1, B: 1 } },
+      { label: "C", text: "听起来是个好东西，但我现在最想要的是自由体验生活，不是账户上的数字。", score: { F: 1, A: 1 } },
+      { label: "D", text: "太远了，现在不想想，先把眼前这道题做好比什么都重要。", score: { F: 1, T: 1 } }
+    ]
+  },
+  {
+    text: "某知名企业校招，薪资超高但公司出名的「996」。另一个机会小公司薪资低一半但弹性大。你选：",
+    options: [
+      { label: "A", text: "大公司，高薪先攒几年，存款厚了才有资本选择，先忍再说。", score: { S: 1, T: 1 } },
+      { label: "B", text: "大公司，但同时规划两年内积累够离职资本——大平台 + 存款 + 技能，然后再跳。", score: { G: 1, T: 1 } },
+      { label: "C", text: "小公司，时间是最贵的资源，996 把你的时间买走了，薪资再高也是亏的。", score: { F: 1, B: 1 } },
+      { label: "D", text: "小公司，用弹性时间搞副业，两条腿走路，总收入不一定输给大公司。", score: { G: 1, A: 1 } }
+    ]
+  },
+  {
+    text: "最后一道送命题：你这辈子想变有钱，最底层的原因到底是什么？",
+    options: [
+      { label: "A", text: "安全感。永远不用为账单焦虑，不用为几块钱的差价反复纠结，踏实。", score: { S: 1, T: 1 } },
+      { label: "B", text: "话语权。想掌控自己的命运，能对不想做的事硬气地说「不」。", score: { G: 1, B: 1 } },
+      { label: "C", text: "体验。全世界哪儿好玩去哪儿，想买什么直接买，把人生体验拉满。", score: { F: 1, A: 1 } },
+      { label: "D", text: "选择权。不是要「很多钱」，是要随时能选择——工作、城市、生活方式。", score: { F: 1, T: 1 } }
+    ]
+  }
+];
+
+// =====================================================================
+// 9种人格映射
+// =====================================================================
+var PERSONALITIES = {
+  "S-T": {
+    name: "金库守卫者",
+    summary: "安全感饥渴症患者。骗子遇到你都会流下悔恨的泪水，但通货膨胀正在悄悄偷走你的钱。",
+    traits: [
+      { t: "✅ 绝对免疫杀猪盘", d: "骗子遇到你都会流下悔恨的泪水。" },
+      { t: "❌ 错失一个亿", d: "因为过度害怕风险，你可能完美避开了所有时代红利。" }
+    ]
+  },
+  "S-B": {
+    name: "稳健囤粮官",
+    summary: "既不冒进也不挥霍，活成了人类版余额宝。听起来很稳？但你的钱正在以每年3%的速度蒸发。",
+    traits: [
+      { t: "✅ 财务韧性极强", d: "任何风暴都动摇不了你的存款曲线，比99%的人都抗跌。" },
+      { t: "❌ 增长速度约等于零", d: "什么都研究但什么都不敢下手，最终沦为通胀的温水青蛙。" }
+    ]
+  },
+  "S-A": {
+    name: "冲动存钱机",
+    summary: "头脑一热把钱锁死在存单里，转身又冲动买了个理财产品。你的左手和右手在打架。",
+    traits: [
+      { t: "✅ 攒钱速度出人意料", d: "危机感驱动下的储蓄执行力，让你比同龄人多出一份应急底气。" },
+      { t: "❌ 决策前后矛盾", d: "同时存在「绝不乱花钱」和「冲了再说」两种人格，账户余额像坐过山车。" }
+    ]
+  },
+  "G-T": {
+    name: "深渊策略家",
+    summary: "满脑子搞钱计划，但每一步都要盘算清楚再落子。别人财富自由了，你还在做第三版可行性报告。",
+    traits: [
+      { t: "✅ 出手极少踩坑", d: "调研做得比审计师还细，每一次投资都有充分的逻辑支撑。" },
+      { t: "❌ 分析瘫痪症晚期", d: "最好的机会往往死在你第N轮的「再等等看」上。" }
+    ]
+  },
+  "G-B": {
+    name: "精算操盘手",
+    summary: "搞钱有策略，行动有节奏，看起来像是天选之人。偶尔太冷静，反而错过了只属于疯子的暴富机会。",
+    traits: [
+      { t: "✅ 投资胜率最高", d: "理性分析加适度执行，大概率在同龄人里最先跑赢通胀。" },
+      { t: "❌ 缺乏All-in的勇气", d: "永远留着安全边际，可财富的跃迁往往需要押注那一刻的确定性。" }
+    ]
+  },
+  "G-A": {
+    name: "逐风掠食者",
+    summary: "搞钱狂热分子。别人还在犹豫你已经把钱投进去了，但容易在不熟悉的领域交昂贵学费。",
+    traits: [
+      { t: "✅ 极强的行动力", d: "别人还在犹豫，你已经把钱投进去了。" },
+      { t: "❌ 风险盲区", d: "容易在自己不熟悉的领域交昂贵的学费。" }
+    ]
+  },
+  "F-T": {
+    name: "佛系规划师",
+    summary: "向往诗和远方，但出发前要把攻略写满30页。你的梦想很丰满，你的执行很骨感。",
+    traits: [
+      { t: "✅ 消费品味独到", d: "钱花出去必然有质感，从不为廉价的刺激买单。" },
+      { t: "❌ 迟迟无法起跑", d: "总在等「最佳时机」，结果发现自由永远在计划里，不在现实里。" }
+    ]
+  },
+  "F-B": {
+    name: "旷野体验家",
+    summary: "钱对你只是门票。永远知道怎么把钱花出质感，但遇到突发事件容易捉襟见肘。",
+    traits: [
+      { t: "✅ 生活质量极高", d: "你永远知道怎么用最合理的钱买到最大的快乐。" },
+      { t: "❌ 容易缺乏后备", d: "如果不强制储蓄，遇到突发事件容易捉襟见肘。" }
+    ]
+  },
+  "F-A": {
+    name: "自由烧钱怪",
+    summary: "活在当下的极致践行者。信用卡额度就是你的人生上限，但每次刷爆都充满了仪式感。",
+    traits: [
+      { t: "✅ 极致的当下快乐", d: "你不会在临终前后悔「那年没去」，因为你一定去了。" },
+      { t: "❌ 储蓄账户经常归零", d: "缺乏缓冲垫，任何一次意外都能让你的财务直接躺平。" }
+    ]
+  },
+  "default": {
+    name: "薛定谔的操盘手",
+    summary: "你的财商还在发育中，既想稳又想赚，时不时还想挥霍一把。",
+    traits: [
+      { t: "✅ 弹性极佳", d: "随时都在自我修正。" },
+      { t: "❌ 目标感模糊", d: "不知道自己到底想要什么样的财务生活。" }
+    ]
+  }
+};
+
+// =====================================================================
+// 天生财友 & 财富宿敌配对关系
+// =====================================================================
+var CONNECTIONS = {
+  "S-T": {
+    friend: { code: "G-B", name: "精算操盘手", desc: "互补绝配：他帮你赚，你帮他守。你的金库加上他的操盘，财富双保险。" },
+    enemy:  { code: "F-A", name: "自由烧钱怪", desc: "一个存一个花，三观必然开战。光是看着他的账单你就血压升高。" }
+  },
+  "S-B": {
+    friend: { code: "G-T", name: "深渊策略家", desc: "都爱研究，都求稳，两个人坐下来能聊三小时资产配置不带重样的。" },
+    enemy:  { code: "G-A", name: "逐风掠食者", desc: "一个慢慢算，一个快快冲，财务三观根本不在同一频道，迟早吵翻。" }
+  },
+  "S-A": {
+    friend: { code: "G-B", name: "精算操盘手", desc: "他能帮你把冲动转化成系统，给你的每一次「心动」装上刹车。" },
+    enemy:  { code: "F-A", name: "自由烧钱怪", desc: "两个都冲，但方向完全相反——一个存钱冲动，一个花钱冲动，互相看不惯。" }
+  },
+  "G-T": {
+    friend: { code: "G-A", name: "逐风掠食者", desc: "你出策略，他来执行，完美的智脑+腿脚搭档，项目成功率直线上升。" },
+    enemy:  { code: "F-B", name: "旷野体验家", desc: "你在算账，他在花钱买体验，永远谈不拢，一起合伙必定出事。" }
+  },
+  "G-B": {
+    friend: { code: "S-T", name: "金库守卫者", desc: "你进攻，他防守，完美的攻守搭档。你赚来的他帮你守住，无懈可击。" },
+    enemy:  { code: "F-A", name: "自由烧钱怪", desc: "理性遇上感性，精算遇上随性，两人在一起注定互相崩溃。" }
+  },
+  "G-A": {
+    friend: { code: "S-T", name: "金库守卫者", desc: "他是你冲动时候最需要的那只手——能在关键时刻按住你，救你一命。" },
+    enemy:  { code: "F-A", name: "自由烧钱怪", desc: "两个人凑一起，一个猛赚一个猛花，容易倾家荡产，危险组合。" }
+  },
+  "F-T": {
+    friend: { code: "G-T", name: "深渊策略家", desc: "两个都爱规划，偶尔他的执行力能推动你真正走出第一步，不再原地踏步。" },
+    enemy:  { code: "S-A", name: "冲动存钱机", desc: "你想飞，他要把门关死，永远不在一个频道，一起出行必吵架。" }
+  },
+  "F-B": {
+    friend: { code: "G-B", name: "精算操盘手", desc: "他帮你设强制储蓄计划，让你在继续享受生活的同时，不至于被突发情况打垮。" },
+    enemy:  { code: "S-T", name: "金库守卫者", desc: "你要出发去体验，他要把大门关死存钱，相爱相杀，永远在拉锯。" }
+  },
+  "F-A": {
+    friend: { code: "S-B", name: "稳健囤粮官", desc: "他帮你兜底，保证你花得再爽也不至于真的归零，是你最需要的安全网。" },
+    enemy:  { code: "S-T", name: "金库守卫者", desc: "极度相克，一见面就吵钱的问题。你的每一笔消费在他眼里都是罪行。" }
+  },
+  "default": {
+    friend: { code: "G-B", name: "精算操盘手", desc: "帮你建立系统，让你的财务行为从随机变成有迹可循。" },
+    enemy:  { code: "F-A", name: "自由烧钱怪", desc: "和你的财务目标背道而驰，容易互相带偏。" }
+  }
+};
+
+// =====================================================================
+// 人格主题色
+// =====================================================================
+var PERSONALITY_COLORS = {
+  "S": "#C9A84C",
+  "G": "#00FF87",
+  "F": "#BF5FFF"
+};
+
+// =====================================================================
+// 定制化引流文案
+// =====================================================================
+var CTA = {
+  "S-T": "想打破通胀魔咒，让钱真正动起来？",
+  "S-B": "想把\u201c差不多\u201d变成真正的财务增长？",
+  "S-A": "想把存钱冲动转化成系统性财富积累？",
+  "G-T": "想把满脑子的策略真正落地执行？",
+  "G-B": "想找到那个值得All-in的机会？",
+  "G-A": "想让行动力配上更精准的判断力？",
+  "F-T": "想让梦想真正从计划走进现实？",
+  "F-B": "想在享受生活的同时建立真正的财务安全垫？",
+  "F-A": "想在自由消费的同时，拥有一个不崩的财务底线？",
+  "default": "想终结财务内耗，找到属于你的搞钱路径？"
+};
+
+var currentMode = "adult";
+var currentQ = 0;
+var answers = [];
+var activeQuestions = [];
+
+function startQuiz(mode) {
+  currentMode = mode;
+  activeQuestions = mode === "teen" ? QUESTIONS_TEEN : QUESTIONS;
+  currentQ = 0;
+  answers = [];
+  document.getElementById("mode-text").textContent = mode === "teen" ? "学生版" : "社会人版";
+
+  document.querySelectorAll(".screen").forEach(function(el) { el.classList.remove("active"); });
+  document.getElementById("screen-quiz").classList.add("active");
+  renderQuestion();
+}
+
+function renderQuestion() {
+  var q = activeQuestions[currentQ];
+  document.getElementById("progress-text").textContent = (currentQ + 1) + " / " + activeQuestions.length;
+  document.getElementById("question-text").textContent = q.text;
+
+  var list = document.getElementById("options-list");
+  list.innerHTML = "";
+
+  var container = document.getElementById("q-container");
+  container.style.animation = "none";
+  container.offsetHeight;
+  container.style.animation = "fadeIn 0.4s ease";
+
+  q.options.forEach(function(opt, idx) {
+    var btn = document.createElement("div");
+    btn.className = "option-btn";
+    btn.innerHTML = "<span class=\"option-label\">" + opt.label + "</span><span>" + opt.text + "</span>";
+    btn.onclick = (function(i) { return function() { selectOption(i); }; })(idx);
+    list.appendChild(btn);
+  });
+
+  document.getElementById("back-btn").style.visibility = currentQ === 0 ? "hidden" : "visible";
+}
+
+function selectOption(idx) {
+  answers[currentQ] = activeQuestions[currentQ].options[idx].score;
+  setTimeout(function() {
+    currentQ++;
+    if (currentQ >= activeQuestions.length) {
+      showLoading();
+    } else {
+      renderQuestion();
+    }
+  }, 150);
+}
+
+function prevQuestion() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+}
+
+// =====================================================================
+// 伪加载页逻辑
+// =====================================================================
+function showLoading() {
+  document.querySelectorAll(".screen").forEach(function(el) { el.classList.remove("active"); });
+  document.getElementById("screen-loading").classList.add("active");
+
+  var messages = [
+    "正在提取你的消费潜意识...",
+    "正在扫描你的搞钱 DNA...",
+    "正在生成你的财富病例..."
+  ];
+
+  var bar = document.getElementById("loading-bar");
+  var textEl = document.getElementById("loading-text");
+
+  // 重置
+  bar.style.transition = "none";
+  bar.style.width = "0%";
+  textEl.textContent = "";
+
+  var totalDuration = 2500;
+  var msgInterval = totalDuration / messages.length; // ~833ms each
+
+  messages.forEach(function(msg, i) {
+    setTimeout(function() {
+      textEl.style.opacity = "0";
+      setTimeout(function() {
+        textEl.textContent = msg;
+        textEl.style.transition = "opacity 0.2s ease";
+        textEl.style.opacity = "1";
+      }, 150);
+    }, i * msgInterval);
+  });
+
+  // 进度条从0到100%，用2.5秒
+  setTimeout(function() {
+    bar.style.transition = "width " + totalDuration + "ms linear";
+    bar.style.width = "100%";
+  }, 50);
+
+  // 2.5秒后跳转结果页
+  setTimeout(function() {
+    showResult();
+  }, totalDuration);
+}
+
+// =====================================================================
+// 结果页
+// =====================================================================
+function showResult() {
+  var scores = { S: 0, G: 0, F: 0, T: 0, B: 0, A: 0 };
+  answers.forEach(function(scoreObj) {
+    for (var key in scoreObj) { scores[key] += scoreObj[key]; }
+  });
+
+  var dim1 = ["S", "G", "F"].sort(function(a, b) { return scores[b] - scores[a]; })[0];
+  var dim2 = ["T", "B", "A"].sort(function(a, b) { return scores[b] - scores[a]; })[0];
+  var code = dim1 + "-" + dim2;
+
+  // 存下来给排行榜提交用
+  _currentResultCode = code;
+
+  var p = PERSONALITIES[code] || PERSONALITIES["default"];
+  var conn = CONNECTIONS[code] || CONNECTIONS["default"];
+  var ctaText = CTA[code] || CTA["default"];
+  var titleColor = PERSONALITY_COLORS[dim1] || "#f0f0f0";
+
+  document.getElementById("r-code").textContent = code + " 型";
+
+  var nameEl = document.getElementById("r-name");
+  nameEl.textContent = p.name;
+  nameEl.style.color = titleColor;
+
+  document.getElementById("r-summary").textContent = p.summary;
+
+  var traitsHtml = "";
+  p.traits.forEach(function(t) {
+    traitsHtml += "<div class=\"trait-item\"><div class=\"trait-title\">" + t.t + "</div><div class=\"trait-desc\">" + t.d + "</div></div>";
+  });
+  document.getElementById("r-traits").innerHTML = traitsHtml;
+
+  // 财富关系网
+  document.getElementById("r-friend-name").textContent = conn.friend.name + "（" + conn.friend.code + "）";
+  document.getElementById("r-friend-desc").textContent = conn.friend.desc;
+  document.getElementById("r-enemy-name").textContent = conn.enemy.name + "（" + conn.enemy.code + "）";
+  document.getElementById("r-enemy-desc").textContent = conn.enemy.desc;
+
+  // 引流文案
+  document.getElementById("r-cta-text").textContent = ctaText;
+
+  document.querySelectorAll(".screen").forEach(function(el) { el.classList.remove("active"); });
+  document.getElementById("screen-result").classList.add("active");
+}
+
+// =====================================================================
+// Supabase 排行榜提交
+// =====================================================================
+var _currentResultCode = "";
+
+const SUPABASE_URL = "https://pwnvgbtiueoeiwyqwedc.supabase.co";
+const SUPABASE_KEY = "sb_publishable_cWFID2KH50WldvGfF-AnFA_u4F53Au1";
+
+function submitToRanking() {
+  var btn = document.getElementById("ranking-submit-btn");
+  var fb = document.getElementById("ranking-feedback");
+  
+  if (!_currentResultCode) {
+    fb.textContent = "出错了，请刷新重试";
+    fb.style.color = "#e74c3c";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "提交中...";
+  fb.textContent = "";
+
+  fetch(SUPABASE_URL + "/rest/v1/submissions", {
+    method: "POST",
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY,
+      "Content-Type": "application/json",
+      "Prefer": "return=minimal"
+    },
+    body: JSON.stringify({ personality_code: _currentResultCode })
+  })
+  .then(function(resp) {
+    if (resp.ok) {
+      btn.textContent = "✅ 已提交";
+      btn.style.background = "linear-gradient(135deg, #1a8a6e, #26c99e)";
+      fb.textContent = "去看看排行榜上你排第几？";
+      fb.style.color = "#48c78e";
+    } else {
+      return resp.text().then(function(t) { throw new Error(t.slice(0, 200)); });
+    }
+  })
+  .catch(function(e) {
+    btn.disabled = false;
+    btn.textContent = "📊 提交到排行榜";
+    fb.textContent = "提交失败，稍后再试";
+    fb.style.color = "#e74c3c";
+    console.error("Ranking submit error:", e);
+  });
+}
+</script>
+</body>
+</html>
