@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>职商人格测试 | 发现你的职业DNA</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #0f0f1a;
+  color: #e8e8f0;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+.section { display:none; }
+.section.active { display:block; }
+
+.hero {
+  background: linear-gradient(135deg, #1a1a3e 0%, #2d1b69 30%, #1a1a3e 60%, #1b3a4b 100%);
+  padding: 60px 20px 50px; text-align: center; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(120,80,255,0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 30%, rgba(0,180,216,0.06) 0%, transparent 50%);
+  animation: heroFloat 15s ease-in-out infinite;
+}
+@keyframes heroFloat { 0%,100% { transform: translate(0,0); } 33% { transform: translate(20px,-10px); } 66% { transform: translate(-10px,15px); } }
+.hero-icon { font-size: 64px; position: relative; z-index: 1; display: block; margin-bottom: 16px; }
+.hero h1 { font-size: 36px; font-weight: 900; margin-bottom: 10px; position: relative; z-index: 1; background: linear-gradient(135deg, #c4b5fd, #67e8f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero .subtitle { font-size: 16px; color: #a0a0c0; max-width: 500px; margin: 0 auto 32px; position: relative; z-index: 1; }
+.hero .meta { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 32px; position: relative; z-index: 1; font-size: 14px; color: #8888aa; }
+.hero .meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+.btn { display: inline-block; padding: 14px 40px; border-radius: 50px; font-size: 17px; font-weight: 700; cursor: pointer; border: none; transition: all 0.3s; position: relative; z-index: 1; text-decoration: none; }
+.btn-primary { background: linear-gradient(135deg, #7c3aed, #2563eb); color: #fff; box-shadow: 0 4px 20px rgba(124,58,237,0.4); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(124,58,237,0.6); }
+
+.container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+.section-title { text-align: center; font-size: 28px; font-weight: 800; margin: 56px 0 12px; background: linear-gradient(135deg, #c4b5fd, #67e8f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.section-desc { text-align: center; color: #8888aa; font-size: 15px; max-width: 600px; margin: 0 auto 40px; }
+
+.dim-section { padding: 0 20px 40px; }
+.dim-label { font-size: 13px; color: #7c3aed; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; text-align: center; }
+.dim-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; max-width: 900px; margin: 0 auto; }
+.dim-card { background: linear-gradient(145deg, #1a1a2e, #1e1e38); border: 1px solid #2a2a4a; border-radius: 16px; padding: 22px 14px 18px; text-align: center; transition: transform 0.2s, border-color 0.2s; cursor: default; }
+.dim-card:hover { transform: translateY(-3px); border-color: #4a4a7a; }
+.dim-card .dim-emoji { font-size: 32px; display: block; margin-bottom: 10px; }
+.dim-card .dim-name { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.dim-card .dim-tagline { font-size: 13px; color: #8888aa; line-height: 1.5; }
+
+.pgrid { padding: 0 20px 60px; }
+.pgrid-table { display: grid; grid-template-columns: 60px repeat(4,1fr); grid-template-rows: auto repeat(4,1fr); gap: 10px; max-width: 920px; margin: 0 auto; }
+.pgrid-header { font-size: 13px; color: #7c3aed; font-weight: 700; text-align: center; padding: 10px 4px; }
+.pgrid-row-label { display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; font-size: 13px; color: #7c3aed; font-weight: 700; letter-spacing: 2px; background: #151528; border-radius: 10px; }
+.pcell { background: linear-gradient(145deg, #1a1a2e, #1e1e38); border: 1px solid #2a2a4a; border-radius: 14px; padding: 18px 10px 14px; text-align: center; transition: all 0.25s; cursor: default; min-height: 120px; display: flex; flex-direction: column; justify-content: center; }
+.pcell:hover { transform: translateY(-4px); border-color: #5a5a8a; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+.pcell .pemoji { font-size: 36px; display: block; margin-bottom: 6px; }
+.pcell .pname { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.pcell .ptag { font-size: 11px; color: #6666aa; }
+.pcell .pdesc { font-size: 11px; color: #7777aa; margin-top: 4px; line-height: 1.4; }
+
+.cta-section { text-align: center; padding: 40px 20px 60px; }
+
+.quiz-container { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+.quiz-progress { margin-bottom: 24px; }
+.quiz-progress-bar { height: 4px; background: #2a2a4a; border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.quiz-progress-fill { height: 100%; background: linear-gradient(90deg, #7c3aed, #2563eb); border-radius: 2px; transition: width 0.4s; }
+.quiz-progress-text { text-align: center; font-size: 14px; color: #6666aa; }
+.quiz-dim-tag { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 20px; }
+.quiz-dim-tag.drive { background: rgba(124,58,237,0.2); color: #a78bfa; }
+.quiz-dim-tag.strategy { background: rgba(37,99,235,0.2); color: #60a5fa; }
+.quiz-question { font-size: 20px; font-weight: 700; margin-bottom: 24px; line-height: 1.5; text-align: center; }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option { background: linear-gradient(145deg, #1a1a2e, #1e1e38); border: 1px solid #2a2a4a; border-radius: 14px; padding: 16px 20px; font-size: 15px; color: #c0c0d8; cursor: pointer; transition: all 0.2s; text-align: left; line-height: 1.5; }
+.quiz-option:hover { border-color: #4a4a7a; background: linear-gradient(145deg, #1e1e38, #24244a); transform: translateX(4px); }
+.quiz-option.selected { border-color: #7c3aed; background: linear-gradient(145deg, #2d1b69, #1e1e50); }
+.quiz-nav { display: flex; justify-content: center; gap: 12px; margin-top: 28px; }
+.quiz-nav .btn-back { padding: 12px 28px; border-radius: 50px; font-size: 15px; font-weight: 600; background: transparent; border: 1px solid #3a3a5a; color: #8888aa; cursor: pointer; transition: all 0.2s; }
+.quiz-nav .btn-back:hover { border-color: #5a5a8a; color: #b0b0d0; }
+
+.loading-overlay { display: none; position: fixed; inset: 0; background: rgba(15,15,26,0.95); z-index: 100; flex-direction: column; align-items: center; justify-content: center; gap: 20px; }
+.loading-overlay.show { display: flex; }
+.loading-spinner { width: 48px; height: 48px; border: 3px solid #2a2a4a; border-top-color: #7c3aed; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { color: #8888aa; font-size: 15px; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+.result-header { text-align: center; padding: 60px 20px 40px; background: linear-gradient(135deg, #1a1a3e, #2d1b69); }
+.result-type { font-size: 13px; color: #7c3aed; font-weight: 700; letter-spacing: 2px; margin-bottom: 8px; }
+.result-emoji { font-size: 72px; display: block; margin-bottom: 12px; }
+.result-name { font-size: 34px; font-weight: 900; margin-bottom: 4px; }
+.result-tagline { font-size: 16px; color: #a0a0c0; }
+.result-content { max-width: 680px; margin: 0 auto; padding: 0 20px 40px; }
+.result-card { background: linear-gradient(145deg, #1a1a2e, #1e1e38); border: 1px solid #2a2a4a; border-radius: 16px; padding: 28px 24px; margin-bottom: 16px; }
+.result-card h3 { font-size: 18px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.result-card p, .result-card li { font-size: 14px; color: #a0a0c0; line-height: 1.7; }
+.result-card ul { padding-left: 20px; }
+.result-card ul li { margin-bottom: 6px; }
+
+.result-diagnosis { background: linear-gradient(145deg, #2d1b20, #1e1e2e); border: 1px solid #4a2a3a; border-radius: 16px; padding: 28px 24px; margin-bottom: 16px; text-align: center; }
+.result-diagnosis h3 { font-size: 16px; color: #f87171; margin-bottom: 10px; }
+.result-diagnosis p { font-size: 18px; font-weight: 700; color: #fca5a5; line-height: 1.6; }
+
+.dim-bars { margin-bottom: 24px; }
+.dim-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.dim-bar-label { width: 70px; font-size: 13px; font-weight: 700; text-align: right; flex-shrink: 0; }
+.dim-bar-track { flex: 1; height: 8px; background: #2a2a4a; border-radius: 4px; overflow: hidden; }
+.dim-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+
+.result-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; padding-bottom: 60px; }
+.btn-secondary { padding: 12px 32px; border-radius: 50px; font-size: 15px; font-weight: 600; background: transparent; border: 1px solid #3a3a5a; color: #b0b0d0; cursor: pointer; transition: all 0.2s; }
+.btn-secondary:hover { border-color: #7c3aed; }
+
+.footer { text-align: center; padding: 30px 20px; color: #555; font-size: 12px; border-top: 1px solid #1e1e38; }
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 26px; }
+  .dim-grid { grid-template-columns: repeat(2,1fr); }
+  .pgrid-table { grid-template-columns: 40px repeat(4,1fr); gap: 6px; }
+  .pcell { padding: 12px 6px 10px; min-height: 100px; border-radius: 10px; }
+  .pcell .pemoji { font-size: 24px; }
+  .pcell .pname { font-size: 12px; }
+  .pcell .ptag { font-size: 10px; }
+  .pcell .pdesc { display: none; }
+  .quiz-question { font-size: 17px; }
+}
+@media (max-width: 480px) {
+  .pgrid-table { grid-template-columns: 32px repeat(4,1fr); gap: 4px; }
+  .pcell { padding: 8px 3px 6px; min-height: 80px; border-radius: 8px; }
+  .pcell .pemoji { font-size: 20px; margin-bottom: 2px; }
+  .pcell .pname { font-size: 11px; }
+  .pcell .ptag { font-size: 9px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ====== INTRO ====== -->
+<div class="section active" id="section-intro">
+  <div class="hero">
+    <span class="hero-icon">💼</span>
+    <h1>你的职商人格是什么？</h1>
+    <p class="subtitle">30道职场情景题，诊断你的职业DNA<br>知道你为什么总在周一早上怀疑人生了吗？</p>
+    <div class="meta">
+      <span>⏱ 3-4分钟</span><span>📋 30道题</span><span>🔮 16种人格</span><span>💡 深度分析</span>
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()">🚀 开始测试</button>
+  </div>
+
+  <div class="dim-section">
+    <div class="section-title">两个维度，解码你的职业本质</div>
+    <p class="section-desc">职商人格由「职业动力」×「职业策略」交叉决定，两两组合出16种独特类型</p>
+
+    <div class="dim-label">A轴 · 职业动力</div>
+    <div class="dim-grid">
+      <div class="dim-card"><span class="dim-emoji">🎯</span><div class="dim-name">成就型</div><div class="dim-tagline">不做点成绩出来<br>浑身难受</div></div>
+      <div class="dim-card"><span class="dim-emoji">🛡️</span><div class="dim-name">安稳型</div><div class="dim-tagline">稳定压倒一切<br>拒绝心跳加速</div></div>
+      <div class="dim-card"><span class="dim-emoji">🌱</span><div class="dim-name">成长型</div><div class="dim-tagline">学不到新东西<br>就是慢性死亡</div></div>
+      <div class="dim-card"><span class="dim-emoji">🕊️</span><div class="dim-name">自主型</div><div class="dim-tagline">别管我怎么做<br>看结果就行</div></div>
+    </div>
+
+    <div class="dim-label" style="margin-top:36px;">B轴 · 职业策略</div>
+    <div class="dim-grid">
+      <div class="dim-card"><span class="dim-emoji">🏔️</span><div class="dim-name">深耕型</div><div class="dim-tagline">一个坑挖到地心<br>其他人只能仰望</div></div>
+      <div class="dim-card"><span class="dim-emoji">🌊</span><div class="dim-name">拓展型</div><div class="dim-tagline">技多不压身<br>艺多不养家？不存在的</div></div>
+      <div class="dim-card"><span class="dim-emoji">🤝</span><div class="dim-name">连接型</div><div class="dim-tagline">你认识谁<br>比你会什么更重要</div></div>
+      <div class="dim-card"><span class="dim-emoji">💡</span><div class="dim-name">创新型</div><div class="dim-tagline">规矩？<br>那是写给别人的</div></div>
+    </div>
+  </div>
+
+  <div class="pgrid">
+    <div class="section-title">16种职商人格，你是哪一种？</div>
+    <p class="section-desc">每一种人格都有独特的职业超能力与需要警惕的盲区</p>
+    <div class="pgrid-table" id="personality-grid"></div>
+  </div>
+
+  <div class="cta-section">
+    <button class="btn btn-primary" onclick="startQuiz()">✨ 准备好了吗？开始测试</button>
+  </div>
+
+  <div class="footer">职商人格测试 · Career Quotient Personality Test</div>
+</div>
+
+<!-- ====== QUIZ ====== -->
+<div class="section" id="section-quiz">
+  <div class="hero" style="padding:40px 20px;">
+    <span class="hero-icon" style="font-size:40px;">🧠</span>
+    <h1 style="font-size:24px;">职商人格测试</h1>
+  </div>
+  <div class="quiz-container" style="padding-top:32px;">
+    <div class="quiz-progress">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="qprogress-fill" style="width:3%"></div></div>
+    </div>
+    <div class="quiz-dim-tag" id="qdim-tag"></div>
+    <div class="quiz-question" id="qtext"></div>
+    <div class="quiz-options" id="qoptions"></div>
+    <div class="quiz-nav">
+      <button class="btn-back" id="qback" onclick="prevQuestion()" style="display:none;">← 上一题</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== LOADING ====== -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loading-text">正在分析你的职业DNA...</div>
+</div>
+
+<!-- ====== RESULT ====== -->
+<div class="section" id="section-result">
+  <div class="result-header" id="result-header"></div>
+  <div class="result-content">
+    <div class="result-diagnosis" id="result-diagnosis"></div>
+    <div class="dim-bars" id="result-dim-bars"></div>
+    <div class="result-card" id="result-strength"></div>
+    <div class="result-card" id="result-blindspot"></div>
+    <div class="result-card" id="result-fit"></div>
+    <div class="result-card" id="result-advice"></div>
+  </div>
+  <div class="result-actions">
+    <button class="btn btn-primary" onclick="restartQuiz()">🔄 再测一次</button>
+  </div>
+  <div class="footer">添加微信：panleicfa</div>
+</div>
+
+<script>
+// ========== PERSONALITY DATA ==========
+const pd = {
+  'A1B1': { e:'🦁', n:'攀登狮', t:'成就x深耕',
+    dx:'你选定一座山的那天起，就再也没看过别的山。你的字典里没有"差不多"，只有"还不够"。',
+    dxl:'登山成瘾晚期。症状：眼里只有山顶，对路边的野花视而不见。并发症：对非目标领域有生理性排斥。',
+    s:['目标一旦锁定，你的执行力能让拖延症患者当场社死','一个领域持续积累形成的壁垒，厚到同行想抄都抄不动','你跟"三天打鱼两天晒网"这个词有仇'],
+    b:['行业地震来的时候，你可能最后一个知道——因为头埋得太深了','完美主义让你在"还差一点"的循环里无限加班','错过了多少次横向拓展的机会？答案是：数不清'],
+    f:['垂直领域的专家位（技术大佬、行业顾问、资深XX师）','需要长期积累才能说话的行业（医疗、法律、学术）','有明确晋升阶梯的组织——你知道下一级台阶在哪'],
+    ad:['每月逼自己看一篇与你领域无关的深度报告','允许自己每年有一个"纯浪费时间的尝试"','试着把你的知识传授给一个完全不懂的人——如果讲不明白，说明你还不够深']
+  },
+  'A1B2': { e:'🦅', n:'全能鹰', t:'成就x拓展',
+    dx:'别人是一招鲜吃遍天，你是满汉全席样样端。多线程并行不是技能，是你的出厂设置。',
+    dxl:'能力过剩综合症。症状：什么都能干，什么都想干。并发症：简历长得像电话簿，面试官不知道该把你放哪个岗。',
+    s:['新领域上手速度让老员工怀疑人生','整合不同领域资源时你的CPU全核运转','复杂项目里你是唯一能同时跟技术、商务、运营说人话的那个'],
+    b:['"样样通"如果后面不跟"样样精"，就变成了"样样松"','精力太分散——你同时打开30个标签页的习惯蔓延到了职业','对深耕型同事的不屑可能写在了脸上'],
+    f:['跨部门协调的总控角色','创业公司的CXO预备役——什么缺都能顶','咨询、投资、产品经理等需要快速切换频道的职业'],
+    ad:['选两个方向做"根据地"，其他作为"游击区"','每年主动放弃一个看起来很美的机会——练习说不','把你的多元能力打包成一个独特标签，别让别人说你是"万金油"']
+  },
+  'A1B3': { e:'🎯', n:'旗手', t:'成就x连接',
+    dx:'你不是一个人在战斗——你是那个让大家愿意一起战斗的人。振臂一呼，应者云集，这不是领导力，是你的体质。',
+    dxl:'聚光灯依赖症。症状：一个人的时候也在脑补一群人点赞的场景。并发症：微信好友5000+，深夜能打电话的不足5个。',
+    s:['组织动员能力堪比居委会大妈和拿破仑的合体','一眼看出谁擅长什么，把人放对位置的速度比猎头还快','通过关系网放大影响力——你的一分力能变成十分效'],
+    b:['外界认可断供时会严重焦虑——电量靠点赞续','太忙了——维护100个关系比维护一个产品还累','"人脉即实力"是没错，但你没有硬核技能傍身的话，人脉只是通讯录'],
+    f:['团队Leader、部门主管、项目总负责人','商务拓展、公关、社群运营','教育、培训、教练——帮别人赢就是你赢'],
+    ad:['每周留半天完全独处——关手机的那种','选定一个硬技能死磕，作为你影响力的地基','区分"盟友"和"路过点赞的人"，把你的精力给前者']
+  },
+  'A1B4': { e:'⚡', n:'破局者', t:'成就x创新',
+    dx:'别人看到一堵墙绕道走，你拿出锤子问"这个能拆吗"。你不是反叛，你是觉得原来的路太绕了。',
+    dxl:'规则过敏症。症状：看到"我们一直是这么做的"这句话会生理不适。并发症：经常被认为是刺头，但其实你只是想不通为什么要这样。',
+    s:['在所有人都说"不行"的地方找到"也行"的方法','挑战行业惯例的时候你眼神发光','混乱和不确定性对你来说是游乐场，别人是刑场'],
+    b:['执行细节让你抑郁——"为什么要把同样的事做两遍？"','花太多时间证明自己是对的，而不是把事情做成','同事们可能在背后叫你"独狼"，有时候这不是褒义'],
+    f:['创业者（尤其是那种"凭什么不行"型的）','产品经理、创意总监、策略顾问','任何需要"换一种玩法"的行业和技术变革推动者'],
+    ad:['找一个"翻译官"搭档——能把你的天马行空变成工作计划的人','学会在现有体系内做改革，而不是每次都推倒重来','把你踩过的坑写成错题本——破局者的智慧来自失败的厚度']
+  },
+  'A2B1': { e:'🐢', n:'守城龟', t:'安稳x深耕',
+    dx:'你不是慢，你是在别人冲刺的时候，稳步走向终点。在一个地方待得够久，你本人就是活体说明书。',
+    dxl:'舒适区定居。症状：安心在一个坑里构建了整个生态系统。并发症：外面世界的变化在你眼里像是另一个频道的节目。',
+    s:['可靠性评级AAA——交给你的东西不需要检查第二遍','你是团队的定海神针，有你在这个项目就不会翻船','对所在领域的细节掌握程度让GPT都自愧不如'],
+    b:['行业被颠覆的时候，你可能最后一个意识到——因为一切"看着还挺正常的"','待在舒适区太久，已经忘了自己其实能跑','低估自身市场价值——不是你不值钱，是你太久没看过外面'],
+    f:['体制内的专业深耕者','需要长期经验积累的技术和职能岗位','财务、审计、质量管理——稳定和精确是核心价值的领域'],
+    ad:['每年学一个与主业相关但用了新技术的工具——在你的安全区边缘试探','在团队内部主动申请一个小创新项目——低成本试错','定期更新简历，不是为了跳槽，是为了确认自己还值多少钱']
+  },
+  'A2B2': { e:'🦌', n:'多面鹿', t:'安稳x拓展',
+    dx:'你不是没有专长，你是专长太多不知从何说起。灵活但不浮躁，多元但不散乱，团队里"这个你来顶上"的首选。',
+    dxl:'备用选手综合征。症状：什么岗位都能接，结果永远是"替补"。并发症：升职的时候老板想不起你，裁员的时候觉得你可有可无。',
+    s:['环境适应力拉满——换个部门像换件衣服','多技能储备让你在组织变动中始终有位置——因为你确实什么都能干','不排斥尝试新东西，但这种尝试永远在安全范围内'],
+    b:['"万金油"的诅咒：好用但不好贵','缺一个能定义自己的核心标签——你最擅长什么？"都还行"不是答案','横向发展如果没有纵向支撑，最终会变成浅度发展'],
+    f:['中小企业的多职能岗位——正需要你这样的人','运营、综合管理等需要复合能力的角色','稳定性优先但需要灵活度的职场环境'],
+    ad:['从技能库里挑一个方向做深——完成从"都会"到"这个我最强"的升级','主动争取一个需要深度交付的项目','画一张"能力组合图"——哪些技能叠加能产生1+1>3的效果']
+  },
+  'A2B3': { e:'🤝', n:'织网者', t:'安稳x连接',
+    dx:'你不是在搞关系，你是在织安全网。复杂的人际迷宫里，你是那个拿着地图还帮别人指路的人。',
+    dxl:'好人卡收集癖。症状：拒绝别人的时候自己先难受三天。并发症：关系维护变成全职工作，但你忘了给自己留位置。',
+    s:['化解办公室政治的水平堪比退休外交官','建立信任的速度让人以为你给他们下了什么药','在组织内部充当润滑剂——没有你，齿轮早卡死了'],
+    b:['"老好人"标签一旦贴上，话就没人听了','关系维护消耗的精力可能比主业还大','过度迁就导致立场模糊——你到底站哪边？'],
+    f:['HR、行政、客户关系——和"人"打交道的工作','需要跨部门协调的中层管理','工会、行业组织、社群运营等以"连接"为核心价值的领域'],
+    ad:['练习说不——从点咖啡这样的小事开始','为你的关系网络设置边界：核心圈5个人，重要圈10个，其余随缘','积累一项不依赖人脉的硬技能——给自己留一张底牌']
+  },
+  'A2B4': { e:'🔧', n:'改良匠', t:'安稳x创新',
+    dx:'你不砸墙，但你会在墙还在的时候悄悄把整面墙优化一遍。改良比革命更安全，有时候也更持久。',
+    dxl:'温和改造主义。症状：无法忍受低效但也不想惹事。并发症：好想法很多，但总是等"时机成熟"——其实永远不会成熟。',
+    s:['在现有框架内找到优化空间的能力堪称一绝','提案的可落地性让激进派无话可说','持续的微创新日积月累，回头看已经领先了一大截'],
+    b:['"太激进了吧？"——这句话阻止了你至少三次重大突破','微创新不如颠覆性创新引人注目——你做了一百个小改进，没人注意','需要一个"推手"在关键时刻踹你一脚'],
+    f:['流程优化、效率提升类岗位','产品迭代和用户体验方向','传统行业数字化转型的推动者——你的改良精神在这里如鱼得水'],
+    ad:['每年做一次思想实验：如果没有任何限制，你会怎么做？','找一个冒险精神强的人做搭档——互补是最好的催化剂','把你过去一年做的改良整理成一个案例集，这是你的独特资产']
+  },
+  'A3B1': { e:'🦊', n:'炼金狐', t:'成长x深耕',
+    dx:'你相信一万小时定律——不是因为你读了那本书，是因为你真的在数。知识在你手里不会生锈，只会变成金子。',
+    dxl:'学习成瘾。症状：疯狂囤积知识和证书，书架比银行账户好看。并发症：学了太多但实践的太少，证书一堆但工资没跟着涨。',
+    s:['自主学习能力让培训机构痛失大客户','在一个领域持续深挖十年后你讲的道理别人听着像哲学','理论结合实践的能力让你的产出有复利效应'],
+    b:['"再学一门就动手"——这句话说了五年了','精深到一定程度后发现跟新手沟通像跟外星人说话','知识转化率——你学的东西真正用出来的有多少？'],
+    f:['研发、技术专家、资深顾问——知识就是你的产品','需要深厚理论功底的学术和研究岗位','培训讲师、知识付费——把你的积累打包出售'],
+    ad:['强制输出：每学一个东西就写一篇文章、录一个视频','把你的知识变成产品——课程、工具、方法论','找一个实践场景当实验室，别老在脑子里做实验']
+  },
+  'A3B2': { e:'🐋', n:'探索鲸', t:'成长x拓展',
+    dx:'你是一头在知识海洋中巡游的鲸。不满足于一片海域，每次呼吸都想尝到不同水域的味道。学习的广度就是你的深度。',
+    dxl:'知识游牧主义。症状：刚把一个领域搞懂80%就失去兴趣转向下一个。并发症：收藏夹里躺着37门未完成课程，浏览器开着28个知识星球标签。',
+    s:['跨界联想能力让你在脑暴会上如鱼得水','两个看似无关领域的连接点，在你眼里闪闪发光','快速进入新领域的能力让猎头不知道该给你贴什么标签'],
+    b:['学了十个方向，面试官问"你最擅长什么"你沉默了','"等我准备好了再开始"——你的准备期可以长达三年','选择困难：哪个方向都不想放弃，结果每个都欠点火候'],
+    f:['需要通才的早期创业团队——你就是那个"其他"','跨学科研究和创新咨询','内容创作者——把对不同领域的理解转化为别人看得懂的内容'],
+    ad:['为你学的东西设置"毕业标准"——交付一个可见成果就毕业','从你的知识网络里提炼一个核心主题，这将成为你的个人品牌','找项目倒逼学习：做中学的效率是纯学习的十倍']
+  },
+  'A3B3': { e:'🌱', n:'播种者', t:'成长x连接',
+    dx:'你相信一个人跑得快，一群人跑得远。你在别人的成长中看到自己的价值，像农夫看到庄稼抽穗。',
+    dxl:'导师型透支。症状：别人的问题你比自己的还上心。并发症：帮别人成长时精力充沛，轮到自己却提不起劲。',
+    s:['发现别人潜力的雷达异常灵敏','教别人让你自己学得更深——双赢','任何学习型社群里你都是核心人物'],
+    b:['帮别人太多，自己原地踏步——"先搞定别人再搞定自己"是个陷阱','用"教别人"替代"自己练"——你确定自己真的会了？','精力被别人的问题消耗殆尽，留给自己的能量条是空的'],
+    f:['教育、培训、教练、导师——你的天赋在这里','社群运营和知识社区建设','需要培养团队的领导岗位'],
+    ad:['每天的自我学习时间神圣不可侵犯','把你的辅导经验构建成体系，而不是每次从零开始','筛选辅导对象：你的精力是有限的，给最有成长意愿的人']
+  },
+  'A3B4': { e:'🚀', n:'开拓者', t:'成长x创新',
+    dx:'你学习不是为了知道，是为了做出别人没做过的事。成长和创造在你这里是一个无缝循环——学完就造，造完再学。',
+    dxl:'创新多动症。症状：上一个项目还没收尾，下一个idea已经让你坐不住了。并发症：做得最多的永远是"下一个项目"。',
+    s:['学习成果直接转化为创新产出——你的转化率是100%','敢于进入完全陌生的领域从零开始搭建','新技术敏感度让你永远是团队里第一个尝鲜的人'],
+    b:['每次从零开始——你的积累去哪了？','新事物的价值可能被高估，而"无聊的积累"被低估','上一个创新成果还没落地，你就已经在想下一个了'],
+    f:['科技创业、独立开发者、创新实验室','需要持续创新的产品和研发岗位','数字游民、自由职业——不拘一格的职业形态'],
+    ad:['每个创新项目至少做到"有可见成果"才允许自己转向','保留一条稳定收入线——让创新没有后顾之忧','找一个务实搭档，把你从"想太多"拉回"做出来"']
+  },
+  'A4B1': { e:'🔨', n:'自由工匠', t:'自主x深耕',
+    dx:'你不需要老板，不需要打卡，不需要"团队协作"。一门手艺、一张桌子、自己的节奏——这就是你对理想工作的全部想象。',
+    dxl:'独狼进化论。症状：一个人干比一堆人干快三倍。并发症：觉得世界上大部分会议都是在浪费生命——而且你可能是对的。',
+    s:['独立工作能力让"在家办公"变成了"在家高产出"','在自己的领域已经形成了个人风格和口碑','不需要人盯人管理就能保持高质量产出'],
+    b:['拒绝合作可能让你错过了1+1>3的机会','定价能力是你最大的短板——你的手艺值多少钱，你可能低估了','一个人的产能总有天花板，而你离天花板已经不远了'],
+    f:['自由职业者、独立顾问、一人公司','需要深度专注的手艺人和创意工作者','远程工作和数字游民——这就是为你量身定做的'],
+    ad:['找一两个同行定期交流——保持独立但不封闭','花时间研究如何为你的时间和服务定价','把手艺产品化：从卖时间变成卖产品']
+  },
+  'A4B2': { e:'🦅', n:'游隼', t:'自主x拓展',
+    dx:'你不是没有方向，你是不想只有一个方向。在你看来，一辈子只干一件事是对生命的浪费。自由穿梭就是你的职业形态。',
+    dxl:'斜杠上瘾。症状：同时在三个完全不相关的领域工作，而且三个都做得不错。并发症：社会对你的"不稳定"指指点点，但你根本听不见。',
+    s:['自由度是你最大的竞争力——别人在格子间里焦虑，你在切换赛道','多个领域的技能组合能产生独特价值','不受传统职业路径束缚——这条路上根本没有你的对手'],
+    b:['收入曲线像过山车——自由是有代价的','"你到底做什么的？"——家人永远搞不清楚','缺乏长期聚焦的复利效应——你积累的是广度不是深度复利'],
+    f:['斜杠生活、多元收入组合','自由职业平台的复合型选手','需要跨领域视角的创意和咨询工作'],
+    ad:['建立"稳定收入+自由探索"双轨模式——用面包养梦想','为你的多元身份找一个统一的叙事——让别人能一句话介绍你','把时间管理练到极致——自由不是放纵，是更高级的自律']
+  },
+  'A4B3': { e:'🕊️', n:'信鸽', t:'自主x连接',
+    dx:'你独自飞行，但从不孤单。你有自己的航线，同时能在任何地方降落。自由和连接在你这里从来不矛盾。',
+    dxl:'关系维护型独居。症状：跟谁都能聊但谁都不想长期绑定。并发症：自由职业的孤独感和社交消耗同时存在，累。',
+    s:['独立但不孤立——你的个人品牌比公司工牌好用','高质量弱连接网络的拥有者——这种关系最稀缺','自由状态下依然能维系深度关系的能力'],
+    b:['自由和连接的平衡让内耗加倍——你到底要独处还是社交？','关系拉扯——这边约了饭局那边想码字','为了维系关系而牺牲自己的节奏——别让别人的节奏打乱你的节拍'],
+    f:['独立经纪人、自由顾问、个人品牌主理人','KOL/自媒体/影响力变现','需要独立运作但依赖人脉的行业'],
+    ad:['把社交结构化：哪天见人、哪天自闭，按日历执行','核心5-10个关系做深，其余的保持弱连接就够了','你的个人品牌就是复利账户——每天往里存一点点']
+  },
+  'A4B4': { e:'🐉', n:'创变龙', t:'自主x创新',
+    dx:'你生来就是要改写规则的人。不需要许可，不需要模板，不需要"他们都说这样不行"。你的路是你自己走出来的——而且别人看了也想跟着走。',
+    dxl:'体制排异反应。症状：任何形式的"公司规定"都会让你生理不适。并发症：理想主义撞上现实时会比你想象的更疼。',
+    s:['绝对的独立精神——没有人能告诉你"应该"怎么活','不依赖任何体系就能创造价值——体系倒了也跟你无关','不确定性对你来说是创作素材，别人看到的是风险，你看到的是空白画布'],
+    b:['协作对你来说是重大挑战——"为什么我要跟一群节奏不一样的人对齐？"','理想主义可能让你忽略了一些朴素但重要的现实规律','"做自己的东西"和"做出市场要的东西"之间有一条需要反复衡量的线'],
+    f:['独立创业者/连续创业者——不是因为你适合，是因为你只适合这个','艺术家、设计师、独立创作者','尚未被定义的职业——你就是来定义新职业的人'],
+    ad:['用商业思维保护你的创造力——让现实成为盟友而非敌人','学会选择性妥协：在无关紧要的事上让步，在核心原则上一寸不让','你的独特性是无价之宝——但需要有人能看懂它的价值。找到那个"翻译者"']
+  },
+};
+
+// ========== QUESTIONS ==========
+const questions = [
+  { dim:'drive', q:'周一早上闹钟响到第三遍，你最终从床上弹起来的真正原因是？',
+    opts:[
+      { text:'这周有个重要目标，今天不开干就会输给对手', score:{A1:1} },
+      { text:'不起床就没有工资，没有工资就没有安全感', score:{A2:1} },
+      { text:'今天安排了线上课程，这节课期待了好几天了', score:{A3:1} },
+      { text:'没有人替我起床——我的人生只对自己负责', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'老板说"这个新方向你负责探索一下"，你脑子里闪过的第一个念头是？',
+    opts:[
+      { text:'先把行业TOP10的案例全部拆解一遍再动手', score:{B1:1} },
+      { text:'这个方向涉及到哪些领域？我全都需要了解一下', score:{B2:1} },
+      { text:'我知道谁擅长这个，先拉个群', score:{B3:1} },
+      { text:'能不能用完全不一样的方法搞？试试看', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'年终考核面谈，老板开口那一刻，你心里默念的话是？',
+    opts:[
+      { text:'"快告诉我今年干得有多漂亮"', score:{A1:1} },
+      { text:'"千万别出什么幺蛾子，安安稳稳就好"', score:{A2:1} },
+      { text:'"给我点挑战行不行，今年太轻松了"', score:{A3:1} },
+      { text:'"只要别管太死，其他随便"', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'公司发了5000块学习预算，你已经在盘算怎么花了。你最终的选择更接近？',
+    opts:[
+      { text:'报一个行业顶尖大牛的深度训练营，只学这一个', score:{B1:1} },
+      { text:'2000报个AI课+1500报个写作课+1500报个理财课，雨露均沾', score:{B2:1} },
+      { text:'花2000加入大咖社群，剩下的请大家喝咖啡认识人', score:{B3:1} },
+      { text:'买一堆设备和工具，自己动手做点什么出来', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'你熬了三个通宵的方案，开会时同事轻描淡写说成是ta的点子。你脑子里闪过——',
+    opts:[
+      { text:'下次我要在更大的舞台上用事实碾压ta', score:{A1:1} },
+      { text:'算了，只要饭碗还在，计较这个不值当', score:{A2:1} },
+      { text:'先想想我是不是表达方式有问题，下次怎么改进', score:{A3:1} },
+      { text:'这个环境尊重我的贡献吗？不尊重的话我留在这里干嘛', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'跟朋友聊五年后的自己，你描述的画面更接近？',
+    opts:[
+      { text:'"我在XX领域，提到我的名字圈内人都知道"', score:{B1:1} },
+      { text:'"我能横跨三个领域，随便切换，谁也替代不了"', score:{B2:1} },
+      { text:'"想干什么事都找得到对的人一起干"', score:{B3:1} },
+      { text:'"我做了个东西，改变了一个行业的做法"', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'加班到半夜回到家，瘫在床上刷手机。哪条推送能让你嘴角上扬觉得"今天没白干"？',
+    opts:[
+      { text:'你参与的项目上了行业新闻首页', score:{A1:1} },
+      { text:'你的理财产品又稳稳地涨了一波', score:{A2:1} },
+      { text:'看到一篇让你醍醐灌顶的长文，立即转发收藏', score:{A3:1} },
+      { text:'一个数字游民分享他在海边咖啡馆工作的视频', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'老板把你扔进一个完全陌生的项目，限你一周出方案。你的第一个动作是？',
+    opts:[
+      { text:'关掉所有群聊，把这个领域的经典著作和报告翻个底朝天', score:{B1:1} },
+      { text:'列出项目涉及的各个层面，确保每个维度都覆盖到了', score:{B2:1} },
+      { text:'拿起电话约三个懂行的人吃饭——一顿饭解决的事为什么要查资料', score:{B3:1} },
+      { text:'先不管行业惯例，想想如果从零设计最优解是什么', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'猎头来电：涨薪30%，但要去一个你从来没想过的城市。你挂完电话最先纠结的是？',
+    opts:[
+      { text:'新平台能不能让我大展拳脚，做出名堂', score:{A1:1} },
+      { text:'这家公司稳定吗？去了会不会过两年又得换', score:{A2:1} },
+      { text:'去了能学到什么？我的能力圈能不能再扩一大圈', score:{A3:1} },
+      { text:'去了以后自由度怎么样？要不要事事汇报、天天打卡', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'一个难得的自由下午，你决定用来"提升职场竞争力"。你更可能做的事是？',
+    opts:[
+      { text:'翻开那本买了三年没敢动的行业圣经，今天要啃掉它', score:{B1:1} },
+      { text:'报名一个跟你主业有关但不太相关的线上训练营', score:{B2:1} },
+      { text:'约那个行业前辈喝咖啡，上一次聊完受益半年', score:{B3:1} },
+      { text:'把那个一直憋在脑子里的side project搭个原型出来', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'以下哪种职业场景最能让你半夜惊醒一身冷汗？',
+    opts:[
+      { text:'努力了很久的项目被取消，所有成绩一夜归零', score:{A1:1} },
+      { text:'收到公司即将大裁员的通知', score:{A2:1} },
+      { text:'发现自己一整年没有学会任何新东西', score:{A3:1} },
+      { text:'被通知以后所有工作内容都要经过三个人的审批', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'公司要优化掉30%的人，你觉得自己凭啥留下来？',
+    opts:[
+      { text:'我对这块业务的理解深度，全公司找不出第二个', score:{B1:1} },
+      { text:'我一个人能顶三个岗位，裁我的成本比留我还高', score:{B2:1} },
+      { text:'大客户和合作方只认我这张脸，我走了关系就断了', score:{B3:1} },
+      { text:'去年我提的那个改进帮公司省了几百万，报表上写着的', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'半夜睡不着，朋友发来灵魂拷问："说真的，你到底为什么要工作？"你脱口而出——',
+    opts:[
+      { text:'"我想做点事情，证明我来过这个世界"', score:{A1:1} },
+      { text:'"不工作吃什么？你以为我想啊"', score:{A2:1} },
+      { text:'"我在积累——总有一天这些能力会帮我打开一扇大门"', score:{A3:1} },
+      { text:'"我在攒资本换自由。再干几年，以后我定规矩"', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'一个行业协会邀请你做30分钟分享。你站上台最想讲的是什么？',
+    opts:[
+      { text:'你深耕多年的一个专业洞察——数据、案例、方法论一条龙', score:{B1:1} },
+      { text:'跨界玩法——用你另外两个领域的经验给这个行业一些暴击', score:{B2:1} },
+      { text:'不讲了，拉个圆桌，把台下有趣的灵魂请上来对话', score:{B3:1} },
+      { text:'一个还没来得及验证的大胆设想——管它对不对，先抛出来炸场', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'隔壁工位的同事突然辞职，去了一个压力更大但舞台也更大的平台。你的第一感觉是？',
+    opts:[
+      { text:'羡慕——能去更大的舞台证明自己，我也想试试', score:{A1:1} },
+      { text:'替他捏把汗——那个平台稳不稳啊，别后悔', score:{A2:1} },
+      { text:'好奇——那边能学到什么？过两个月约他吃饭', score:{A3:1} },
+      { text:'理解——他一定是为了换更多自由，每个人都有自己的路', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'工作中撞上一个让你头疼了两天的难题，各种常规方法都试过了。你现在准备？',
+    opts:[
+      { text:'不回邮件不接电话，把这个问题的根挖穿为止', score:{B1:1} },
+      { text:'换个角度思考——也许这个问题在其他领域早就有解了', score:{B2:1} },
+      { text:'拉了三个可能帮得上忙的人进来一起头脑风暴', score:{B3:1} },
+      { text:'常规方法都试过了还不行？那就是方法本身的问题。推翻重来', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'你中了彩票（税后够财务自由的那种）。第二天早上醒来，你最可能做的事是？',
+    opts:[
+      { text:'开始筹划一个真正想做的大项目——这下可以不用考虑ROI了', score:{A1:1} },
+      { text:'先把钱存好，然后正常上班——万一彩票系统出bug了呢', score:{A2:1} },
+      { text:'把购物车里攒了三年的课程全部下单', score:{A3:1} },
+      { text:'打电话给老板："以后我只做我想做的项目，按我的方式"', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'你有一个职业偶像。客观来说，ta最让你佩服的地方是？',
+    opts:[
+      { text:'在一个领域深耕了三十年，基本上活成了这个领域的代名词', score:{B1:1} },
+      { text:'横跨四五个完全不相关的行业都做出了成绩', score:{B2:1} },
+      { text:'身边聚了一群牛人，任何事都能找到最合适的人干', score:{B3:1} },
+      { text:'从一个没人看好的方向硬生生开出了一个新赛道', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'朋友聚会，有人问"你觉得一份工作的灵魂是什么？"三个选项不够，你选最接近的那个——',
+    opts:[
+      { text:'能做出看得见摸得着的成绩', score:{A1:1} },
+      { text:'让人安心，不用担心明天会不会失业', score:{A2:1} },
+      { text:'每天都能感觉到自己在变强', score:{A3:1} },
+      { text:'没人天天指手画脚告诉你该怎么做', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'突然对某个行业产生了浓厚兴趣，你想深入学习。你的学习路径更接近？',
+    opts:[
+      { text:'找到这个行业公认最经典的三本书和五份报告，系统啃完', score:{B1:1} },
+      { text:'行业分析+从业者访谈+案例研究+自己动手，多条线索同时推进', score:{B2:1} },
+      { text:'托人介绍几个这个行业的朋友，让人带着你入门', score:{B3:1} },
+      { text:'自己上手在这个行业做个小实验——摔两跤比看一百本书管用', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'老板把一个风险很高、可能砸锅也可能封神的项目推到你面前，说"你来"。你——',
+    opts:[
+      { text:'心跳开始加速——不是因为怕，是因为兴奋', score:{A1:1} },
+      { text:'先问清楚失败了会怎样，影响不影响我的岗位稳定性', score:{A2:1} },
+      { text:'不管结果如何，这个过程中学到的东西绝对值回票价', score:{A3:1} },
+      { text:'可以接，但要按我的方法来，不接受全程被安排', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'团队回顾你自己过去一年的贡献，你觉得你扮演的角色最接近？',
+    opts:[
+      { text:'某个关键模块的"定海神针"——这一块离了你就转不动', score:{B1:1} },
+      { text:'什么都能接的"万金油"——哪里缺人往哪里搬', score:{B2:1} },
+      { text:'把大家粘在一起的"超级胶水"——没有你团队早散了', score:{B3:1} },
+      { text:'那个永远在说"为什么不试试这样"的"捣乱分子"', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'刷朋友圈看到以前同事晒大厂offer和光鲜title，你的真实感受更接近？',
+    opts:[
+      { text:'妈的，被碾压了——我得加速了', score:{A1:1} },
+      { text:'大厂确实稳，但加班也狠吧，各有利弊', score:{A2:1} },
+      { text:'不知道他们在里面能学到什么，两年后约出来聊聊', score:{A3:1} },
+      { text:'title发朋友圈挺好看，但实际自由度呢？冷暖自知吧', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'你的职业技能图谱，用一棵植物来比喻更接近？',
+    opts:[
+      { text:'一棵根系极深的红杉——核心能力往下扎了几十米', score:{B1:1} },
+      { text:'一片盘根错节的红树林——多个根须交错支撑', score:{B2:1} },
+      { text:'一棵榕树——巨大的树冠下为很多人提供荫蔽', score:{B3:1} },
+      { text:'一株不断冒新芽的野藤——方向不定但生命力极强', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'公司团建，以下四种形式你最希望抽到哪一种？',
+    opts:[
+      { text:'分成两个队做一个项目，限时竞争，赢得荣誉', score:{A1:1} },
+      { text:'吃顿好的然后早点回酒店，泡个澡睡觉', score:{A2:1} },
+      { text:'请个教练来做个工作坊，学点东西回去能用上', score:{A3:1} },
+      { text:'自由活动——别搞什么统一项目了，大家各玩各的', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'"内卷"这个东西让你头疼，你的应对策略更接近？',
+    opts:[
+      { text:'卷就卷，同一个赛道我做到你卷不动为止', score:{B1:1} },
+      { text:'不在一个赛道上挤——我有好几个赛道可以跑', score:{B2:1} },
+      { text:'卷什么卷，拉出来聊一聊，合作不香吗？', score:{B3:1} },
+      { text:'大家卷的那条路一定不是唯一的路，我找另一条', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'跟了半年的项目被砍了。收拾东西的时候，心里最真实的那个念头是？',
+    opts:[
+      { text:'半年成果没人看见，最难过的不是失败，是没被记住', score:{A1:1} },
+      { text:'项目没了我的岗位会不会影响？赶紧找老板确认', score:{A2:1} },
+      { text:'虽然项目没了，但这半年学到的东西谁也拿不走', score:{A3:1} },
+      { text:'下次一定要争取更多自主权，别人砍掉我的东西这件事不能再发生', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'你更新了简历。翻看一遍后，最突出的感觉是？',
+    opts:[
+      { text:'每一年都在同一个方向深入，越来越沉', score:{B1:1} },
+      { text:'跨越的职能和行业种类让HR的眼花了', score:{B2:1} },
+      { text:'每个项目背后都有一群人——我是一个节点的节点', score:{B3:1} },
+      { text:'有好几段"从零到一"的经历，数量比同类人多不少', score:{B4:1} }
+    ]},
+  { dim:'drive', q:'三年后的某个周五下午，你希望自己在做什么？',
+    opts:[
+      { text:'在一个行业峰会的主讲台上，下面坐满了同行', score:{A1:1} },
+      { text:'准时下班，回家做一顿晚饭，和家人一起看剧', score:{A2:1} },
+      { text:'正在一个从未接触过的领域里如饥似渴地学习', score:{A3:1} },
+      { text:'在一个你选的城市里，按照你定的时刻表工作', score:{A4:1} }
+    ]},
+  { dim:'strategy', q:'所在的行业正在被AI冲击，到处都在说"要被替代了"。你的反应是？',
+    opts:[
+      { text:'深入研究AI在这个领域的具体影响，成为一个懂AI的行业专家，而非纯AI专家', score:{B1:1} },
+      { text:'一边学AI一边钻另一个受冲击小的领域，两条腿走路', score:{B2:1} },
+      { text:'找到正在做"AI+本行业"的那群人，加入他们的圈子', score:{B3:1} },
+      { text:'不研究了，直接拿AI做一个新的东西出来——创造比防守有效', score:{B4:1} }
+    ]}
+];
+
+// ========== BUILD GRID ==========
+const driveLabels = ['成就','安稳','成长','自主'];
+const strategyLabels = ['深耕','拓展','连接','创新'];
+const dk = ['A1','A2','A3','A4'];
+const sk = ['B1','B2','B3','B4'];
+
+function buildGrid() {
+  const g = document.getElementById('personality-grid');
+  let h = '<div class="pgrid-header"></div>' + strategyLabels.map(s => `<div class="pgrid-header">${s}</div>`).join('');
+  for (let d = 0; d < 4; d++) {
+    let r = `<div class="pgrid-row-label">${driveLabels[d]}</div>`;
+    for (let s = 0; s < 4; s++) {
+      const p = pd[dk[d]+sk[s]];
+      r += `<div class="pcell"><span class="pemoji">${p.e}</span><span class="pname">${p.n}</span><span class="ptag">${p.t}</span><span class="pdesc">${p.dx}</span></div>`;
+    }
+    h += r;
+  }
+  g.innerHTML = h;
+}
+buildGrid();
+
+// ========== QUIZ ==========
+let currentQ = 0, answers = [];
+
+function startQuiz() {
+  currentQ = 0; answers = new Array(30).fill(null);
+  switchSection('section-quiz'); renderQuestion(); window.scrollTo(0,0);
+}
+function switchSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('qtext').textContent = `${currentQ + 1} / 30　${q.q}`;
+  document.getElementById('qprogress-fill').style.width = `${((currentQ+1)/30)*100}%`;
+  const dt = document.getElementById('qdim-tag');
+  dt.textContent = q.dim === 'drive' ? '💡 职业动力' : '🎯 职业策略';
+  dt.className = 'quiz-dim-tag ' + (q.dim === 'drive' ? 'drive' : 'strategy');
+  const od = document.getElementById('qoptions');
+  od.innerHTML = q.opts.map((o,i) => {
+    const sel = answers[currentQ] === i ? ' selected' : '';
+    return `<div class="quiz-option${sel}" data-idx="${i}"><strong>${['A','B','C','D'][i]}.</strong> ${o.text}</div>`;
+  }).join('');
+  document.getElementById('qback').style.display = currentQ > 0 ? 'inline-block' : 'none';
+  od.querySelectorAll('.quiz-option').forEach(el => {
+    el.addEventListener('click', function() {
+      answers[currentQ] = parseInt(this.dataset.idx);
+      od.querySelectorAll('.quiz-option').forEach(e => e.classList.remove('selected'));
+      this.classList.add('selected');
+      setTimeout(() => nextQuestion(), 300);
+    });
+  });
+}
+function nextQuestion() {
+  if (answers[currentQ] === null) return;
+  if (currentQ < 29) { currentQ++; renderQuestion(); }
+  else showLoading();
+}
+function prevQuestion() { if (currentQ > 0) { currentQ--; renderQuestion(); } }
+
+function showLoading() {
+  document.getElementById('loading-overlay').classList.add('show');
+  const texts = ['正在提取你的职业DNA...','绘制职商基因图谱...','扫描16种人格数据库...','基因匹配完成，生成诊断报告...'];
+  let i = 0;
+  const el = document.getElementById('loading-text');
+  el.textContent = texts[0];
+  const iv = setInterval(() => { i++; if (i < texts.length) el.textContent = texts[i]; else clearInterval(iv); }, 800);
+  setTimeout(() => { clearInterval(iv); document.getElementById('loading-overlay').classList.remove('show'); showResult(); }, 2400);
+}
+
+function showResult() {
+  const scores = { A1:0,A2:0,A3:0,A4:0,B1:0,B2:0,B3:0,B4:0 };
+  for (let i = 0; i < 30; i++) {
+    const a = answers[i]; if (a === null) continue;
+    for (const [k,v] of Object.entries(questions[i].opts[a].score)) scores[k] += v;
+  }
+  const ds = { A1:scores.A1, A2:scores.A2, A3:scores.A3, A4:scores.A4 };
+  const ss = { B1:scores.B1, B2:scores.B2, B3:scores.B3, B4:scores.B4 };
+  const td = Object.entries(ds).sort((a,b) => b[1]-a[1])[0][0];
+  const ts = Object.entries(ss).sort((a,b) => b[1]-a[1])[0][0];
+  const p = pd[td+ts];
+
+  document.getElementById('result-header').innerHTML = `<div class="result-type">${p.t}</div><span class="result-emoji">${p.e}</span><div class="result-name">${p.n}</div><div class="result-tagline">${p.dx}</div>`;
+  document.getElementById('result-diagnosis').innerHTML = `<h3>💼 职业病理确诊</h3><p>${p.dxl}</p>`;
+
+  const dn = { A1:'成就', A2:'安稳', A3:'成长', A4:'自主' };
+  const sn = { B1:'深耕', B2:'拓展', B3:'连接', B4:'创新' };
+  const dm = Math.max(...Object.values(ds), 1);
+  const sm = Math.max(...Object.values(ss), 1);
+
+  let bh = '<div style="text-align:center;font-size:13px;color:#7c3aed;font-weight:700;margin-bottom:12px;">📊 职业动力</div>';
+  for (const [k,v] of Object.entries(ds)) {
+    const pct = Math.round(v/dm*100), c = k===td?'#7c3aed':'#4a4a6a';
+    bh += `<div class="dim-bar-row"><div class="dim-bar-label">${dn[k]}</div><div class="dim-bar-track"><div class="dim-bar-fill" style="width:${pct}%;background:${c}"></div></div><span style="font-size:12px;color:#888;width:24px;text-align:right">${v}</span></div>`;
+  }
+  bh += '<div style="text-align:center;font-size:13px;color:#2563eb;font-weight:700;margin:18px 0 12px;">🎯 职业策略</div>';
+  for (const [k,v] of Object.entries(ss)) {
+    const pct = Math.round(v/sm*100), c = k===ts?'#2563eb':'#4a4a6a';
+    bh += `<div class="dim-bar-row"><div class="dim-bar-label">${sn[k]}</div><div class="dim-bar-track"><div class="dim-bar-fill" style="width:${pct}%;background:${c}"></div></div><span style="font-size:12px;color:#888;width:24px;text-align:right">${v}</span></div>`;
+  }
+  document.getElementById('result-dim-bars').innerHTML = bh;
+
+  document.getElementById('result-strength').innerHTML = `<h3>🏆 核心竞争力</h3><ul>${p.s.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  document.getElementById('result-blindspot').innerHTML = `<h3>⚠️ 成长盲区</h3><ul>${p.b.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  document.getElementById('result-fit').innerHTML = `<h3>💼 适合的职业方向</h3><ul>${p.f.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  document.getElementById('result-advice').innerHTML = `<h3>💡 发展建议</h3><ul>${p.ad.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+
+  switchSection('section-result'); window.scrollTo(0,0);
+}
+function restartQuiz() { switchSection('section-intro'); window.scrollTo(0,0); }
+</script>
+</body>
+</html>
