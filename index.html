@@ -3,185 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>认知自己 | 财商 × 职商人格测试</title>
+<title>人格实验室</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: #0e0e14;
-    color: #e8e8f0;
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
+    display: flex; align-items: center; justify-content: center;
+    color: #e0e0e0; padding: 20px;
   }
-
-  .page {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 80px 24px 60px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  /* ── Hero ── */
-  .hero-tag {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #a0a0c0;
-    background: rgba(120,80,255,0.08);
-    border: 1px solid rgba(120,80,255,0.15);
-    border-radius: 30px;
-    padding: 6px 18px;
-    margin-bottom: 28px;
-  }
-
-  .hero-title {
-    font-size: 40px;
-    font-weight: 900;
-    line-height: 1.25;
-    margin-bottom: 16px;
-    background: linear-gradient(135deg, #c4b5fd 0%, #67e8f9 50%, #f0c040 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-desc {
-    font-size: 17px;
-    color: #8888aa;
-    line-height: 1.7;
-    max-width: 500px;
-    margin-bottom: 48px;
-  }
-
-  /* ── Tests Grid ── */
-  .tests {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    width: 100%;
-    margin-bottom: 48px;
-  }
-
-  .test-card {
-    display: block;
-    text-decoration: none;
-    background: linear-gradient(145deg, #1a1a2a, #1e1e32);
-    border: 1px solid #2a2a44;
-    border-radius: 20px;
-    padding: 36px 24px 28px;
-    text-align: center;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .test-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-  }
-
-  .test-card.financial::before {
-    background: linear-gradient(90deg, #f0c040, #c89620);
-  }
-  .test-card.career::before {
-    background: linear-gradient(90deg, #7c3aed, #2563eb);
-  }
-
-  .test-card:hover {
-    transform: translateY(-4px);
-    border-color: #4a4a6a;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-  }
-  .test-card.financial:hover { box-shadow: 0 12px 40px rgba(240,192,64,0.08); }
-  .test-card.career:hover { box-shadow: 0 12px 40px rgba(124,58,237,0.1); }
-
-  .test-icon {
-    font-size: 52px;
-    display: block;
-    margin-bottom: 16px;
-  }
-
-  .test-name {
-    font-size: 22px;
-    font-weight: 800;
-    margin-bottom: 8px;
-    color: #f0f0f0;
-  }
-
-  .test-tagline {
-    font-size: 14px;
-    color: #8888aa;
-    line-height: 1.6;
+  .container { max-width: 720px; width: 100%; text-align: center; }
+  .header { margin-bottom: 48px; }
+  .header h1 {
+    font-size: 42px; font-weight: 700;
+    background: linear-gradient(135deg, #a78bfa, #60a5fa, #34d399);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     margin-bottom: 12px;
   }
-
-  .test-stat {
-    display: inline-block;
-    font-size: 12px;
-    color: #666688;
-    background: rgba(255,255,255,0.03);
-    border-radius: 12px;
-    padding: 4px 12px;
+  .header p { color: #94a3b8; font-size: 16px; line-height: 1.7; }
+  .cards { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+  .card {
+    flex: 1; min-width: 280px; max-width: 340px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 36px 28px;
+    text-align: left; transition: all 0.3s;
+    text-decoration: none; color: inherit; display: block;
   }
-
-  /* ── Footer ── */
-  .footer {
-    font-size: 13px;
-    color: #555566;
-    line-height: 1.8;
+  .card:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(167,139,250,0.3);
+    transform: translateY(-2px);
   }
-  .footer strong { color: #8888aa; }
-
-  @media (max-width: 540px) {
-    .page { padding: 48px 16px 40px; }
-    .hero-title { font-size: 30px; }
-    .hero-desc { font-size: 15px; }
-    .tests { grid-template-columns: 1fr; }
-    .test-card { padding: 28px 20px 22px; }
+  .card-icon { font-size: 36px; margin-bottom: 16px; }
+  .card h2 { font-size: 22px; color: #f1f5f9; margin-bottom: 8px; }
+  .card .meta { font-size: 13px; color: #94a3b8; margin-bottom: 14px; }
+  .card .desc { font-size: 14px; color: #cbd5e1; line-height: 1.7; }
+  .card .enter {
+    display: inline-block; margin-top: 20px;
+    padding: 8px 24px; border-radius: 20px;
+    background: rgba(167,139,250,0.15);
+    color: #a78bfa; font-size: 14px; font-weight: 500;
+    transition: background 0.2s;
   }
+  .card:hover .enter { background: rgba(167,139,250,0.25); }
+  .footer { margin-top: 48px; color: #64748b; font-size: 13px; }
 </style>
 </head>
 <body>
-<div class="page">
-
-  <div class="hero-tag">认知 | 决策 | 成长</div>
-
-  <h1 class="hero-title">认识你自己</h1>
-
-  <p class="hero-desc">
-    两个测试，两个维度。<br>
-    财富人格，读懂你的金钱潜意识；<br>
-    职业人格，看清你的职场底层代码。
-  </p>
-
-  <div class="tests">
-    <a class="test-card financial" href="/cs/">
-      <span class="test-icon">💰</span>
-      <div class="test-name">财商人格测试</div>
-      <div class="test-tagline">9种金钱人格，揭露你对财富的真实态度</div>
-      <span class="test-stat">3×3 模型 · 30题 · 约6分钟</span>
+<div class="container">
+  <div class="header">
+    <h1>人格实验室</h1>
+    <p>两个测试，看清你的金钱模式与职业本能。<br>不做心理分析，只做一面镜子。</p>
+  </div>
+  <div class="cards">
+    <a class="card" href="/cs/">
+      <div class="card-icon">💰</div>
+      <h2>财富人格测试</h2>
+      <div class="meta">9 种人格 · 30 题 · 约 3 分钟</div>
+      <div class="desc">你的金钱潜意识是什么？从财富观、消费观和决策模式三个维度，交叉出 9 种独特的金钱人格。是守财龟还是冒险狮？一测便知。</div>
+      <span class="enter">开始测试 →</span>
     </a>
-
-    <a class="test-card career" href="/zs/">
-      <span class="test-icon">🧭</span>
-      <div class="test-name">职商人格测试</div>
-      <div class="test-tagline">16种职业人格，发现你的职场核心驱动力</div>
-      <span class="test-stat">4×4 模型 · 30题 · 约6分钟</span>
+    <a class="card" href="/zs/">
+      <div class="card-icon">💼</div>
+      <h2>职商人格测试</h2>
+      <div class="meta">16 种人格 · 30 题 · 约 3 分钟</div>
+      <div class="desc">你的职业 DNA 是什么？从职业动力和职业策略两个维度，映射出 16 种职场人格。知道为什么你在周一早上按掉闹钟的真正原因。</div>
+      <span class="enter">开始测试 →</span>
     </a>
   </div>
-
-  <div class="footer">
-    <strong>好的决策，从认识自己开始。</strong>
-  </div>
-
+  <div class="footer">让产品说话</div>
 </div>
 </body>
 </html>
