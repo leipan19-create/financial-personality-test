@@ -222,7 +222,10 @@ body {
   <div class="result-actions">
     <button class="btn btn-primary" onclick="restartQuiz()">🔄 再测一次</button>
   </div>
-  <div class="footer">添加微信：panleicfa</div>
+  <div style="text-align: center; margin-top: 40px; padding: 24px; background: var(--card); border-radius: 16px; border: 1px solid var(--border);">
+    <div id="r-cta-text" style="font-size: 16px; margin-bottom: 12px; line-height: 1.6;"></div>
+    <div style="color: var(--text-dim); font-size: 14px;">添加微信：<span style="color: var(--text); font-weight: bold;">panleicfa</span></div>
+  </div>
 </div>
 
 <script>
@@ -578,6 +581,26 @@ const strategyLabels = ['深耕','拓展','连接','创新'];
 const dk = ['A1','A2','A3','A4'];
 const sk = ['B1','B2','B3','B4'];
 
+// ========== CTA ==========
+const CTA = {
+  'A1B1': '想知道怎么从山顶看到下一座更高的山？',
+  'A1B2': '多项全能——现在缺一个方向让你真正起飞？',
+  'A1B3': '身边聚了一群人，怎么让每个人都朝同一个方向冲？',
+  'A1B4': '满脑子颠覆式想法，缺一个让它落地的路径？',
+  'A2B1': '守得稳，有没有想过让你擅长的领域为你创造更多？',
+  'A2B2': '面面俱到——最难的是选一个突破口？',
+  'A2B3': '人脉是你的护城河，怎么让这条河变成高速公路？',
+  'A2B4': '在体系内悄悄革命的人，需要一张更大的许可证？',
+  'A3B1': '一直在深耕，什么时候开始变现？',
+  'A3B2': '你学得太快了——回报跟得上你的速度吗？',
+  'A3B3': '你帮了很多人成长，谁来帮你的职业加速？',
+  'A3B4': '你的下一个突破点，可能藏在没注意过的领域？',
+  'A4B1': '手艺在身，缺的是一个让你舒服变现的模式？',
+  'A4B2': '自由是你的底线——但自由也可以更值钱？',
+  'A4B3': '你连接了很多人，需要一个帮你梳理方向的人？',
+  'A4B4': '你能从零创造——下一步：从零到变现？'
+};
+
 function buildGrid() {
   const g = document.getElementById('personality-grid');
   let h = '<div class="pgrid-header"></div>' + strategyLabels.map(s => `<div class="pgrid-header">${s}</div>`).join('');
@@ -679,6 +702,8 @@ function showResult() {
   document.getElementById('result-blindspot').innerHTML = `<h3>⚠️ 成长盲区</h3><ul>${p.b.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   document.getElementById('result-fit').innerHTML = `<h3>💼 适合的职业方向</h3><ul>${p.f.map(x=>`<li>${x}</li>`).join('')}</ul>`;
   document.getElementById('result-advice').innerHTML = `<h3>💡 发展建议</h3><ul>${p.ad.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+
+  document.getElementById('r-cta-text').textContent = CTA[td+ts];
 
   switchSection('section-result'); window.scrollTo(0,0);
 }
