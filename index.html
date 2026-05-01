@@ -1,79 +1,118 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>人格实验室</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    color: #e0e0e0; padding: 20px;
-  }
-  .container { max-width: 720px; width: 100%; text-align: center; }
-  .header { margin-bottom: 48px; }
-  .header h1 {
-    font-size: 42px; font-weight: 700;
-    background: linear-gradient(135deg, #a78bfa, #60a5fa, #34d399);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    margin-bottom: 12px;
-  }
-  .header p { color: #94a3b8; font-size: 16px; line-height: 1.7; }
-  .cards { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
-  .card {
-    flex: 1; min-width: 280px; max-width: 340px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px; padding: 36px 28px;
-    text-align: left; transition: all 0.3s;
-    text-decoration: none; color: inherit; display: block;
-  }
-  .card:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(167,139,250,0.3);
-    transform: translateY(-2px);
-  }
-  .card-icon { font-size: 36px; margin-bottom: 16px; }
-  .card h2 { font-size: 22px; color: #f1f5f9; margin-bottom: 8px; }
-  .card .meta { font-size: 13px; color: #94a3b8; margin-bottom: 14px; }
-  .card .desc { font-size: 14px; color: #cbd5e1; line-height: 1.7; }
-  .card .enter {
-    display: inline-block; margin-top: 20px;
-    padding: 8px 24px; border-radius: 20px;
-    background: rgba(167,139,250,0.15);
-    color: #a78bfa; font-size: 14px; font-weight: 500;
-    transition: background 0.2s;
-  }
-  .card:hover .enter { background: rgba(167,139,250,0.25); }
-  .footer { margin-top: 48px; color: #64748b; font-size: 13px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人格实验室 · 让产品说话</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-border {
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(to right, #2563eb, #7c3aed) border-box;
+            border: 4px solid transparent;
+        }
+    </style>
 </head>
-<body>
-<div class="container">
-  <div class="header">
-    <h1>人格实验室</h1>
-    <p>两个测试，看清你的金钱模式与职业本能。<br>不做心理分析，只做一面镜子。</p>
-  </div>
-  <div class="cards">
-    <a class="card" href="/cs/">
-      <div class="card-icon">💰</div>
-      <h2>财富人格测试</h2>
-      <div class="meta">9 种人格 · 30 题 · 约 3 分钟</div>
-      <div class="desc">你的金钱潜意识是什么？从财富观、消费观和决策模式三个维度，交叉出 9 种独特的金钱人格。是守财龟还是冒险狮？一测便知。</div>
-      <span class="enter">开始测试 →</span>
-    </a>
-    <a class="card" href="/zs/">
-      <div class="card-icon">💼</div>
-      <h2>职商人格测试</h2>
-      <div class="meta">16 种人格 · 30 题 · 约 3 分钟</div>
-      <div class="desc">你的职业 DNA 是什么？从职业动力和职业策略两个维度，映射出 16 种职场人格。知道为什么你在周一早上按掉闹钟的真正原因。</div>
-      <span class="enter">开始测试 →</span>
-    </a>
-  </div>
-  <div class="footer">让产品说话</div>
-</div>
+<body class="bg-slate-50 font-sans text-slate-900">
+
+    <div class="min-h-screen flex flex-col items-center justify-center p-6">
+        <div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            
+            <!-- 左侧：教练必要性说明 -->
+            <div class="space-y-8">
+                <!-- 财富教练 -->
+                <div>
+                    <h2 class="text-blue-600 font-bold tracking-widest uppercase text-sm mb-2">Wealth Coaching</h2>
+                    <h1 class="text-3xl font-extrabold mb-3">你需要一位<br>财富教练</h1>
+                    <p class="text-slate-600 leading-relaxed mb-4">
+                        钱的问题，从来不只是数字问题。你缺的不是一个理财产品，而是一套属于你自己的<strong>金钱操作系统</strong>。
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2 mt-0.5 shrink-0">✔</span>
+                            <span class="text-sm text-slate-600"><strong>性格盲点：</strong>存不住钱、不敢投资、过度保守——这些不是意志力问题，是底层认知问题。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2 mt-0.5 shrink-0">✔</span>
+                            <span class="text-sm text-slate-600"><strong>碎片陷阱：</strong>短视频教你炒股票，没人教你建体系。CFA 级别的金融逻辑，才是防割韭菜的铠甲。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2 mt-0.5 shrink-0">✔</span>
+                            <span class="text-sm text-slate-600"><strong>纸上谈兵：</strong>看了很多书，一到实操就懵。你需要的是陪跑，不是课件。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 职业教练 -->
+                <div>
+                    <h2 class="text-purple-600 font-bold tracking-widest uppercase text-sm mb-2">Career Coaching</h2>
+                    <h1 class="text-3xl font-extrabold mb-3">你还需要一位<br>职业教练</h1>
+                    <p class="text-slate-600 leading-relaxed mb-4">
+                        职业选择是人生最大的杠杆。选错方向，努力只是加速内耗。
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2 mt-0.5 shrink-0">✔</span>
+                            <span class="text-sm text-slate-600"><strong>转型困局：</strong>金融、互联网、大厂——高薪人群的集体焦虑：想走不敢走，想留不甘心。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2 mt-0.5 shrink-0">✔</span>
+                            <span class="text-sm text-slate-600"><strong>自由职业陷阱：</strong>裸辞不是自由。从零到可持续，需要路径设计，不是鸡汤。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-500 mr-2 mt-0.5 shrink-0">✔</span>
+                            <span class="text-sm text-slate-600"><strong>过来人视角：</strong>PE/VC 十年见过上千个商业模型，知道什么能跑通、什么只是幻觉。</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-l-4 border-blue-500">
+                    <p class="text-sm italic text-slate-700">
+                        "先认识自己，再决定方向。测完两个人格，我们聊聊你的可能性。"
+                    </p>
+                </div>
+            </div>
+
+            <!-- 右侧：两个测试入口 -->
+            <div class="space-y-5">
+                <!-- 财商测试 -->
+                <div class="gradient-border bg-white p-6 rounded-2xl shadow-lg text-center">
+                    <div class="mb-4">
+                        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase">3×3 矩阵 · 30题</span>
+                        <h2 class="text-2xl font-black mt-3">💰 财商人 格诊断</h2>
+                        <p class="text-slate-500 text-sm mt-2">你的金钱底层操作系统<br>精准匹配同类人与宿敌</p>
+                    </div>
+                    <a href="/cs/" class="inline-block w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-blue-600 transition-colors shadow-lg">
+                        立即开始测试 →
+                    </a>
+                    <p class="text-xs text-slate-400 mt-3">9种人格 · 毒舌文案 · 宿敌配对</p>
+                </div>
+
+                <!-- 职商测试 -->
+                <div class="gradient-border bg-white p-6 rounded-2xl shadow-lg text-center">
+                    <div class="mb-4">
+                        <span class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full uppercase">4×4 矩阵 · 30题</span>
+                        <h2 class="text-2xl font-black mt-3">💼 职商人 格诊断</h2>
+                        <p class="text-slate-500 text-sm mt-2">你的职业动力与策略基因<br>找到真正适合的方向</p>
+                    </div>
+                    <a href="/zs/" class="inline-block w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-purple-600 transition-colors shadow-lg">
+                        立即开始测试 →
+                    </a>
+                    <p class="text-xs text-slate-400 mt-3">16种人格 · 职业病理确诊 · 发展建议</p>
+                </div>
+
+                <!-- 联系方式 -->
+                <div class="text-center pt-2">
+                    <p class="text-xs text-slate-400">添加微信：<span class="text-blue-600 font-medium">panleicfa</span></p>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="mt-12 text-slate-400 text-sm text-center">
+            <p>让产品说话 · 人格实验室</p>
+        </footer>
+    </div>
+
 </body>
 </html>
