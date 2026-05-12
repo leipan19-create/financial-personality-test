@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章标题 · 潘雷 CFA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans SC', sans-serif; }
+        .serif { font-family: 'Noto Serif SC', serif; }
+        .prose { line-height: 1.9; font-size: 16px; }
+        .prose p { margin-bottom: 1.2em; }
+        .prose h2 { font-family: 'Noto Serif SC', serif; font-size: 1.4em; font-weight: 700; margin: 2em 0 0.8em; }
+        .prose h3 { font-size: 1.15em; font-weight: 600; margin: 1.5em 0 0.6em; }
+        .prose blockquote { border-left: 3px solid #e2e8f0; padding-left: 1.2em; color: #64748b; font-style: italic; margin: 1.5em 0; }
+        .prose ul, .prose ol { padding-left: 1.5em; margin-bottom: 1.2em; }
+        .prose li { margin-bottom: 0.4em; }
+        .prose strong { font-weight: 600; }
+        .prose a { color: #2563eb; text-decoration: underline; text-underline-offset: 3px; }
+        .prose a:hover { color: #1d4ed8; }
+    </style>
+</head>
+<body class="bg-white text-slate-800">
+
+    <!-- 顶部导航 -->
+    <nav class="border-b border-slate-100">
+        <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="/blog/" class="text-sm text-slate-400 hover:text-slate-700 transition-colors">← 返回博客</a>
+            <span class="text-sm text-slate-400">潘雷 CFA</span>
+        </div>
+    </nav>
+
+    <!-- 文章头部 -->
+    <header class="max-w-3xl mx-auto px-6 pt-12 pb-8">
+        <div class="flex items-center gap-3 mb-4">
+            <time class="text-xs text-slate-400" id="article-date"></time>
+            <div id="article-tags"></div>
+        </div>
+        <h1 class="serif text-3xl md:text-4xl font-bold leading-tight mb-4" id="article-title"></h1>
+        <p class="text-slate-500 text-lg" id="article-excerpt"></p>
+    </header>
+
+    <!-- 文章正文 -->
+    <article class="max-w-3xl mx-auto px-6 pb-16">
+        <div class="prose" id="article-body">
+            <!-- 文章内容由 JavaScript 注入 -->
+        </div>
+    </article>
+
+    <!-- 结尾引流 -->
+    <div class="max-w-3xl mx-auto px-6 pb-12">
+        <div class="p-6 bg-slate-50 rounded-xl border border-slate-100">
+            <p class="text-sm text-slate-600 leading-relaxed">
+                如果你也在想这些问题，欢迎来聊。<br>
+                微信：<span class="font-medium text-blue-600">panleicfa</span>
+                · <a href="/cs/" class="text-blue-600 hover:underline">测财商</a>
+                · <a href="/zs/" class="text-purple-600 hover:underline">测职商</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <footer class="border-t border-slate-100">
+        <div class="max-w-3xl mx-auto px-6 py-8 flex items-center justify-between">
+            <a href="/blog/" class="text-sm text-slate-400 hover:text-slate-600">← 所有文章</a>
+            <a href="/" class="text-sm text-slate-400 hover:text-slate-600">人格实验室首页 →</a>
+        </div>
+    </footer>
+
+    <script>
+        // 从 URL 获取 slug，加载 articles.json 找到对应文章，再加载正文
+        const slug = window.location.pathname.split('/').pop().replace('.html', '');
+
+        async function loadArticle() {
+            try {
+                const resp = await fetch('/blog/articles.json?t=' + Date.now());
+                const articles = await resp.json();
+                const article = articles.find(a => a.slug === slug);
+
+                if (!article) {
+                    document.getElementById('article-body').innerHTML = '<p class="text-red-500">文章未找到。</p>';
+                    return;
+                }
+
+                document.title = article.title + ' · 潘雷 CFA';
+                document.getElementById('article-title').textContent = article.title;
+                document.getElementById('article-date').textContent = article.date;
+                document.getElementById('article-excerpt').textContent = article.excerpt;
+
+                if (article.tags) {
+                    document.getElementById('article-tags').innerHTML = article.tags.map(t =>
+                        `<span class="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">${t}</span>`
+                    ).join(' ');
+                }
+
+                // 加载正文 HTML
+                const bodyResp = await fetch(`/blog/articles/${slug}.body.html?t=${Date.now()}`);
+                document.getElementById('article-body').innerHTML = await bodyResp.text();
+
+            } catch (e) {
+                document.getElementById('article-body').innerHTML = '<p class="text-red-500">加载失败，请刷新重试。</p>';
+            }
+        }
+
+        loadArticle();
+    </script>
+
+</body>
+</html>
