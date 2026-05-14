@@ -62,7 +62,7 @@
                 }
 
                 // 按日期倒序
-                articles.sort((a, b) => new Date(b.date) - new Date(a.date));
+                articles.sort((a, b) => new Date(a.date) - new Date(b.date));
 
                 list.innerHTML = articles.map(a => `
                     <a href="/blog/articles/${a.slug}.html" class="article-card block p-6 -mx-6 rounded-xl mb-4 hover:bg-slate-50 group">
