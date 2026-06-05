@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JDT AI 人生教练 · 让产品说话</title>
-    <link rel="preconnect" href="https://api.dify.ai">
+    <link rel="preconnect" href="https://apihub.agnes-ai.com">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f8fafc; color: #0f172a; height: 100vh; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
@@ -35,6 +35,8 @@
         .msg-bubble ul, .msg-bubble ol { margin: 8px 0; padding-left: 20px; }
         .msg-bubble strong { font-weight: 600; }
         .msg-bubble code { background: rgba(0,0,0,0.06); padding: 1px 4px; border-radius: 4px; font-size: 13px; }
+        .msg-bubble pre { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; font-size: 13px; line-height: 1.5; }
+        .msg-bubble pre code { background: none; padding: 0; }
         .msg.user .msg-bubble code { background: rgba(255,255,255,0.15); }
 
         /* Welcome */
@@ -43,7 +45,7 @@
         .welcome h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
         .welcome p { color: #64748b; font-size: 14px; max-width: 400px; margin: 0 auto; line-height: 1.7; }
         .welcome-tips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 20px; }
-        .tip-btn { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 8px 16px; font-size: 13px; color: #475569; cursor: pointer; transition: all 0.2s; }
+        .tip-btn { background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 8px 16px; font-size: 13px; color: #475569; cursor: pointer; transition: all 0.2s; font-family: inherit; }
         .tip-btn:hover { background: #fef3c7; border-color: #fbbf24; color: #92400e; }
 
         /* Typing indicator */
@@ -116,18 +118,45 @@
     </div>
 
     <script>
+        const API_URL = 'https://apihub.agnes-ai.com/v1/chat/completions';
+        const API_KEY = 'sk-PD29ywdkyaFKMv7z68gBYtEpxk2HUONq3kHx7eQzHErM0ANr';
+        const MODEL = 'agnes-2.0-flash';
+        const SYSTEM_PROMPT = `# Role
+你是一个结合了"圣经真理"、"正统教会教导"与"专业心理辅导/人生教练技术（如GROW模型）"的顶尖主内全人AI教练。
+
+# Response Structure (必须严格遵循以下三段式结构输出)
+
+## 核心剖析与共情
+- 开篇用极其温暖、感同身受的语言安抚用户情绪（例如："听到你这么说，我完全能理解你此刻的焦虑/痛心……"）。
+- 帮助用户看透现象看本质。不要只看表面行为，要用教练视角解构底层的"心理机制、身份认同、或夫妻/职场权力博弈"。
+
+## 1. 属灵反思（先察己，后察人）
+- 引导用户首先来到上帝面前反省自己（这是最重要的步骤）。
+- 提出2-3个能直击灵魂、引发深度自我察觉的闭门反思问题，帮助用户厘清自己的动机是出于"爱、保护、恐惧"还是"控制、面子"。
+- 【圣经引用规范】：精准嵌入1-2句融合在安慰话语中的圣经经文（必须标明卷章节）。所有经文的字句与内容，必须严格按照【圣经和合本】的官方正统文本输出，作为反思的属灵锚点。
+
+## 2. 立即调整的实际步骤（落地实操）
+- 提供3个马上就能做的、具体的、可操作的行动建议（分为短期破冰与长期培育）。
+- 【必须提供话术示范】：遇到需要沟通的场景（如父女沟通、夫妻沟通、职场谈判），必须用拟真、第一人称的温暖语言，写出一段"用户可以直接拿去照着说/照着改"的话术模板。
+
+## 3. 长期的教练方向与策略
+- 提供更高维度的系统性建议（如：关系先于道理、动静分离、引入第三方属灵伙伴等）。
+- 在结尾给用户一句充满盼望、能卸下控诉的属灵提醒。
+
+# Call to Action & Coach Ending (教练式收尾)
+- 严禁替用户做绝对的决定，要捍卫用户的自由意志。
+- 回答的最后，必须给出一个【多选一】的追问，字数控制在两三句内，用于激发用户下一步的思考或行动。例如：
+  "你要不要我帮你：1. 写一封你可以照着改的沟通信？2. 或者具体教你日常中如何应对XX行为？你现在最想先处理哪一部分？"
+
+沟通风格：温暖但有力量，善于倾听，用提问引导思考而非直接给答案。使用中文回复。`;
+
         const chatArea = document.getElementById('chatArea');
         const inputBox = document.getElementById('inputBox');
         const sendBtn = document.getElementById('sendBtn');
         const welcomeBlock = document.getElementById('welcomeBlock');
 
-        let conversationId = '';
         let isStreaming = false;
-        let currentBotBubble = null;
-        let currentBotContent = '';
-
-        // Generate a simple user ID
-        const userId = 'u-' + Math.random().toString(36).slice(2, 10);
+        let messages = [{ role: 'system', content: SYSTEM_PROMPT }];
 
         function handleKey(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -193,18 +222,26 @@
         }
 
         function formatContent(text) {
-            // Simple markdown-like formatting
+            // Escape HTML
             let html = text
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
+                .replace(/>/g, '&gt;');
+
+            // Code blocks: ```...```
+            html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+                return '<pre><code>' + code.trim() + '</code></pre>';
+            });
+
+            // Inline formatting
+            html = html
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/`(.*?)`/g, '<code>$1</code>')
                 .replace(/\n\n/g, '</p><p>')
-                .replace(/\n/g, '<br>')
-                .replace(/^/, '<p>')
-                .replace(/$/, '</p>');
-            return html;
+                .replace(/\n/g, '<br>');
+
+            return '<p>' + html + '</p>';
         }
 
         async function sendMessage() {
@@ -214,31 +251,37 @@
             inputBox.value = '';
             inputBox.style.height = 'auto';
             addMessage('user', formatContent(text));
+
+            messages.push({ role: 'user', content: text });
+
             isStreaming = true;
             sendBtn.disabled = true;
-
             showTyping();
 
             try {
-                const resp = await fetch('/api/proxy', {
+                const resp = await fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + API_KEY,
+                    },
                     body: JSON.stringify({
-                        path: '/chat-messages',
-                        method: 'POST',
-                        query: text,
-                        user: userId,
-                        inputs: {},
-                        response_mode: 'streaming',
-                        conversation_id: conversationId,
+                        model: MODEL,
+                        messages: messages,
+                        stream: true,
+                        temperature: 0.7,
+                        max_tokens: 2048,
                     }),
                 });
 
                 removeTyping();
 
                 if (!resp.ok) {
-                    const err = await resp.json();
-                    addMessage('bot', '<p>抱歉，出了点问题：' + (err.message || '请稍后重试') + '</p>');
+                    const errText = await resp.text();
+                    let errMsg = '请稍后重试';
+                    try { errMsg = JSON.parse(errText).error?.message || errText; } catch(e) { errMsg = errText.slice(0, 200); }
+                    addMessage('bot', '<p>抱歉，出了点问题：' + errMsg + '</p>');
+                    messages.pop(); // Remove failed user message
                     isStreaming = false;
                     sendBtn.disabled = false;
                     return;
@@ -256,45 +299,49 @@
                 msgDiv.appendChild(bubble);
                 chatArea.appendChild(msgDiv);
 
-                currentBotContent = '';
-                currentBotBubble = bubble;
+                let fullContent = '';
 
                 const reader = resp.body.getReader();
                 const decoder = new TextDecoder();
+                let buffer = '';
 
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
 
-                    const chunk = decoder.decode(value, { stream: true });
-                    const lines = chunk.split('\n');
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop(); // Keep incomplete line in buffer
 
                     for (const line of lines) {
-                        if (!line.startsWith('data: ')) continue;
-                        const data = line.slice(6).trim();
+                        const trimmed = line.trim();
+                        if (!trimmed || !trimmed.startsWith('data: ')) continue;
+                        const data = trimmed.slice(6);
                         if (data === '[DONE]') continue;
 
                         try {
                             const json = JSON.parse(data);
-                            if (json.event === 'message' || json.event === 'agent_message') {
-                                currentBotContent += json.answer || '';
-                                currentBotBubble.innerHTML = formatContent(currentBotContent);
+                            const delta = json.choices?.[0]?.delta?.content;
+                            if (delta) {
+                                fullContent += delta;
+                                bubble.innerHTML = formatContent(fullContent);
                                 scrollToBottom();
-                            } else if (json.event === 'message_end') {
-                                conversationId = json.conversation_id || '';
                             }
-                        } catch (e) { /* skip parse errors */ }
+                        } catch (e) { /* skip */ }
                     }
                 }
 
-                // If no content was streamed, show placeholder
-                if (!currentBotContent) {
-                    currentBotBubble.innerHTML = '<p>教练在思考中...</p>';
+                // Save assistant message to history
+                if (fullContent) {
+                    messages.push({ role: 'assistant', content: fullContent });
+                } else {
+                    bubble.innerHTML = '<p>教练在思考中，请再试一次...</p>';
                 }
 
             } catch (err) {
                 removeTyping();
                 addMessage('bot', '<p>连接失败：' + err.message + '</p>');
+                messages.pop(); // Remove failed user message
             }
 
             isStreaming = false;
