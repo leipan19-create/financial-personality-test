@@ -4,151 +4,203 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>人格实验室 · 让产品说话</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Preconnect to speed up iframe loading -->
+    <link rel="preconnect" href="https://udify.app" crossorigin>
+    <link rel="dns-prefetch" href="https://udify.app">
     <style>
-        .gradient-border {
-            background: linear-gradient(white, white) padding-box,
-                        linear-gradient(to right, #2563eb, #7c3aed) border-box;
-            border: 4px solid transparent;
-        }
-        .gradient-border-warm {
-            background: linear-gradient(white, white) padding-box,
-                        linear-gradient(to right, #f59e0b, #ef4444) border-box;
-            border: 4px solid transparent;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f8fafc; color: #0f172a; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; color: inherit; }
+
+        /* Layout */
+        .page { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+        .container { max-width: 1024px; width: 100%; display: grid; grid-template-columns: 1fr; gap: 48px; align-items: start; }
+        @media (min-width: 768px) { .container { grid-template-columns: 1fr 1fr; } }
+
+        /* Left column */
+        .left { display: flex; flex-direction: column; gap: 32px; }
+        .section-label { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 14px; margin-bottom: 8px; }
+        .section-title { font-size: 28px; font-weight: 800; margin-bottom: 12px; line-height: 1.3; }
+        .section-desc { color: #475569; line-height: 1.7; margin-bottom: 16px; }
+        .check-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .check-item { display: flex; align-items: flex-start; font-size: 14px; color: #475569; }
+        .check-icon { color: #22c55e; margin-right: 8px; margin-top: 2px; flex-shrink: 0; }
+        .highlight-box { padding: 16px; background: linear-gradient(to right, #eff6ff, #f5f3ff); border-radius: 8px; border-left: 4px solid #3b82f6; }
+        .highlight-box p { font-size: 14px; font-style: italic; color: #334155; }
+        .expert-section { padding-top: 24px; border-top: 1px solid #e2e8f0; }
+        .expert-name { font-size: 18px; font-weight: 700; color: #1e293b; }
+        .expert-cred { color: #64748b; font-weight: 400; font-size: 16px; }
+        .expert-desc { font-size: 14px; color: #475569; line-height: 1.7; margin-top: 8px; }
+
+        /* Right column */
+        .right { display: flex; flex-direction: column; gap: 20px; }
+
+        /* Cards */
+        .card { background: #fff; padding: 24px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); text-align: center; }
+        .card-blue { background: linear-gradient(#fff,#fff) padding-box, linear-gradient(to right, #2563eb, #7c3aed) border-box; border: 4px solid transparent; }
+        .card-purple { background: linear-gradient(#fff,#fff) padding-box, linear-gradient(to right, #7c3aed, #2563eb) border-box; border: 4px solid transparent; }
+        .card-warm { background: linear-gradient(#fff,#fff) padding-box, linear-gradient(to right, #f59e0b, #ef4444) border-box; border: 4px solid transparent; }
+        .card-badge { display: inline-block; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 999px; text-transform: uppercase; margin-bottom: 12px; }
+        .badge-blue { background: #dbeafe; color: #1d4ed8; }
+        .badge-purple { background: #f3e8ff; color: #7c3aed; }
+        .badge-amber { background: #fef3c7; color: #b45309; }
+        .card-title { font-size: 24px; font-weight: 900; margin-top: 12px; }
+        .card-sub { color: #64748b; font-size: 14px; margin-top: 8px; }
+        .card-btn { display: block; width: 100%; padding: 12px 0; background: #0f172a; color: #fff; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 0.2s; margin-top: 16px; text-align: center; }
+        .card-btn:hover { background: #2563eb; }
+        .card-btn-warm:hover { background: #d97706; }
+        .card-btn-purple:hover { background: #7c3aed; }
+        .card-hint { font-size: 12px; color: #94a3b8; margin-top: 12px; }
+        .contact-info { text-align: center; padding-top: 8px; font-size: 12px; color: #94a3b8; }
+        .contact-link { color: #2563eb; font-weight: 500; }
+
+        /* Blog & Footer */
+        .blog-link { margin-top: 32px; text-align: center; }
+        .blog-link a { display: inline-flex; align-items: center; gap: 8px; color: #64748b; font-size: 14px; transition: color 0.2s; border-bottom: 1px solid transparent; }
+        .blog-link a:hover { color: #1e293b; border-bottom-color: #cbd5e1; }
+        footer { margin-top: 48px; color: #94a3b8; font-size: 14px; text-align: center; }
+        footer a { transition: color 0.2s; }
+        footer a:hover { color: #475569; }
+
+        /* Dify iframe section */
+        .chat-container { position: relative; width: 100%; height: 0; overflow: hidden; transition: height 0.4s ease; border-radius: 16px; }
+        .chat-container.active { height: 600px; }
+        .chat-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 16px; }
+        .chat-skeleton { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; border-radius: 16px; gap: 16px; }
+        .chat-skeleton.hidden { display: none; }
+        .skeleton-spinner { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top-color: #f59e0b; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .skeleton-text { color: #94a3b8; font-size: 14px; }
+        .chat-close { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.6); color: #fff; border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s; }
+        .chat-close:hover { background: rgba(0,0,0,0.8); }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900">
+<body>
+    <div class="page">
+        <div class="container">
 
-    <div class="min-h-screen flex flex-col items-center justify-center p-6">
-        <div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-            
-            <!-- 左侧：教练必要性说明 -->
-            <div class="space-y-8">
-                <!-- 财富教练 -->
+            <!-- Left: Coaching description -->
+            <div class="left">
                 <div>
-                    <h2 class="text-blue-600 font-bold tracking-widest uppercase text-sm mb-2">Wealth Coaching</h2>
-                    <h1 class="text-3xl font-extrabold mb-3">你需要一位<br>财富教练</h1>
-                    <p class="text-slate-600 leading-relaxed mb-4">
+                    <h2 class="section-label" style="color: #2563eb;">Wealth Coaching</h2>
+                    <h1 class="section-title">你需要一位<br>财富教练</h1>
+                    <p class="section-desc">
                         钱的问题，从来不只是数字问题。你缺的不是一个理财产品，而是一套属于你自己的<strong>金钱操作系统</strong>。
                     </p>
-                    <ul class="space-y-2">
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2 mt-0.5 shrink-0">✔</span>
-                            <span class="text-sm text-slate-600"><strong>性格盲点：</strong>存不住钱、不敢投资、过度保守——这些不是意志力问题，是底层认知问题。</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2 mt-0.5 shrink-0">✔</span>
-                            <span class="text-sm text-slate-600"><strong>碎片陷阱：</strong>短视频教你炒股票，没人教你建体系。CFA 级别的金融逻辑，才是防割韭菜的铠甲。</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2 mt-0.5 shrink-0">✔</span>
-                            <span class="text-sm text-slate-600"><strong>纸上谈兵：</strong>看了很多书，一到实操就懵。你需要的是陪跑，不是课件。</span>
-                        </li>
+                    <ul class="check-list">
+                        <li class="check-item"><span class="check-icon">✔</span><strong>性格盲点：</strong>存不住钱、不敢投资、过度保守——这些不是意志力问题，是底层认知问题。</li>
+                        <li class="check-item"><span class="check-icon">✔</span><strong>碎片陷阱：</strong>短视频教你炒股票，没人教你建体系。CFA 级别的金融逻辑，才是防割韭菜的铠甲。</li>
+                        <li class="check-item"><span class="check-icon">✔</span><strong>纸上谈兵：</strong>看了很多书，一到实操就懵。你需要的是陪跑，不是课件。</li>
                     </ul>
                 </div>
 
-                <!-- 职业教练 -->
                 <div>
-                    <h2 class="text-purple-600 font-bold tracking-widest uppercase text-sm mb-2">Career Coaching</h2>
-                    <h1 class="text-3xl font-extrabold mb-3">你还需要一位<br>职业教练</h1>
-                    <p class="text-slate-600 leading-relaxed mb-4">
+                    <h2 class="section-label" style="color: #7c3aed;">Career Coaching</h2>
+                    <h1 class="section-title">你还需要一位<br>职业教练</h1>
+                    <p class="section-desc">
                         职业选择是人生最大的杠杆。选错方向，努力只是加速内耗。
                     </p>
-                    <ul class="space-y-2">
-                        <li class="flex items-start">
-                            <span class="text-purple-500 mr-2 mt-0.5 shrink-0">✔</span>
-                            <span class="text-sm text-slate-600"><strong>转型困局：</strong>金融、互联网、大厂——高薪人群的集体焦虑：想走不敢走，想留不甘心。</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-purple-500 mr-2 mt-0.5 shrink-0">✔</span>
-                            <span class="text-sm text-slate-600"><strong>自由职业陷阱：</strong>裸辞不是自由。从零到可持续，需要路径设计，不是鸡汤。</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-purple-500 mr-2 mt-0.5 shrink-0">✔</span>
-                            <span class="text-sm text-slate-600"><strong>过来人视角：</strong>PE/VC 十年见过上千个商业模型，知道什么能跑通、什么只是幻觉。</span>
-                        </li>
+                    <ul class="check-list">
+                        <li class="check-item"><span class="check-icon" style="color: #a855f7;">✔</span><strong>转型困局：</strong>金融、互联网、大厂——高薪人群的集体焦虑：想走不敢走，想留不甘心。</li>
+                        <li class="check-item"><span class="check-icon" style="color: #a855f7;">✔</span><strong>自由职业陷阱：</strong>裸辞不是自由。从零到可持续，需要路径设计，不是鸡汤。</li>
+                        <li class="check-item"><span class="check-icon" style="color: #a855f7;">✔</span><strong>过来人视角：</strong>PE/VC 十年见过上千个商业模型，知道什么能跑通、什么只是幻觉。</li>
                     </ul>
                 </div>
 
-                <div class="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-l-4 border-blue-500">
-                    <p class="text-sm italic text-slate-700">
-                        "先认识自己，再决定方向。测完两个人格，我们聊聊你的可能性。"
-                    </p>
+                <div class="highlight-box">
+                    <p>"先认识自己，再决定方向。测完两个人格，我们聊聊你的可能性。"</p>
                 </div>
 
-                <!-- Expert Profile -->
-                <div class="pt-6 border-t border-slate-200">
-                    <h2 class="text-slate-500 font-bold tracking-widest uppercase text-xs mb-3">Expert Profile</h2>
-                    <p class="text-lg font-bold text-slate-800">潘雷 <span class="text-slate-500 font-normal text-base">CFA / MBA</span></p>
-                    <p class="text-sm text-slate-600 leading-relaxed mt-2">
+                <div class="expert-section">
+                    <h2 class="section-label" style="color: #64748b; font-size: 12px;">Expert Profile</h2>
+                    <p class="expert-name">潘雷 <span class="expert-cred">CFA / MBA</span></p>
+                    <p class="expert-desc">
                         前 PE/VC 投资人。看过上千份商业计划书，经历过完整的资本周期。现在回到原点——帮人看清自己的<strong>金钱操作系统</strong>和<strong>职业基因</strong>。摒弃空谈理论，只讲实战真知。深耕教练事业，公益定价，不为牟利，只为点亮他人，成就自我初心愿景。
                     </p>
                 </div>
             </div>
 
-            <!-- 右侧：两个测试入口 -->
-            <div class="space-y-5">
-                <!-- 财商测试 -->
-                <div class="gradient-border bg-white p-6 rounded-2xl shadow-lg text-center">
-                    <div class="mb-4">
-                        <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase">3×3 矩阵 · 30题</span>
-                        <h2 class="text-2xl font-black mt-3">💰 财商人 格诊断</h2>
-                        <p class="text-slate-500 text-sm mt-2">你的金钱底层操作系统<br>精准匹配同类人与宿敌</p>
-                    </div>
-                    <a href="/cs/" class="inline-block w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-blue-600 transition-colors shadow-lg">
-                        立即开始测试 →
-                    </a>
-                    <p class="text-xs text-slate-400 mt-3">9种人格 · 毒舌文案 · 宿敌配对</p>
+            <!-- Right: Test entries + AI Coach -->
+            <div class="right">
+                <div class="card card-blue">
+                    <span class="card-badge badge-blue">3×3 矩阵 · 30题</span>
+                    <h2 class="card-title">💰 财商人格诊断</h2>
+                    <p class="card-sub">你的金钱底层操作系统<br>精准匹配同类人与宿敌</p>
+                    <a href="/cs/" class="card-btn">立即开始测试 →</a>
+                    <p class="card-hint">9种人格 · 毒舌文案 · 宿敌配对</p>
                 </div>
 
-                <!-- 职商测试 -->
-                <div class="gradient-border bg-white p-6 rounded-2xl shadow-lg text-center">
-                    <div class="mb-4">
-                        <span class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full uppercase">4×4 矩阵 · 30题</span>
-                        <h2 class="text-2xl font-black mt-3">💼 职商人 格诊断</h2>
-                        <p class="text-slate-500 text-sm mt-2">你的职业动力与策略基因<br>找到真正适合的方向</p>
-                    </div>
-                    <a href="/zs/" class="inline-block w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-purple-600 transition-colors shadow-lg">
-                        立即开始测试 →
-                    </a>
-                    <p class="text-xs text-slate-400 mt-3">16种人格 · 职业病理确诊 · 发展建议</p>
+                <div class="card card-purple">
+                    <span class="card-badge badge-purple">4×4 矩阵 · 30题</span>
+                    <h2 class="card-title">💼 职商人格诊断</h2>
+                    <p class="card-sub">你的职业动力与策略基因<br>找到真正适合的方向</p>
+                    <a href="/zs/" class="card-btn card-btn-purple">立即开始测试 →</a>
+                    <p class="card-hint">16种人格 · 职业病理确诊 · 发展建议</p>
                 </div>
 
-                <!-- AI 人生教练 -->
-                <div class="gradient-border-warm bg-white p-6 rounded-2xl shadow-lg text-center">
-                    <div class="mb-4">
-                        <span class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full uppercase">AI 驱动 · 即时对话</span>
-                        <h2 class="text-2xl font-black mt-3">🧠 JDT AI 人 生教练</h2>
-                        <p class="text-slate-500 text-sm mt-2">突破限制性信念<br>找到你的第三选择</p>
+                <!-- AI Coach: embedded iframe -->
+                <div class="card card-warm">
+                    <span class="card-badge badge-amber">AI 驱动 · 即时对话</span>
+                    <h2 class="card-title">🧠 JDT AI 人生教练</h2>
+                    <p class="card-sub">突破限制性信念<br>找到你的第三选择</p>
+                    <button class="card-btn card-btn-warm" id="chatToggle" onclick="toggleChat()">开始和教练聊聊 →</button>
+                    <p class="card-hint">人生教练 · 目标拆解 · 行动引导</p>
+                    <div class="chat-container" id="chatContainer">
+                        <button class="chat-close" id="chatClose" onclick="toggleChat()">✕</button>
+                        <div class="chat-skeleton" id="chatSkeleton">
+                            <div class="skeleton-spinner"></div>
+                            <span class="skeleton-text">正在连接教练...</span>
+                        </div>
                     </div>
-                    <a href="https://udify.app/chat/dIXjqDpKg9nv2Cdx" target="_blank" class="inline-block w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-amber-600 transition-colors shadow-lg">
-                        开始和教练聊聊 →
-                    </a>
-                    <p class="text-xs text-slate-400 mt-3">人生教练 · 目标拆解 · 行动引导</p>
                 </div>
 
-                <!-- 联系方式 -->
-                <div class="text-center pt-2">
-                    <p class="text-xs text-slate-400">添加微信：<span class="text-blue-600 font-medium">panleicfa</span> · 闲鱼：<span class="text-blue-600 font-medium">Pan教练</span></p>
+                <div class="contact-info">
+                    <p>添加微信：<span class="contact-link">panleicfa</span> · 闲鱼：<span class="contact-link">Pan教练</span></p>
                 </div>
             </div>
 
         </div>
 
+        <div class="blog-link">
+            <a href="/blog/">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                阅读博客
+            </a>
+        </div>
 
-    <!-- 博客入口 -->
-    <div class="mt-8 text-center">
-        <a href="/blog/" class="inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors text-sm group">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-            <span class="border-b border-transparent group-hover:border-slate-300 transition-colors">阅读博客</span>
-        </a>
-    </div>
-
-        <footer class="mt-12 text-slate-400 text-sm text-center">
-            <p><a href="/blog/" class="hover:text-slate-600 transition-colors">博客</a> · 让产品说话 · 人格实验室</p>
+        <footer>
+            <p><a href="/blog/">博客</a> · 让产品说话 · 人格实验室</p>
         </footer>
     </div>
 
+    <script>
+        let chatLoaded = false;
+        function toggleChat() {
+            const container = document.getElementById('chatContainer');
+            const btn = document.getElementById('chatToggle');
+            const isOpen = container.classList.contains('active');
+            if (isOpen) {
+                container.classList.remove('active');
+                btn.textContent = '开始和教练聊聊 →';
+                btn.style.display = '';
+                document.getElementById('chatClose').style.display = 'none';
+            } else {
+                container.classList.add('active');
+                btn.style.display = 'none';
+                document.getElementById('chatClose').style.display = 'flex';
+                if (!chatLoaded) {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = 'https://udify.app/chat/dIXjqDpKg9nv2Cdx';
+                    iframe.setAttribute('allow', 'microphone');
+                    iframe.setAttribute('loading', 'lazy');
+                    iframe.onload = function() {
+                        document.getElementById('chatSkeleton').classList.add('hidden');
+                    };
+                    container.appendChild(iframe);
+                    chatLoaded = true;
+                }
+            }
+        }
+    </script>
 </body>
 </html>
